@@ -19,8 +19,8 @@ export default function SideBar() {
   const pathname = usePathname(); 
 
   const navItems = [
-    { icon: <Home size={20} />, text: 'Home Page', href: '/' },
-    { icon: <Plus size={20} />, text: 'Create Challenge', href: '/home' },
+    { icon: <Home size={20} />, text: 'Home Page', href: '/home' },
+    { icon: <Plus size={20} />, text: 'Create Challenge', href: '/create-challenge' },
     { icon: <Trophy size={20} />, text: 'Do Challenge', href: '/do-challenge' },
     { icon: <Bell size={20} />, text: 'Notification', href: '/notification' },
     { icon: <MessageSquare size={20} />, text: 'Message', href: '/message' },

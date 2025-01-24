@@ -16,7 +16,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 export default function SideBar() {
-  const pathname = usePathname(); 
+  const pathname = usePathname();
 
   const navItems = [
     { icon: <Home size={20} />, text: 'Home Page', href: '/' },

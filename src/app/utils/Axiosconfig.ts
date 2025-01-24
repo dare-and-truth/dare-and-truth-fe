@@ -1,21 +1,30 @@
 import axios from 'axios';
+
 const httpClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BASE_URL!,
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
   headers: {
-    'Content-Type': 'application/json', // Định dạng dữ liệu gửi lên server là JSON.
-    Accept: 'application/json', // Backend sẽ trả về dữ liệu JSON.
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
   },
-  withCredentials: true, // Cần bật nếu backend sử dụng cookie để quản lý xác thực
+  withCredentials: true,
 });
+
 httpClient.interceptors.response.use(
   function (response) {
-    if (response.data?.status !== 'success') {
-      throw new Error('Invalid data format or API response.');
+    if (response.data?.status === 'success') {
+      return response.data.data;
+    } else {
+      return Promise.reject({
+        code: response.data?.code,
+        message: response.data?.message || 'An error occurred',
+      });
     }
-    return response || {};
   },
   function (error) {
-    return Promise.reject(error);
+    return Promise.reject({
+      code: error.response?.status || 500,
+      message: error.response?.data?.message || 'Network error occurred',
+    });
   },
 );
 

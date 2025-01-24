@@ -1,11 +1,10 @@
-import { MobileMenu } from '@/app/components/MobileMenu';
-import { UserDropdown } from '@/app/components/UserDropdown';
+import { MobileMenu } from '@/components/MobileMenu';
+import { UserDropdown } from '@/components/UserDropdown';
 import Image from 'next/image';
 
 export default function Header() {
   return (
     <div className="fixed left-0 right-0 top-0 z-10 flex h-16 items-center justify-between bg-white p-3 shadow-sm md:left-64">
-
       <div className="flex md:hidden">
         <Image
           src="/images/logo.png"

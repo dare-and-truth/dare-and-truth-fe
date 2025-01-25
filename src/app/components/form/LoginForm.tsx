@@ -7,46 +7,73 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FcGoogle } from 'react-icons/fc';
-import { Router } from 'next/router';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import { ErrorFormLogin } from '@/app/types';
 
 export default function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState({ email: '', password: '' });
-  const router=useRouter();
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [errors, setErrors] = useState<ErrorFormLogin>({
+    email:'',
+    password:''
+  });
+  const router = useRouter();
+
+   const mockUsers = [
+     { email: 'user@example.com', password: 'password123' },
+     { email: 'user@example.com', password: 'password123456' },
+   ];
+
   const validateForm = () => {
-    const newErrors = { email: '', password: '' };
+    const errors: ErrorFormLogin = { email: '', password: '' };
 
     if (!email) {
-      newErrors.email = 'Email is required';
+      errors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = 'Please enter a valid email address.';
+      errors.email = 'Please enter a valid email address';
     }
 
     if (!password) {
-      newErrors.password = 'Password is required';
+      errors.password = 'Password is required';
     } else if (password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+      errors.password = 'Password must be at least 8 characters';
     }
 
-    setErrors(newErrors);
-    return !newErrors.email && !newErrors.password;
+    setErrors(errors);
+    return !errors.email && !errors.password;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
+      const user= mockUsers.find((u) => u.email ===email);
+          if (!user) {
+            setErrors({
+              email: 'Email not found. Please sign up.',
+              password: '',
+            });
+            return;
+          }
+
+          if (user.password !== password) {
+            setErrors({
+              email: '',
+              password: 'Incorrect password. Please try again',
+            });
+            return;
+          }
       toast.success('Sign In successful. Welcome back!');
-      router.push('home')
+      router.push('home');
     }
   };
 
   return (
-    <div className="h-screen flex w-full flex-col-reverse md:flex-row">
+    <div className="flex h-screen w-full flex-col-reverse md:flex-row">
       <div className="flex w-full flex-col p-6 md:w-1/2 md:p-12">
-        <div className="mx-auto flex w-full max-w-md flex-1 flex-col">
+        <div
+          className={`mx-auto flex w-full max-w-md flex-1 flex-col ${errors.email || errors.password ? '' : 'md:mt-8 lg:mt-8'} `}
+        >
           <div className="flex-1">
             <h1 className="mb-2 text-3xl font-bold">Welcome Back 👋</h1>
             <p className="mb-8 text-gray-600">
@@ -137,7 +164,7 @@ export default function LoginForm() {
         </div>
       </div>
 
-      <div className="h-screen w-full p-6 lg:w-1/2 md:w-1/2">
+      <div className="h-screen w-full p-6 md:w-1/2 lg:w-1/2">
         <div className="relative h-full w-full">
           <Image
             src="/images/image-login.png"

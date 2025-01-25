@@ -31,7 +31,7 @@ export default function SideBar() {
   ];
 
   return (
-    <div className="fixed h-full w-64 flex-col bg-white p-4 shadow-sm sm:hidden md:flex">
+    <div className="fixed h-full w-64 flex-col bg-white  shadow-sm sm:hidden md:flex">
       <div className="mb-4">
         <Image
           src="/images/logo.png"

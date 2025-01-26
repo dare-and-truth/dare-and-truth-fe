@@ -1,8 +1,18 @@
-'use client'
+'use client';
 import { MobileNav } from '@/components/MobileNav';
 import SideBar from '@/components/SideBar';
 import Header from '@/components/Header';
-import { BarChart2, Bell, Bookmark, Calendar, Home, MessageSquare, Plus, Trophy, Users } from 'lucide-react';
+import {
+  BarChart2,
+  Bell,
+  Bookmark,
+  Calendar,
+  Home,
+  MessageSquare,
+  Plus,
+  Trophy,
+  Users,
+} from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 export default function UserLayout({

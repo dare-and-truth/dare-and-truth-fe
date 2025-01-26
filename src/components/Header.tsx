@@ -22,7 +22,7 @@ export default function Header() {
         </div>
         <div className="relative w-full sm:hidden md:block lg:block">
           <input
-            className="focus:outline-none w-full rounded-md border-2 border-gray-200 px-3 py-2 pl-10 leading-tight text-black transition-colors hover:border-gray-200"
+            className="w-full rounded-md border-2 border-gray-200 px-3 py-2 pl-10 leading-tight text-black transition-colors hover:border-gray-200 focus:outline-none"
             id="search"
             type="text"
             placeholder="Search..."

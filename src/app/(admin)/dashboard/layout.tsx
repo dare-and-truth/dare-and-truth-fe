@@ -1,8 +1,8 @@
-'use client'
-import Header from "@/components/Header";
-import SideBar from "@/components/SideBar";
-import { Badge, Command, FileText, Users } from "lucide-react";
-import { usePathname } from "next/navigation";
+'use client';
+import Header from '@/components/Header';
+import SideBar from '@/components/SideBar';
+import { Badge, Command, FileText, Users } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 export default function AdminLayout({
   children,

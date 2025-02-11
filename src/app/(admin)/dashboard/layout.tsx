@@ -38,7 +38,7 @@ export default function AdminLayout({
     },
   ];
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-[#F1F5F9]">
       <SideBar navItems={adminNavItems} />
       <div className="flex-1 md:ml-64">
         <Header />

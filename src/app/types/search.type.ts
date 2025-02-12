@@ -3,3 +3,6 @@ export interface SearchBarProps {
   setSearchQuery: (value: string) => void;
   placehoder: string;
 }
+export interface SearchNotFound {
+  message: string;
+}

@@ -7,14 +7,17 @@ export default function Pagination({
   currentPage,
   setCurrentPage,
   totalPages,
+  totalEntries,
+  itemsPerPage,
 }: PaginationProps) {
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
     <div className="flex items-center justify-between border-t pt-4">
       <p className="text-sm text-gray-500">
-        Showing {currentPage * 10 - 9} to {Math.min(currentPage * 10, 256)} of
-        256 entries
+        Showing {currentPage * itemsPerPage - (itemsPerPage - 1)} to{' '}
+        {Math.min(currentPage * itemsPerPage, totalEntries)} of {totalEntries}{' '}
+        entries
       </p>
       <div className="flex gap-1">
         <Button

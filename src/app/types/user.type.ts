@@ -1,9 +1,9 @@
 export interface User {
   id?: number;
-  name: string;
+  username: string;
   email: string;
-  phone: string;
-  dateOfBirth: string;
-  status: 'Active' | 'Inactive';
-  avatar: string;
+  phone?: string;
+  dateOfBirth?: string;
+  isActive: boolean;
+  avatar?: string;
 }

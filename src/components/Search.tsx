@@ -9,6 +9,7 @@ import { SearchBarProps } from '@/app/types';
 export default function SearchBar({
   searchQuery,
   setSearchQuery,
+  placehoder,
 }: SearchBarProps) {
   const [inputValue, setInputValue] = useState(searchQuery);
 
@@ -26,7 +27,7 @@ export default function SearchBar({
       <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
       <Input
         type="text"
-        placeholder="Search user"
+        placeholder={placehoder}
         className="w-56 pl-10"
         value={inputValue}
         onChange={handleChange}

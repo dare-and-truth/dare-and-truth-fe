@@ -68,7 +68,7 @@ const request = async ({
     // Xử lý hiển thị popup thành công
     // Code here
     onSuccess(response.data);
-    toast.success(response.data?.message);
+
     return response;
   } catch (error: any) {
     // Xử lý hiển thị popup lỗi

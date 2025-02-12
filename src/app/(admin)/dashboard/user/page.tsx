@@ -6,9 +6,9 @@ import Pagination from '@/components/Pagination';
 import SearchBar from '@/components/Search';
 import { User } from '@/app/types';
 import { Button } from '@/components/ui/button';
-import { getUser } from '@/app/api/user.api';
-import { toast } from 'react-toastify';
+import { getUser, updateUser } from '@/app/api/user.api';
 import NotFound from '@/components/NotFound';
+import { DialogConfirm } from '@/components/DiaLogConfirmDelete';
 
 export default function UserTable() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -48,6 +48,24 @@ export default function UserTable() {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
+
+  const handleUpdateUser = async (userId: string) => {
+    try {
+      const userToUpdate = allUsers.find((user) => user.id === userId);
+      if (userToUpdate) {
+        const updatedUser = {
+          ...userToUpdate,
+          isActive: !userToUpdate.isActive,
+        };
+        await updateUser(updatedUser, userId);
+        setAllUsers((users) =>
+          users.map((user) => (user.id === userId ? updatedUser : user)),
+        );
+      }
+    } catch (error) {
+      console.error('Error updating user:', error);
+    }
+  };
 
   return (
     <div className="mt-16 h-[calc(100vh-4rem)] overflow-y-auto p-7 pb-20 md:pb-4">
@@ -97,24 +115,30 @@ export default function UserTable() {
                       <td className="p-4 text-gray-500">{user?.phone}</td>
                       <td className="p-4 text-gray-500">{user?.dateOfBirth}</td>
                       <td className="p-4">
-                        <Button
-                          variant="default"
-                          size="default"
-                          className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${
-                            user.isActive === true
-                              ? 'bg-green-50 text-green-600'
-                              : 'bg-red-50 text-red-600'
-                          }`}
-                        >
-                          <span
-                            className={`h-3.5 w-3.5 rounded-full border-2 border-white ${
-                              user.isActive === true
-                                ? 'bg-green-400'
-                                : 'bg-red-400'
-                            }`}
-                          />
-                          {user.isActive === true ? 'Active' : 'Inactive'}
-                        </Button>
+                        <DialogConfirm
+                          button={
+                            <Button
+                              variant="default"
+                              size="default"
+                              className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${
+                                user.isActive === true
+                                  ? 'bg-green-50 text-green-600'
+                                  : 'bg-red-50 text-red-600'
+                              }`}
+                            >
+                              <span
+                                className={`h-3.5 w-3.5 rounded-full border-2 border-white ${
+                                  user.isActive === true
+                                    ? 'bg-green-400'
+                                    : 'bg-red-400'
+                                }`}
+                              />
+                              {user.isActive === true ? 'Active' : 'Inactive'}
+                            </Button>
+                          }
+                          title="Are you sure you want to change this user's status?"
+                          onConfirm={() =>handleUpdateUser(user.id)}
+                        />
                       </td>
                     </tr>
                   ))}

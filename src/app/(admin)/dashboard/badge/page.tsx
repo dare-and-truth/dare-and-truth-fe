@@ -62,7 +62,7 @@ export default function BadgePage() {
         />
         {allBadge.length === 0 ? (
           <NotFound message="No badges available." />
-        ) : filteredBadges.length < 0 ? (
+        ) : filteredBadges.length === 0 ? (
           <NotFound message="No users found matching the search criteria." />
         ) : (
           <>

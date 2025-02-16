@@ -10,6 +10,12 @@ import { FcGoogle } from 'react-icons/fc';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { ErrorFormLogin } from '@/app/types';
+import { postSignIn } from '@/app/api/auth.api';
+import {jwtDecode} from 'jwt-decode';
+
+type JwtPayload = {
+  role: string;
+};
 
 export default function LoginForm() {
   const [email, setEmail] = useState<string>('');
@@ -19,11 +25,6 @@ export default function LoginForm() {
     password: '',
   });
   const router = useRouter();
-
-  const mockUsers = [
-    { email: 'user@example.com', password: 'password123' },
-    { email: 'user@example.com', password: 'password123456' },
-  ];
 
   const validateForm = () => {
     const errors: ErrorFormLogin = { email: '', password: '' };
@@ -44,27 +45,37 @@ export default function LoginForm() {
     return !errors.email && !errors.password;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      const user = mockUsers.find((u) => u.email === email);
-      if (!user) {
-        setErrors({
-          email: 'Email not found. Please sign up.',
-          password: '',
-        });
-        return;
-      }
+    if (!validateForm()) return;
+  
+    try {
+      const response = await postSignIn({ email, password });
 
-      if (user.password !== password) {
-        setErrors({
-          email: '',
-          password: 'Incorrect password. Please try again',
-        });
-        return;
+      const {accessToken, refreshToken} = response?.data;
+      
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+
+      const decoded: JwtPayload = jwtDecode(accessToken);
+      const role = decoded.role;
+      
+      if(accessToken && refreshToken){
+        toast.success('Sign In successful. Welcome back!');
+        if (role && role === 'admin') {
+          router.push('/dashboard');
+        } else {
+          router.push('/home');
+        }
+      }else{
+        toast.error('Invalid credentials');
       }
-      toast.success('Sign In successful. Welcome back!');
-      router.push('home');
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        setErrors({ email: '', password: 'Incorrect email or password' });
+      } else {
+        toast.error('An error occurred during sign in.');
+      }
     }
   };
 

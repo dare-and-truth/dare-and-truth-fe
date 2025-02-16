@@ -10,7 +10,7 @@ import { getUser, updateUser } from '@/app/api/user.api';
 import NotFound from '@/components/NotFound';
 import { DialogConfirm } from '@/components/DiaLogConfirmDelete';
 
-export default function UserTable() {
+export default function UserPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -137,7 +137,7 @@ export default function UserTable() {
                             </Button>
                           }
                           title="Are you sure you want to change this user's status?"
-                          onConfirm={() =>handleUpdateUser(user.id)}
+                          onConfirm={() => handleUpdateUser(user.id)}
                         />
                       </td>
                     </tr>

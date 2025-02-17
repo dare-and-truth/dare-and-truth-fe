@@ -1,6 +1,6 @@
 'use client';
 
-import { useState,useContext } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -12,14 +12,12 @@ import { toast } from 'react-toastify';
 import { ErrorFormLogin } from '@/app/types';
 import { postSignIn } from '@/app/api/auth.api';
 import {jwtDecode} from 'jwt-decode';
-import { UserContext } from '@/app/contexts/UserContext';
 
 type JwtPayload = {
   role: string;
 };
 
 export default function LoginForm() {
-  const { setUser } = useContext(UserContext);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [errors, setErrors] = useState<ErrorFormLogin>({
@@ -59,7 +57,7 @@ export default function LoginForm() {
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
 
-      setUser({ id: response?.data.user.id});
+      localStorage.setItem('userId', response?.data.user.id);
 
       const decoded: JwtPayload = jwtDecode(accessToken);
       

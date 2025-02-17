@@ -14,7 +14,7 @@ const httpClient = axios.create({
 httpClient.interceptors.request.use(
   function (config) {
     // Do something before request is sent
-    console.log('interceptors.request', config);
+    // console.log('interceptors.request', config);
     // config.headers.Authorization = `Bearer ${localStorage.getItem("accessToken")}`;
     const token = localStorage.getItem('accessToken');
     if (token) {
@@ -56,6 +56,7 @@ httpClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     if (error.response?.status === 401 || error.response?.status === 403) {
+      console.log('refresh')
       const refreshToken = localStorage.getItem('refreshToken');
       if (refreshToken) {
         if (!isRefreshing) {

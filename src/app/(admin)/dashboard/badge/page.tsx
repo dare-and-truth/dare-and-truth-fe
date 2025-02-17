@@ -1,7 +1,9 @@
 'use client';
-import { getBadge } from '@/app/api/badge.api';
+import { deleteBadge, getBadge } from '@/app/api/badge.api';
 import { Badge } from '@/app/types';
 import { DialogConfirm } from '@/components/DiaLogConfirmDelete';
+import { UpdateBadge } from '@/components/ModalUpdateBadge';
+import { CreateBadge } from '@/components/ModelCreateBadge';
 import NotFound from '@/components/NotFound';
 import Pagination from '@/components/Pagination';
 import SearchBar from '@/components/Search';
@@ -11,7 +13,6 @@ import { useEffect, useState } from 'react';
 import {
   AiOutlineDelete,
   AiOutlineEdit,
-  AiOutlinePlus,
   AiTwotoneInfoCircle,
 } from 'react-icons/ai';
 
@@ -20,6 +21,19 @@ export default function BadgePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [allBadge, setAllBadges] = useState<Badge[]>([]);
+    const [open, setOpen] = useState<boolean>(false);
+    const [badge,setBadge]=useState<Badge>({
+      id: '',
+      title:'',
+      image: '',
+      description:'',
+      points: 0,
+      badgeCriteria:1,
+      startDay: new Date(),
+      endDay: new Date(),
+      isActive: true,
+    });
+    const [refreshBadge, setRefreshBadge] = useState<boolean>(false);
   useEffect(() => {
     const fetchBadges = async () => {
       try {
@@ -32,7 +46,7 @@ export default function BadgePage() {
       }
     };
     fetchBadges();
-  }, []);
+  }, [refreshBadge]);
   const filteredBadges = allBadge.filter((badge) =>
     badge.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
@@ -44,14 +58,22 @@ export default function BadgePage() {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
+
+  const handleDeleteBadge = async (badgeId:string) =>{
+    try {
+      await deleteBadge (badgeId);
+      setRefreshBadge(true);
+    } catch (error) {
+      console.error('Error deleting badge:', error);
+    }
+  }
+
+  
   return (
     <div className="mt-16 h-[calc(100vh-4rem)] overflow-y-auto p-7 pb-20 md:pb-4">
       <div className="flex justify-between">
         <span className="text-lg font-bold">Manage Badges</span>
-        <Button variant="default" size="default">
-          <AiOutlinePlus />
-          New Badge
-        </Button>
+        <CreateBadge setRefreshBadge={setRefreshBadge} />
       </div>
 
       <div className="mt-6 w-full space-y-4 rounded-md border bg-white p-4">
@@ -97,11 +119,24 @@ export default function BadgePage() {
                       <td className="max-w-xs overflow-hidden truncate whitespace-nowrap p-4 text-gray-500">
                         {badge.description}
                       </td>
-                      <td className="p-4 text-gray-500">{badge?.startDay}</td>
-                      <td className="p-4 text-gray-500">{badge?.endDay}</td>
+                      <td className="p-4 text-gray-500">
+                        {' '}
+                        {badge?.startDay
+                          ? new Date(badge.startDay).toLocaleDateString()
+                          : 'N/A'}
+                      </td>
+                      <td className="p-4 text-gray-500">
+                        {badge?.endDay
+                          ? new Date(badge.endDay).toLocaleDateString()
+                          : 'N/A'}
+                      </td>
                       <td className="p-4">
                         <div className="flex justify-center space-x-3">
-                          <Button variant="icon" size="default">
+                          <Button
+                            variant="icon"
+                            size="default"
+                            onClick={() => (setOpen(true), setBadge(badge))}
+                          >
                             <AiOutlineEdit className="bg-none text-blue-500 hover:text-blue-700" />
                           </Button>
                           <DialogConfirm
@@ -111,7 +146,7 @@ export default function BadgePage() {
                               </Button>
                             }
                             title="Are you want to delete ?"
-                            onConfirm={() => 'action'}
+                            onConfirm={() => handleDeleteBadge(badge.id)}
                           />
                           <Button variant="icon" size="default">
                             <AiTwotoneInfoCircle className="text-gray-800 hover:text-gray-600" />
@@ -123,7 +158,12 @@ export default function BadgePage() {
                 </tbody>
               </table>
             </div>
-
+            <UpdateBadge
+              open={open}
+              setOpen={setOpen}
+              badge={badge}
+              setRefreshBadge={setRefreshBadge}
+            />
             <Pagination
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}

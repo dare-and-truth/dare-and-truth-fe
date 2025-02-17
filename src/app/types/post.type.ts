@@ -6,3 +6,5 @@ export interface Post {
   mediaUrl: string;
   isActive: boolean;
 }
+
+export type CreatePostPayload = Omit<Post, 'id' | 'isActive'>;

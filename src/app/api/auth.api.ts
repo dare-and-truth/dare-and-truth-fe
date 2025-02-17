@@ -2,8 +2,6 @@ import { LOGIN_PATH } from '@/app/constants';
 import { SignUpPayload, LoginPayload} from '@/app/types';
 import request from '@/app/utils/Axiosconfig';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { NextRouter } from 'next/router';
-import { toast } from 'react-toastify';
 
 export const postSignUp = async (
   data: SignUpPayload,

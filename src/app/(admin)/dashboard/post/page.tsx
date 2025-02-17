@@ -1,19 +1,22 @@
 'use client';
 
-import { getPost } from "@/app/api/post.api";
-import { Post } from "@/app/types";
-import { DialogConfirm } from "@/components/DiaLogConfirmDelete";
-import NotFound from "@/components/NotFound";
-import Pagination from "@/components/Pagination";
-import SearchBar from "@/components/Search";
-import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { getPost } from '@/app/api/post.api';
+import { Post } from '@/app/types';
+import CreatePostDialog from '@/components/CreatePostDialog';
+import { DialogConfirm } from '@/components/DiaLogConfirmDelete';
+import NotFound from '@/components/NotFound';
+import Pagination from '@/components/Pagination';
+import SearchBar from '@/components/Search';
+import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
 
 export default function PostPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [allPost, setAllPost] = useState<Post[]>([]);
+  const [refreshPosts, setRefreshPosts] = useState(false);
+  
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -28,7 +31,7 @@ export default function PostPage() {
     };
 
     fetchPost();
-  }, []);
+  }, [refreshPosts]);
 
   const filteredPost = allPost
     ? allPost.filter(
@@ -50,12 +53,15 @@ export default function PostPage() {
 
   return (
     <div className="mt-16 h-[calc(100vh-4rem)] overflow-y-auto p-7 pb-20 md:pb-4">
-      <span className="text-lg font-bold">Manage Post</span>
+      <div className="flex flex-row items-center justify-between">
+        <span className="text-lg font-bold">Manage Post</span>
+        <CreatePostDialog setRefreshPosts={setRefreshPosts}/>
+      </div>
       <div className="mt-6 w-full space-y-4 rounded-md border bg-white p-4">
         <SearchBar
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
-          placehoder="Search Post name or email"
+          placehoder="Search by content or hashtag"
         />
         {filteredPost.length === 0 ? (
           <NotFound message="No post found matching the search criteria." />
@@ -99,7 +105,7 @@ export default function PostPage() {
                             </Button>
                           }
                           title="Are you sure you want to change this post's status?"
-                          onConfirm={() => console.log("hanlde update post")}
+                          onConfirm={() => console.log('hanlde update post')}
                         />
                       </td>
                     </tr>

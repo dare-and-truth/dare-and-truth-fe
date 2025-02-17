@@ -28,7 +28,7 @@ export default function SearchBar({
       <Input
         type="text"
         placeholder={placehoder}
-        className="w-56 pl-10"
+        className="w-80 pl-10"
         value={inputValue}
         onChange={handleChange}
       />

@@ -21,7 +21,7 @@ export default function UserPage() {
       try {
         const users = await getUser();
         if (users) {
-          setAllUsers(users);
+          setAllUsers(users.data);
         }
       } catch (error) {
         console.error('Error fetching users:', error);

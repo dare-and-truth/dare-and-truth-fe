@@ -21,19 +21,19 @@ export default function BadgePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [allBadge, setAllBadges] = useState<Badge[]>([]);
-    const [open, setOpen] = useState<boolean>(false);
-    const [badge,setBadge]=useState<Badge>({
-      id: '',
-      title:'',
-      image: '',
-      description:'',
-      points: 0,
-      badgeCriteria:1,
-      startDay: new Date(),
-      endDay: new Date(),
-      isActive: true,
-    });
-    const [refreshBadge, setRefreshBadge] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [badge, setBadge] = useState<Badge>({
+    id: '',
+    title: '',
+    image: '',
+    description: '',
+    points: 0,
+    badgeCriteria: 1,
+    startDay: new Date(),
+    endDay: new Date(),
+    isActive: true,
+  });
+  const [refreshBadge, setRefreshBadge] = useState<boolean>(false);
   useEffect(() => {
     const fetchBadges = async () => {
       try {
@@ -59,16 +59,15 @@ export default function BadgePage() {
     setCurrentPage(1);
   }, [searchQuery]);
 
-  const handleDeleteBadge = async (badgeId:string) =>{
+  const handleDeleteBadge = async (badgeId: string) => {
     try {
-      await deleteBadge (badgeId);
-      setRefreshBadge(true);
+      await deleteBadge(badgeId);
+      setRefreshBadge((prev) => !prev);
     } catch (error) {
       console.error('Error deleting badge:', error);
     }
-  }
+  };
 
-  
   return (
     <div className="mt-16 h-[calc(100vh-4rem)] overflow-y-auto p-7 pb-20 md:pb-4">
       <div className="flex justify-between">

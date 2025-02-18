@@ -3,8 +3,20 @@
 import { LogOut } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { postLogout } from '@/app/api/auth.api';
 
 export default function SideBar({ navItems }: { navItems: NavItemType[] }) {
+  const router = useRouter();
+  const handleLogout = async () => {
+    try {
+      await postLogout(router);
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+    } catch (error) {
+      console.log('Error during logout', error);
+    }
+  };
   return (
     <div className="fixed h-full w-64 flex-col bg-white shadow-sm sm:hidden md:flex">
       <div className="mb-4">
@@ -28,7 +40,10 @@ export default function SideBar({ navItems }: { navItems: NavItemType[] }) {
           />
         ))}
       </nav>
-      <button className="mt-auto flex items-center space-x-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100">
+      <button
+        onClick={handleLogout}
+        className="mt-auto flex items-center space-x-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
+      >
         <LogOut size={20} />
         <span>Log out</span>
       </button>

@@ -28,7 +28,7 @@ export const createBadge = async (data: CreateBadge) => {
   });
 };
 
-export const updateBadge= async (data:CreateBadge,id:string) =>{
+export const updateBadge = async (data: CreateBadge, id: string) => {
   await request({
     method: 'patch',
     url: `/badges/${id}`,
@@ -40,9 +40,9 @@ export const updateBadge= async (data:CreateBadge,id:string) =>{
       console.log('error in create badge', error);
     },
   });
-}
+};
 
-export const deleteBadge = async (id:string) =>{
+export const deleteBadge = async (id: string) => {
   await request({
     method: 'delete',
     url: `/badges/${id}`,
@@ -53,4 +53,4 @@ export const deleteBadge = async (id:string) =>{
       console.log('error in create badge', error);
     },
   });
-}
+};

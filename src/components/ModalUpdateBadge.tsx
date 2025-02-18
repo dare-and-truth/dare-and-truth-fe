@@ -55,9 +55,12 @@ const formSchema = z
     path: ['startDay'],
   });
 
-
-
-export function UpdateBadge({ open, setOpen, badge, setRefreshBadge }: ModalUpdateBadge) {
+export function UpdateBadge({
+  open,
+  setOpen,
+  badge,
+  setRefreshBadge,
+}: ModalUpdateBadge) {
   const [imageUrl, setImageUrl] = useState<string | null>(badge?.image || null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -124,7 +127,7 @@ export function UpdateBadge({ open, setOpen, badge, setRefreshBadge }: ModalUpda
 
         const newValues = { ...values, image: uploadedUrl };
         await updateBadge(newValues, badge.id);
-         setRefreshBadge((prev) => !prev);
+        setRefreshBadge((prev) => !prev);
         setOpen(false);
         await deleteImage(badge.image);
       } catch (error) {

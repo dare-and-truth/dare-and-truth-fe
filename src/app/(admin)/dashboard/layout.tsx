@@ -20,21 +20,21 @@ export default function AdminLayout({
     },
     {
       icon: <FileText size={20} />,
+      text: 'Manage Challenges',
+      href: '/dashboard/challenge',
+      active: pathname === '/dashboard/challenge',
+    },
+    {
+      icon: <FileText size={20} />,
       text: 'Manage Posts',
       href: '/dashboard/post',
       active: pathname === '/dashboard/post',
     },
     {
-      icon: <Command size={20} />,
-      text: 'Manage Comments',
-      href: '/dashboard/comment',
-      active: pathname === '/dashboard/comment',
-    },
-    {
       icon: <Badge size={20} />,
       text: 'Manage Badges',
       href: '/dashboard/badge',
-      active: pathname === '/dashboard/manage',
+      active: pathname === '/dashboard/badge',
     },
   ];
   return (

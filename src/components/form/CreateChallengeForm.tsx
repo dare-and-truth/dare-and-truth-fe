@@ -2,15 +2,6 @@
 
 import { useRef, useState } from 'react';
 import { z } from 'zod';
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogClose,
-} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -18,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { supabaseClient } from '@/app/utils/Supabase';
 import { CreateChallengePayload } from '@/app/types';
 import { postChallenge } from '@/app/api/challenge.api';
-
+import { X } from 'lucide-react';
 const supabase = supabaseClient;
 
 // Type definitions
@@ -74,13 +65,12 @@ const formSchema = z
     path: ['endDate'],
   });
 
-export default function CreateChallengeDialog(props: any) {
+export default function CreateChallengeForm() {
   const [formData, setFormData] = useState<Partial<FormData>>({});
   const [filePreview, setFilePreview] = useState<string>('');
   const [errors, setErrors] = useState<FormErrors>({});
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [open, setOpen] = useState(false);
 
   // Handle file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -178,8 +168,6 @@ export default function CreateChallengeDialog(props: any) {
   };
 
   const handleCreateSuccess = () => {
-    setOpen(false);
-    props.setRefreshChallenge((pre: boolean) => (pre = !pre));
     // Reset form
     setFormData({});
     setFilePreview('');
@@ -189,115 +177,116 @@ export default function CreateChallengeDialog(props: any) {
     }
   };
 
+  const handleRemoveFile = () => {
+    setFormData({ file: undefined });
+    setFilePreview('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // Reset input file
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="default">Create Chalenge</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create a New Challenge</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* File Input */}
-          <div className="space-y-2">
-            <Input
-              ref={fileInputRef}
-              type="file"
-              accept={VALID_FILE_TYPES.join(',')}
-              onChange={handleFileChange}
-              disabled={isUploading}
-            />
-            {errors.file && (
-              <p className="text-sm text-red-500">{errors.file}</p>
-            )}
-            {filePreview &&
-              (formData.file?.type.startsWith('image/') ? (
-                <img
-                  src={filePreview}
-                  alt="Preview"
-                  className="w-full object-contain"
-                />
-              ) : (
-                <video controls className="w-full">
-                  <source src={filePreview} type={formData.file?.type} />
-                  Your browser does not support the video tag.
-                </video>
-              ))}
-          </div>
-
-          {/* Hashtag */}
-          <div className="space-y-2">
-            <div className="font-bold">Hashtag</div>
-            <Input
-              name="hashtag"
-              placeholder="#Hashtag"
-              value={formData.hashtag || ''}
-              onChange={handleChange}
-              disabled={isUploading}
-            />
-            {errors.hashtag && (
-              <p className="text-sm text-red-500">{errors.hashtag}</p>
-            )}
-          </div>
-
-          {/* Content */}
-          <div className="space-y-2">
-            <div className="font-bold">Content</div>
-            <Textarea
-              name="content"
-              placeholder="Write something..."
-              value={formData.content || ''}
-              onChange={handleChange}
-              disabled={isUploading}
-            />
-            {errors.content && (
-              <p className="text-sm text-red-500">{errors.content}</p>
-            )}
-          </div>
-
-          {/* Dates */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2 font-bold">Start Date</div>
-            <div className="space-y-2 font-bold">End Date</div>
-            <div className="space-y-2">
-              <Input
-                name="startDate"
-                type="date"
-                value={formData.startDate || ''}
-                onChange={handleChange}
-                disabled={isUploading}
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Input
+          ref={fileInputRef}
+          type="file"
+          accept={VALID_FILE_TYPES.join(',')}
+          onChange={handleFileChange}
+          disabled={isUploading}
+        />
+        {errors.file && <p className="text-sm text-red-500">{errors.file}</p>}
+        {filePreview && (
+          <div className="relative w-full">
+            {formData.file?.type.startsWith('image/') ? (
+              <img
+                src={filePreview}
+                alt="Preview"
+                className="w-full rounded-md object-contain"
               />
-              {errors.startDate && (
-                <p className="text-sm text-red-500">{errors.startDate}</p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Input
-                name="endDate"
-                type="date"
-                value={formData.endDate || ''}
-                onChange={handleChange}
-                disabled={isUploading}
-              />
-              {errors.endDate && (
-                <p className="text-sm text-red-500">{errors.endDate}</p>
-              )}
-            </div>
-          </div>
+            ) : (
+              <video controls className="w-full rounded-md">
+                <source src={filePreview} type={formData.file?.type} />
+                Your browser does not support the video tag.
+              </video>
+            )}
 
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="secondary" disabled={isUploading}>
-                Cancel
-              </Button>
-            </DialogClose>
-            <Button type="submit" disabled={isUploading}>
-              {isUploading ? 'Uploading...' : 'Submit'}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+            {/* Dấu "X" để xóa file */}
+            <button
+              type="button"
+              onClick={handleRemoveFile}
+              className="absolute right-2 top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
+            >
+              <X size={20} />
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Hashtag */}
+      <div className="space-y-2">
+        <div className="font-bold">Hashtag</div>
+        <Input
+          name="hashtag"
+          placeholder="#Hashtag"
+          value={formData.hashtag || ''}
+          onChange={handleChange}
+          disabled={isUploading}
+        />
+        {errors.hashtag && (
+          <p className="text-sm text-red-500">{errors.hashtag}</p>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="space-y-2">
+        <div className="font-bold">Content</div>
+        <Textarea
+          name="content"
+          placeholder="Write something..."
+          value={formData.content || ''}
+          onChange={handleChange}
+          disabled={isUploading}
+        />
+        {errors.content && (
+          <p className="text-sm text-red-500">{errors.content}</p>
+        )}
+      </div>
+
+      {/* Dates */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2 font-bold">Start Date</div>
+        <div className="space-y-2 font-bold">End Date</div>
+        <div className="space-y-2">
+          <Input
+            name="startDate"
+            type="date"
+            value={formData.startDate || ''}
+            onChange={handleChange}
+            disabled={isUploading}
+          />
+          {errors.startDate && (
+            <p className="text-sm text-red-500">{errors.startDate}</p>
+          )}
+        </div>
+        <div className="space-y-2">
+          <Input
+            name="endDate"
+            type="date"
+            value={formData.endDate || ''}
+            onChange={handleChange}
+            disabled={isUploading}
+          />
+          {errors.endDate && (
+            <p className="text-sm text-red-500">{errors.endDate}</p>
+          )}
+        </div>
+      </div>
+      <div className="text-right">
+        <Button type="submit" disabled={isUploading} className="">
+          {isUploading ? 'Uploading...' : 'Submit'}
+        </Button>
+      </div>
+    </form>
   );
 }

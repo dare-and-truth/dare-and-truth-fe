@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { boolean, z } from 'zod';
+import { z } from 'zod';
 import {
   Dialog,
   DialogTrigger,
@@ -133,12 +133,9 @@ export default function CreatePostDialog(props: any) {
         .from('uploads')
         .getPublicUrl(fileName);
 
-      const userId = localStorage.getItem('userId');
-
       // Here you would send the complete data to your backend
       const createPostPayload = {
         ...formdata,
-        userId,
         mediaUrl: urlData.publicUrl,
       };
 

@@ -87,7 +87,7 @@ export function CreateBadge({ setRefreshBadge }: ModalCreateBadge) {
           const imageFile = await convertBlobUrlToFile(imageUrl);
           const uploadResult = await uploadImage({
             file: imageFile,
-            bucket: 'dank-pics',
+            bucket: 'uploads',
           });
 
           if (uploadResult.error) {

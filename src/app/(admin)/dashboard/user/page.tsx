@@ -15,13 +15,18 @@ export default function UserPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [allUsers, setAllUsers] = useState<User[]>([]);
-
+  const [refreshBadge, setRefreshBadge] = useState<boolean>(false);
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const users = await getUser();
         if (users) {
-          setAllUsers(users);
+          // Chuyển đổi isActive từ string thành boolean
+          const updatedUsers = users.map((user: any) => ({
+            ...user,
+            isActive: user.isActive === 'true',
+          }));
+          setAllUsers(updatedUsers);
         }
       } catch (error) {
         console.error('Error fetching users:', error);
@@ -29,7 +34,7 @@ export default function UserPage() {
     };
 
     fetchUsers();
-  }, []);
+  }, [refreshBadge]);
 
   const filteredUsers = allUsers
     ? allUsers.filter(
@@ -48,20 +53,13 @@ export default function UserPage() {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
-
-  const handleUpdateUser = async (userId: string) => {
+  const handleUpdateUser = async (user: User) => {
     try {
-      const userToUpdate = allUsers.find((user) => user.id === userId);
-      if (userToUpdate) {
-        const updatedUser = {
-          ...userToUpdate,
-          isActive: !userToUpdate.isActive,
-        };
-        await updateUser(updatedUser, userId);
-        setAllUsers((users) =>
-          users.map((user) => (user.id === userId ? updatedUser : user)),
-        );
-      }
+      const newStatus = !user.isActive;
+
+      await updateUser({ ...user, isActive: newStatus }, user.id);
+
+      setRefreshBadge((prev) => !prev);
     } catch (error) {
       console.error('Error updating user:', error);
     }
@@ -121,23 +119,21 @@ export default function UserPage() {
                               variant="default"
                               size="default"
                               className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${
-                                user.isActive === true
+                                user.isActive
                                   ? 'bg-green-50 text-green-600'
                                   : 'bg-red-50 text-red-600'
                               }`}
                             >
                               <span
                                 className={`h-3.5 w-3.5 rounded-full border-2 border-white ${
-                                  user.isActive === true
-                                    ? 'bg-green-400'
-                                    : 'bg-red-400'
+                                  user.isActive ? 'bg-green-400' : 'bg-red-400'
                                 }`}
                               />
-                              {user.isActive === true ? 'Active' : 'Inactive'}
+                              {user.isActive ? 'Active' : 'Inactive'}
                             </Button>
                           }
                           title="Are you sure you want to change this user's status?"
-                          onConfirm={() => handleUpdateUser(user.id)}
+                          onConfirm={() => handleUpdateUser(user)}
                         />
                       </td>
                     </tr>

@@ -15,7 +15,7 @@ export default function ChallengePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [allChallenge, setAllChallenge] = useState<Challenge[]>([]);
-  const [refreshChallenge, setRefreshChallenge] = useState(false)
+  const [refreshChallenge, setRefreshChallenge] = useState(false);
 
   useEffect(() => {
     const fetchChallenge = async () => {
@@ -52,10 +52,9 @@ export default function ChallengePage() {
 
   return (
     <div className="mt-16 h-[calc(100vh-4rem)] overflow-y-auto p-7 pb-20 md:pb-4">
-      <button onClick={() => setRefreshChallenge((pre: boolean) => pre = !pre)}>refresh</button>
       <div className="flex flex-row items-center justify-between">
         <span className="text-lg font-bold">Manage Challenge</span>
-        <CreateChallengeDialog setRefreshChallenge={setRefreshChallenge}/>
+        <CreateChallengeDialog setRefreshChallenge={setRefreshChallenge} />
       </div>
       <div className="mt-6 w-full space-y-4 rounded-md border bg-white p-4">
         <SearchBar

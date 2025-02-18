@@ -40,7 +40,10 @@ export default function SideBar({ navItems }: { navItems: NavItemType[] }) {
           />
         ))}
       </nav>
-      <button onClick={handleLogout} className="mt-auto flex items-center space-x-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100">
+      <button
+        onClick={handleLogout}
+        className="mt-auto flex items-center space-x-3 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100"
+      >
         <LogOut size={20} />
         <span>Log out</span>
       </button>

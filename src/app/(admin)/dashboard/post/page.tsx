@@ -16,7 +16,6 @@ export default function PostPage() {
   const itemsPerPage = 10;
   const [allPost, setAllPost] = useState<Post[]>([]);
   const [refreshPosts, setRefreshPosts] = useState(false);
-  
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -55,7 +54,7 @@ export default function PostPage() {
     <div className="mt-16 h-[calc(100vh-4rem)] overflow-y-auto p-7 pb-20 md:pb-4">
       <div className="flex flex-row items-center justify-between">
         <span className="text-lg font-bold">Manage Post</span>
-        <CreatePostDialog setRefreshPosts={setRefreshPosts}/>
+        <CreatePostDialog setRefreshPosts={setRefreshPosts} />
       </div>
       <div className="mt-6 w-full space-y-4 rounded-md border bg-white p-4">
         <SearchBar

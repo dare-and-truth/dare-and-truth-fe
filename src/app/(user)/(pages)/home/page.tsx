@@ -3,7 +3,6 @@ import { MessageSquare, Share } from 'lucide-react';
 import Image from 'next/image';
 
 export default function HomePage() {
-
   return (
     <div className="mt-16 h-[calc(100vh-4rem)] overflow-y-auto p-4 pb-20 md:pb-4">
       <div className="mb-4 rounded-lg bg-white p-4 shadow-sm md:p-6">

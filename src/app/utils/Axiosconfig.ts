@@ -25,7 +25,7 @@ httpClient.interceptors.request.use(
   },
   function (error) {
     // Do something with request error
-    console.log("interceptors.request.error", error);
+    console.log('interceptors.request.error', error);
     return Promise.reject(error);
   },
 );
@@ -56,7 +56,7 @@ httpClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     if (error.response?.status === 401 || error.response?.status === 403) {
-      console.log('refresh')
+      console.log('refresh');
       const refreshToken = localStorage.getItem('refreshToken');
       if (refreshToken) {
         if (!isRefreshing) {
@@ -65,7 +65,8 @@ httpClient.interceptors.response.use(
             // Gọi API refresh token
             const refreshResponse = await axios({
               method: 'post',
-              url: process.env.NEXT_PUBLIC_BASE_SERVER_URL + '/auth/refresh-token',
+              url:
+                process.env.NEXT_PUBLIC_BASE_SERVER_URL + '/auth/refresh-token',
               data: { refreshToken },
               headers: { 'Content-Type': 'application/json' },
               withCredentials: true,
@@ -81,7 +82,7 @@ httpClient.interceptors.response.use(
             isRefreshing = false;
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
-            toast.error("Session expired. Please log in again.");
+            toast.error('Session expired. Please log in again.');
             window.location.href = '/auth/login';
             return Promise.reject(refreshError);
           }
@@ -96,7 +97,7 @@ httpClient.interceptors.response.use(
         }
       } else {
         localStorage.removeItem('accessToken');
-        toast.error("Session expired. Please log in again.");
+        toast.error('Session expired. Please log in again.');
         window.location.href = '/auth/login';
         return new Promise(() => {});
       }
@@ -105,7 +106,7 @@ httpClient.interceptors.response.use(
       code: error.response?.status || 500,
       message: error.response?.data?.message || 'Network error occurred',
     });
-  }
+  },
 );
 
 interface RequestOptions {

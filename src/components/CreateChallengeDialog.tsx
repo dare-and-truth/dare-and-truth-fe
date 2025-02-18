@@ -19,7 +19,7 @@ import { supabaseClient } from '@/app/utils/Supabase';
 import { CreateChallengePayload } from '@/app/types';
 import { postChallenge } from '@/app/api/challenge.api';
 
-const supabase = supabaseClient
+const supabase = supabaseClient;
 
 // Type definitions
 type FormData = z.infer<typeof formSchema>;
@@ -53,8 +53,7 @@ const formSchema = z
         /^[a-zA-Z0-9_]+$/,
         'Hashtag can only contain letters, numbers and underscores',
       ),
-    content: z
-      .string(),
+    content: z.string(),
     startDate: z
       .string()
       .refine(
@@ -75,7 +74,7 @@ const formSchema = z
     path: ['endDate'],
   });
 
-export default function CreateChallengeDialog( props: any ) {
+export default function CreateChallengeDialog(props: any) {
   // State
   const [formData, setFormData] = useState<Partial<FormData>>({});
   const [filePreview, setFilePreview] = useState<string>('');
@@ -166,7 +165,6 @@ export default function CreateChallengeDialog( props: any ) {
         createChallengePayload as CreateChallengePayload,
         handleCreateSuccess,
       );
-      
     } catch (error) {
       if (error instanceof z.ZodError) {
         const newErrors: FormErrors = {};
@@ -184,8 +182,8 @@ export default function CreateChallengeDialog( props: any ) {
   };
 
   const handleCreateSuccess = () => {
-    setOpen(false)
-    props.setRefreshChallenge((pre: boolean) => pre = !pre)
+    setOpen(false);
+    props.setRefreshChallenge((pre: boolean) => (pre = !pre));
     // Reset form
     setFormData({});
     setFilePreview('');
@@ -193,7 +191,7 @@ export default function CreateChallengeDialog( props: any ) {
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

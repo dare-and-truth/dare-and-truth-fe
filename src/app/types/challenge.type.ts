@@ -4,8 +4,8 @@ export interface Challenge {
   hashtag: string;
   content: string;
   mediaUrl: string;
-  startDate: string
-  endDate: string
+  startDate: string;
+  endDate: string;
   isActive: boolean;
 }
 

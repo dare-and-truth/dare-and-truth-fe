@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { ErrorFormLogin } from '@/app/types';
 import { postSignIn } from '@/app/api/auth.api';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 type JwtPayload = {
   role: string;
@@ -48,11 +48,11 @@ export default function LoginForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-  
+
     try {
       const response = await postSignIn({ email, password });
 
-      const {accessToken, refreshToken} = response?.data;
+      const { accessToken, refreshToken } = response?.data;
 
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
@@ -60,17 +60,17 @@ export default function LoginForm() {
       localStorage.setItem('userId', response?.data.user.id);
 
       const decoded: JwtPayload = jwtDecode(accessToken);
-      
+
       const role = decoded.role;
-      
-      if(accessToken && refreshToken){
+
+      if (accessToken && refreshToken) {
         toast.success('Sign In successful. Welcome back!');
         if (role && role === 'admin') {
           router.push('/dashboard');
         } else {
           router.push('/home');
         }
-      }else{
+      } else {
         toast.error('Invalid credentials');
       }
     } catch (error: any) {

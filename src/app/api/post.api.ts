@@ -1,5 +1,5 @@
-import { CreatePostPayload } from "@/app/types";
-import request from "@/app/utils/Axiosconfig";
+import { CreatePostPayload } from '@/app/types';
+import request from '@/app/utils/Axiosconfig';
 
 export const getPost = async () => {
   try {
@@ -15,7 +15,7 @@ export const getPost = async () => {
 };
 
 export const postPost = async (
-  data: CreatePostPayload,  
+  data: CreatePostPayload,
   handleSuccess: () => void,
 ) => {
   await request({

@@ -146,7 +146,6 @@ export default function CreatePostDialog(props: any) {
         createPostPayload as CreatePostPayload,
         handleCreateSuccess,
       );
-
     } catch (error) {
       if (error instanceof z.ZodError) {
         const newErrors: FormErrors = {};
@@ -165,7 +164,7 @@ export default function CreatePostDialog(props: any) {
 
   const handleCreateSuccess = () => {
     setOpen(false);
-    props.setRefreshPosts((pre: boolean) => pre = !pre)
+    props.setRefreshPosts((pre: boolean) => (pre = !pre));
     // Reset form
     setFormData({});
     setFilePreview('');

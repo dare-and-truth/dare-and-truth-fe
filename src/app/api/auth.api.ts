@@ -1,5 +1,5 @@
 import { LOGIN_PATH } from '@/app/constants';
-import { SignUpPayload, LoginPayload} from '@/app/types';
+import { SignUpPayload, LoginPayload } from '@/app/types';
 import request from '@/app/utils/Axiosconfig';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 
@@ -23,10 +23,10 @@ export const postSignIn = async (data: LoginPayload) => {
   try {
     const response = await request({
       method: 'post',
-      url: '/auth/sign-in',  
+      url: '/auth/sign-in',
       data,
     });
-    return response;  
+    return response;
   } catch (error) {
     throw error;
   }

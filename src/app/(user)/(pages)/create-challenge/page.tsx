@@ -1,8 +1,8 @@
-import CreateChallengeForm from "@/components/form/CreateChallengeForm";
+import CreateChallengeForm from '@/components/form/CreateChallengeForm';
 
 export default function CreateChallengePage() {
   return (
-    <div className="mt-20 w-2/3 p-10 pb-20 md:pb-4 bg-white rounded-2xl mx-auto shadow-lg">
+    <div className="mx-auto mt-20 w-2/3 rounded-2xl bg-white p-10 pb-20 shadow-lg md:pb-4">
       <CreateChallengeForm />
     </div>
   );

@@ -194,7 +194,7 @@ export default function CreateChallengeDialog(props: any) {
     setFormData({ file: undefined });
     setFilePreview('');
     if (fileInputRef.current) {
-      fileInputRef.current.value = ""; // Reset input file
+      fileInputRef.current.value = ''; // Reset input file
     }
   };
 
@@ -221,30 +221,30 @@ export default function CreateChallengeDialog(props: any) {
               <p className="text-sm text-red-500">{errors.file}</p>
             )}
             {filePreview && (
-          <div className="relative w-full">
-            {formData.file?.type.startsWith('image/') ? (
-              <img
-                src={filePreview}
-                alt="Preview"
-                className="w-full rounded-md object-contain"
-              />
-            ) : (
-              <video controls className="w-full rounded-md">
-                <source src={filePreview} type={formData.file?.type} />
-                Your browser does not support the video tag.
-              </video>
-            )}
+              <div className="relative w-full">
+                {formData.file?.type.startsWith('image/') ? (
+                  <img
+                    src={filePreview}
+                    alt="Preview"
+                    className="w-full rounded-md object-contain"
+                  />
+                ) : (
+                  <video controls className="w-full rounded-md">
+                    <source src={filePreview} type={formData.file?.type} />
+                    Your browser does not support the video tag.
+                  </video>
+                )}
 
-            {/* Dấu "X" để xóa file */}
-            <button
-              type="button"
-              onClick={handleRemoveFile}
-              className="absolute right-2 top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
-            >
-              <X size={20} />
-            </button>
-          </div>
-        )}
+                {/* Dấu "X" để xóa file */}
+                <button
+                  type="button"
+                  onClick={handleRemoveFile}
+                  className="absolute right-2 top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Hashtag */}

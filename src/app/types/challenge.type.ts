@@ -9,4 +9,7 @@ export interface Challenge {
   isActive: boolean;
 }
 
-export type CreateChallengePayload = Omit<Challenge, 'id' | 'userId' | 'isActive'>;
+export type CreateChallengePayload = Omit<
+  Challenge,
+  'id' | 'userId' | 'isActive'
+>;

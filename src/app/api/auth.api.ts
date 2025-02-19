@@ -2,6 +2,7 @@ import { LOGIN_PATH } from '@/app/constants';
 import { SignUpPayload, LoginPayload } from '@/app/types';
 import request from '@/app/utils/Axiosconfig';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { toast } from 'react-toastify';
 
 export const postSignUp = async (
   data: SignUpPayload,
@@ -12,6 +13,7 @@ export const postSignUp = async (
     url: '/auth/sign-up',
     data,
     onSuccess: () => {
+      toast.success('Sign Up successful');
       navigate.push(LOGIN_PATH);
     },
     onError: (error) => {
@@ -36,6 +38,7 @@ export const postLogout = async (navigate: AppRouterInstance) => {
     method: 'post',
     url: '/auth/logout',
     onSuccess: () => {
+      toast.success('Logout successful');
       navigate.push(LOGIN_PATH);
     },
     onError: (error) => {

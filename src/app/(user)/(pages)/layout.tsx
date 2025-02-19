@@ -81,7 +81,7 @@ export default function UserLayout({
   return (
     <div className="flex h-screen bg-gray-50">
       <SideBar navItems={userNavItems} />
-      <div className="flex-1 md:ml-64 min-h-full">
+      <div className="min-h-full flex-1 md:ml-64">
         <Header />
         {children}
         <MobileNav />

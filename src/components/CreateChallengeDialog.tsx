@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { supabaseClient } from '@/app/utils/Supabase';
 import { CreateChallengePayload } from '@/app/types';
 import { postChallenge } from '@/app/api/challenge.api';
+import { X } from 'lucide-react';
 
 const supabase = supabaseClient;
 
@@ -189,6 +190,14 @@ export default function CreateChallengeDialog(props: any) {
     }
   };
 
+  const handleRemoveFile = () => {
+    setFormData({ file: undefined });
+    setFilePreview('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // Reset input file
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -211,19 +220,31 @@ export default function CreateChallengeDialog(props: any) {
             {errors.file && (
               <p className="text-sm text-red-500">{errors.file}</p>
             )}
-            {filePreview &&
-              (formData.file?.type.startsWith('image/') ? (
-                <img
-                  src={filePreview}
-                  alt="Preview"
-                  className="w-full object-contain"
-                />
-              ) : (
-                <video controls className="w-full">
-                  <source src={filePreview} type={formData.file?.type} />
-                  Your browser does not support the video tag.
-                </video>
-              ))}
+            {filePreview && (
+          <div className="relative w-full">
+            {formData.file?.type.startsWith('image/') ? (
+              <img
+                src={filePreview}
+                alt="Preview"
+                className="w-full rounded-md object-contain"
+              />
+            ) : (
+              <video controls className="w-full rounded-md">
+                <source src={filePreview} type={formData.file?.type} />
+                Your browser does not support the video tag.
+              </video>
+            )}
+
+            {/* Dấu "X" để xóa file */}
+            <button
+              type="button"
+              onClick={handleRemoveFile}
+              className="absolute right-2 top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
+            >
+              <X size={20} />
+            </button>
+          </div>
+        )}
           </div>
 
           {/* Hashtag */}

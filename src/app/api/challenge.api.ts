@@ -1,5 +1,6 @@
 import { CreateChallengePayload } from '@/app/types';
 import request from '@/app/utils/Axiosconfig';
+import { toast } from 'react-toastify';
 
 export const getChallenges = async () => {
   try {
@@ -23,6 +24,7 @@ export const postChallenge = async (
     url: '/challenges',
     data,
     onSuccess: () => {
+      toast.success('Create challenge successfully');
       handleSuccess();
     },
     onError: (error) => {

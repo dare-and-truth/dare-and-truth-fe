@@ -7,4 +7,4 @@ export interface Post {
   isActive: boolean;
 }
 
-export type CreatePostPayload = Omit<Post, 'id' | 'isActive'>;
+export type CreatePostPayload = Omit<Post, 'id' | 'userId' | 'isActive'>;

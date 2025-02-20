@@ -1,5 +1,6 @@
 import { CreatePostPayload } from '@/app/types';
 import request from '@/app/utils/Axiosconfig';
+import { toast } from 'react-toastify';
 
 export const getPost = async () => {
   try {
@@ -23,6 +24,7 @@ export const postPost = async (
     url: '/posts',
     data,
     onSuccess: () => {
+      toast.success('Create post successfully');
       handleSuccess();
     },
     onError: (error) => {

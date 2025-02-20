@@ -57,7 +57,7 @@ export default function LoginForm() {
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
 
-      localStorage.setItem('userId', response?.data.user.id);
+      localStorage.setItem('userName', response?.data.user.username);
 
       const decoded: JwtPayload = jwtDecode(accessToken);
 

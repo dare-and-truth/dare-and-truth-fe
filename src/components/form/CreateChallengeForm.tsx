@@ -181,7 +181,7 @@ export default function CreateChallengeForm() {
     setFormData({ file: undefined });
     setFilePreview('');
     if (fileInputRef.current) {
-      fileInputRef.current.value = ""; // Reset input file
+      fileInputRef.current.value = ''; // Reset input file
     }
   };
 

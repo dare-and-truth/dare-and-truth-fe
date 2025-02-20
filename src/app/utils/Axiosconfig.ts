@@ -136,6 +136,7 @@ const request = async ({
 
     return response;
   } catch (error: any) {
+    console.log(error);
     // Xử lý hiển thị popup lỗi
     // Code here
     if (axios.isAxiosError(error)) {

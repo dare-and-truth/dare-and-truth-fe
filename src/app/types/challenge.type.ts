@@ -15,5 +15,13 @@ export type CreateChallengePayload = Omit<
 >;
 
 export interface IPropsChallenge {
-  challenge: Challenge;
+  challenge: ChallengeAsFeed;
+}
+
+export interface ChallengeAsFeed extends Challenge {
+  userId: string;
+  username: string;
+  likeCount: number;
+  isLiked: boolean;
+  createdAt: string;
 }

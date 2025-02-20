@@ -13,3 +13,7 @@ export type CreateChallengePayload = Omit<
   Challenge,
   'id' | 'userId' | 'isActive'
 >;
+
+export interface IPropsChallenge {
+  challenge: Challenge;
+}

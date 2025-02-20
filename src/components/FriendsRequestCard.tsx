@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { useEffect, useState, useMemo } from 'react';
-import { acceptFriendRequest } from '@/app/api/friends.api'; // Import API
+import { acceptFriendRequest,rejectFriendRequest, unFriend } from '@/app/api/friends.api'; // Import API
 import { toast } from 'react-toastify';
 import { FriendRequestCardProps } from '@/app/types/friends.type';
 
@@ -11,7 +11,8 @@ export default function FriendRequestCard({
   isAccepted: initialAccepted, 
   acceptedAt, 
   requestId, 
-  userId, 
+  followerId,
+  userId,
 }: FriendRequestCardProps) {
   const [isAccepted, setIsAccepted] = useState(initialAccepted);
   const [loading, setLoading] = useState(false);
@@ -59,9 +60,9 @@ export default function FriendRequestCard({
   
   const handleAccept = async () => {
     setLoading(true);
-    console.log("requestIdcarrd:", requestId);
     try {
       const response = await acceptFriendRequest({requestId});
+      setIsAccepted(false); 
       toast.success(response?.data?.mesage || "Friend request accepted!");
     } catch (error) {
       console.error("Error:", error);
@@ -71,6 +72,36 @@ export default function FriendRequestCard({
     }
   };
 
+  const handleReject = async () => {
+    setLoading(true);
+    try {
+      await rejectFriendRequest({ requestId });
+      setIsAccepted(false); 
+      toast.info("Friend request rejected.");
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Failed to reject friend request.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const handleUnfriend = async () => {
+    setLoading(true);
+    try {
+      const user_id = localStorage.getItem("userId"); 
+      const targetId = user_id === followerId ? userId : followerId; 
+      
+      const response = await unFriend(targetId);
+      console.log("Unfriend response:", response);
+      toast.info("You have unfriended this user.");
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Failed to unfriend.");
+    } finally {
+      setLoading(false);
+    }
+  }
   return (
     <div className={`flex items-center p-4 bg-white rounded-lg shadow-sm mb-4 ${cardWidth} transition-all duration-300`}>
       <div className="flex-shrink-0">
@@ -86,8 +117,12 @@ export default function FriendRequestCard({
 
       <div className="ml-auto flex items-center gap-2">
         {isAccepted ? (
-          <Button variant="outline" className="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg">
-            Unfriend
+          <Button 
+          variant="outline" 
+          className="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg"
+          onClick={handleUnfriend}
+          disabled={loading}>
+            {loading ? "Unfriending...":"Unfriend"}
           </Button>
         ) : (
           <>
@@ -99,8 +134,14 @@ export default function FriendRequestCard({
             >
               {loading ? "Accepting..." : "Accept"}
             </Button>
-            <Button variant="outline" className="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg">
-              Reject
+            <Button 
+            variant="outline" 
+            className="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg"
+            onClick={handleReject}
+            disabled={loading}
+
+            >
+              {loading ? "Rejecting..." : "Reject"}
             </Button>
           </>
         )}

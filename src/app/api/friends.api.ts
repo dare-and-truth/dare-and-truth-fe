@@ -22,8 +22,8 @@ export const createFriendRequest = async (
       handleSuccess();
     },
     onError: (error: AxiosError) => {
-      const errorMessage = (error.response?.data as ErrorResponse)?.message || 'An error occurred while creating the friend request.';
-      toast.error(errorMessage);
+      console.log("error when create request:",error);
+      throw error;
     },
   });
 };
@@ -38,25 +38,21 @@ export const getAllFriendRequests = async () => {
     console.log("data trong api get:", response);
     return response?.data;
   } catch (error) {
-    const errorMessage = (error as AxiosError)?.response?.data as ErrorResponse;
-    toast.error(errorMessage?.message || 'An error occurred while fetching friend requests.');
+    console.log("error when get all requests:",error);
     throw error;
   }
 };
 
 // API for accepting a friend request
 export const acceptFriendRequest = async (  data:AcceptedFriendPayLoad) => {
-  console.log("request ID trogn api:", data);
   try {
     const response = await request({
       method: 'patch',
       url: `/requests/accept?requestId=${data.requestId}`,
     });
-    console.log("data trong api accept:", response);
     return response;
   } catch (error) {
-    const errorMessage = (error as AxiosError)?.response?.data as ErrorResponse;
-    toast.error(errorMessage?.message || 'An error occurred while accepting the friend request.');
+    console.log("error when accept request:",error);
     throw error;
   }
 };
@@ -71,23 +67,21 @@ export const rejectFriendRequest = async (data:AcceptedFriendPayLoad) => {
     });
     return response;
   } catch (error) {
-    const errorMessage = (error as AxiosError)?.response?.data as ErrorResponse;
-    toast.error(errorMessage?.message || 'An error occurred while rejecting the friend request.');
+    console.log("error when reject request:",error);
     throw error;
   }
 };
 
 // API for deleting a friend
-export const deleteFriend = async ( friendId: string) => {
+export const unFriend = async ( friendId: string) => {
   try {
     const response = await request({
       method: 'delete',
       url: `/requests/delete?friendId=${friendId}`,
     });
-    return response?.data;
+    return response;
   } catch (error) {
-    const errorMessage = (error as AxiosError)?.response?.data as ErrorResponse;
-    toast.error(errorMessage?.message || 'An error occurred while deleting the friend.');
+    console.log("error when delete request:",error);
     throw error;
   }
 };

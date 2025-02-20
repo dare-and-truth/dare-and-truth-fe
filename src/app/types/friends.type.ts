@@ -25,7 +25,8 @@ export interface FriendRequestCardProps {
     isAccepted: boolean;
     acceptedAt?: string;
     requestId: string;
-    userId: string;
+    followerId:string;
+    userId:string;
 }
 
 export interface AcceptedFriendPayLoad{

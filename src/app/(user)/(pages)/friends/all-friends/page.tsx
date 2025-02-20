@@ -38,6 +38,8 @@ export default function AddFriendRequestsPage() {
     <div className="mt-16 h-[calc(100vh-4rem)] overflow-y-auto p-4 pb-20 md:pb-4">
       {loading ? (
         <p>Loading...</p>
+      ) : friendRequests.length === 0 ? (
+        <p className="text-gray-500 text-center mt-4">Currently no friends.</p>
       ) : (
         <div className="flex flex-col items-center">
           {friendRequests.map((request) => (
@@ -49,8 +51,9 @@ export default function AddFriendRequestsPage() {
               isAccepted={request.isAccepted}
               acceptedAt={request.acceptedAt} 
               requestId={request.id}
-              userId={localUserId}
-            />          
+              followerId={request.follower.id}
+              userId={request.user.id}
+            />
           ))}
         </div>
       )}

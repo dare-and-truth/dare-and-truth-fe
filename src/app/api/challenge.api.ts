@@ -32,3 +32,16 @@ export const postChallenge = async (
     },
   });
 };
+
+export const getChallengesWithLikeCount = async () => {
+  try {
+    const response = await request({
+      method: 'get',
+      url: '/challenges/with-like-count',
+    });
+    return response?.data;
+  } catch (error) {
+    console.error('Error in get challenges:', error);
+    throw error;
+  }
+};

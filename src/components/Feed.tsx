@@ -6,17 +6,24 @@ import { Button } from '@/components/ui/button';
 import { Heart, MessageSquare, Share2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
+import { formatTimeAgo } from '@/app/helpers/formatTimeAgo';
+import { likeFeed, unlikeFeed } from '@/app/api/like.api';
 
 export default function Feed({ challenge }: IPropsChallenge) {
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(99);
+  const [liked, setLiked] = useState(challenge.isLiked);
+  const [likeCount, setLikeCount] = useState(challenge.likeCount);
   const handleLike = () => {
     if (liked) {
-      setLikeCount((prev) => prev - 1);
+      unlikeFeed({ feedId: challenge.id}, () => {
+        setLikeCount((prev) => prev - 1);
+        setLiked(!liked);
+      });
     } else {
-      setLikeCount((prev) => prev + 1);
+      likeFeed({ feedId: challenge.id, isChallenge: true }, () => {
+        setLikeCount((prev) => prev + 1);
+        setLiked(!liked);
+      });
     }
-    setLiked(!liked);
   };
   const isVideo = (mediaUrl: string) => {
     return mediaUrl?.match(/\.(mp4|webm|ogg)$/i);
@@ -24,7 +31,6 @@ export default function Feed({ challenge }: IPropsChallenge) {
 
   return (
     <div
-      key={challenge.id}
       className="bg-card text-card-foreground mt-4 rounded-2xl border shadow-lg"
     >
       <div className="p-6">
@@ -35,15 +41,17 @@ export default function Feed({ challenge }: IPropsChallenge) {
               <AvatarFallback>Linh</AvatarFallback>
             </Avatar>
             <div>
-              <h4 className="font-bold">John Doe</h4>
-              <p className="text-muted-foreground text-sm">2 days ago</p>
+              <h4 className="font-bold">{challenge.username}</h4>
+              <p className="text-muted-foreground text-sm">
+                {formatTimeAgo(challenge.createdAt)}
+              </p>
             </div>
           </div>
           <Button variant="join">Join</Button>
         </div>
 
         <div className="mb-4">
-          <p className='text-blue-500 font-bold'># {challenge.hashtag}</p>
+          <p className="font-bold text-blue-500">#{challenge.hashtag}</p>
           <span className="font-bold">Starting: </span>
           <span>
             {challenge.startDate} - {challenge.endDate}

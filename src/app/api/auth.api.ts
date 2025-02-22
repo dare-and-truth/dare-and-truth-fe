@@ -38,8 +38,8 @@ export const postLogout = async (navigate: AppRouterInstance) => {
     method: 'post',
     url: '/auth/logout',
     onSuccess: () => {
-      toast.success('Logout successful');
       navigate.push(LOGIN_PATH);
+      toast.success('Logout successful');
     },
     onError: (error) => {
       console.log('error in log out', error);

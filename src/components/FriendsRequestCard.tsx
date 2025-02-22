@@ -7,12 +7,15 @@ import { FriendRequestCardProps } from '@/app/types/friends.type';
 export default function FriendRequestCard({ 
   avatar, 
   username, 
-  followAt, 
+  followedAt, 
   isAccepted: initialAccepted, 
   acceptedAt, 
   requestId, 
   followerId,
   userId,
+  onAccept,        
+  onReject,        
+  onUnfriend   
 }: FriendRequestCardProps) {
   const [isAccepted, setIsAccepted] = useState(initialAccepted);
   const [loading, setLoading] = useState(false);
@@ -38,12 +41,12 @@ export default function FriendRequestCard({
     return () => window.removeEventListener("resize", updateUI);
   }, []);
 
-  const truncatedUsername = username.length > maxUsernameLength 
-    ? `${username.slice(0, maxUsernameLength)}...` 
-    : username;
+  const truncatedUsername = username?.length > maxUsernameLength 
+  ? `${username.slice(0, maxUsernameLength)}...` 
+  : username || "Unknown User";
 
   const timeAgo = useMemo(() => {
-    const fromDate = new Date(isAccepted ? acceptedAt! : followAt);
+    const fromDate = new Date(isAccepted ? acceptedAt! : followedAt);
     const now = new Date();
     const diffMs = now.getTime() - fromDate.getTime();
     const diffMinutes = Math.floor(diffMs / 60000);
@@ -56,52 +59,74 @@ export default function FriendRequestCard({
     if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
     if (diffDays < 30) return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
     return `${diffMonths} month${diffMonths > 1 ? "s" : ""} ago`;
-  }, [followAt, acceptedAt, isAccepted]);
+  }, [followedAt, acceptedAt, isAccepted]);
   
   const handleAccept = async () => {
     setLoading(true);
     try {
-      const response = await acceptFriendRequest({requestId});
-      setIsAccepted(false); 
-      toast.success(response?.data?.mesage || "Friend request accepted!");
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error("Failed to accept friend request.");
+      const response = await acceptFriendRequest(
+        { requestId }, 
+        (response) => {
+          console.log('Accept success:', response);
+          onAccept && onAccept(requestId);
+          toast.success("Friend request accepted!");
+        },
+        (error) => {
+          console.error("Error:", error);
+          toast.error("Failed to accept friend request.");
+        }
+      );
     } finally {
       setLoading(false);
     }
   };
-
+  
   const handleReject = async () => {
     setLoading(true);
     try {
-      await rejectFriendRequest({ requestId });
-      setIsAccepted(false); 
-      toast.info("Friend request rejected.");
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error("Failed to reject friend request.");
+      await rejectFriendRequest(
+        { requestId },
+        (response) => {
+          console.log('Reject success:', response);
+          onReject && onReject(requestId);
+          toast.info("Friend request rejected.");
+        },
+        (error) => {
+          console.error("Error:", error);
+          toast.error("Failed to reject friend request.");
+        }
+      );
     } finally {
       setLoading(false);
     }
-  }
-
+  };
+  
   const handleUnfriend = async () => {
     setLoading(true);
     try {
       const user_id = localStorage.getItem("userId"); 
       const targetId = user_id === followerId ? userId : followerId; 
-      
-      const response = await unFriend(targetId);
-      console.log("Unfriend response:", response);
-      toast.info("You have unfriended this user.");
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error("Failed to unfriend.");
+  
+      if (!targetId) {
+        throw new Error("Target ID is undefined.");
+      }
+  
+      const response = await unFriend(
+        targetId,
+        (response) => {
+          console.log("Unfriend success:", response);
+          onUnfriend && onUnfriend(requestId);
+          toast.info("You have unfriended this user.");
+        },
+        (error) => {
+          console.error("Error:", error);
+          toast.error("Failed to unfriend.");
+        }
+      );
     } finally {
       setLoading(false);
     }
-  }
+  };
   return (
     <div className={`flex items-center p-4 bg-white rounded-lg shadow-sm mb-4 ${cardWidth} transition-all duration-300`}>
       <div className="flex-shrink-0">

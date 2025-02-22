@@ -1,13 +1,6 @@
-import { CreateRequestRequestPayload,AcceptedFriendPayLoad } from '@/app/types';
+import { CreateRequestRequestPayload, AcceptedFriendPayLoad } from '@/app/types';
 import request from '@/app/utils/Axiosconfig';
-import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
-
-
-// Define the expected error structure
-interface ErrorResponse {
-  message: string;
-}
 
 // API for creating a friend request
 export const createFriendRequest = async (
@@ -16,13 +9,13 @@ export const createFriendRequest = async (
 ) => {
   await request({
     method: 'post',
-    url: '/requests',
+    url: '/requests', 
     data,
     onSuccess: () => {
       handleSuccess();
     },
     onError: (error: AxiosError) => {
-      console.log("error when create request:",error);
+      console.log("error when create request:", error);
       throw error;
     },
   });
@@ -30,58 +23,69 @@ export const createFriendRequest = async (
 
 // API for fetching all friend requests for a user
 export const getAllFriendRequests = async () => {
-  try {
     const response = await request({
       method: 'get',
-      url: `/requests/user`,
+      url: `/requests`, 
     });
-    console.log("data trong api get:", response);
-    return response?.data;
-  } catch (error) {
-    console.log("error when get all requests:",error);
-    throw error;
-  }
+    return response;
+};
+
+// API for fetching all accepted friends
+export const getAllFriendsList = async () => {
+    const response = await request({
+      method: 'get',
+      url: `/requests/acceptance`, 
+    });
+    return response;
 };
 
 // API for accepting a friend request
-export const acceptFriendRequest = async (  data:AcceptedFriendPayLoad) => {
-  try {
-    const response = await request({
-      method: 'patch',
-      url: `/requests/accept?requestId=${data.requestId}`,
-    });
-    return response;
-  } catch (error) {
-    console.log("error when accept request:",error);
-    throw error;
-  }
+export const acceptFriendRequest = async (
+  data: AcceptedFriendPayLoad,
+  handleSuccess: (response: any) => void,
+  handleError?: (error: any) => void
+) => {
+  await request({
+    method: 'patch',
+    url: `/requests/accept?requestId=${data.requestId}`,
+    onSuccess: handleSuccess,
+    onError: (error: AxiosError) => {
+      console.log('Error when accepting request:', error);
+      handleError?.(error);
+    },
+  });
 };
 
 // API for rejecting a friend request
-export const rejectFriendRequest = async (data:AcceptedFriendPayLoad) => {
-  try {
-    const response = await request({
-      method: 'delete',
-      url: `/requests/reject?requestId=${data.requestId}`,
-      data,
-    });
-    return response;
-  } catch (error) {
-    console.log("error when reject request:",error);
-    throw error;
-  }
+export const rejectFriendRequest = async (
+  data: AcceptedFriendPayLoad,
+  handleSuccess: (response: any) => void,
+  handleError?: (error: any) => void
+) => {
+  await request({
+    method: 'delete',
+    url: `/requests/reject?requestId=${data.requestId}`, 
+    onSuccess: handleSuccess,
+    onError: (error: AxiosError) => {
+      console.log('Error when rejecting request:', error);
+      handleError?.(error);
+    },
+  });
 };
 
-// API for deleting a friend
-export const unFriend = async ( friendId: string) => {
-  try {
-    const response = await request({
-      method: 'delete',
-      url: `/requests/delete?friendId=${friendId}`,
-    });
-    return response;
-  } catch (error) {
-    console.log("error when delete request:",error);
-    throw error;
-  }
+// API for deleting (unfriending) a friend
+export const unFriend = async (
+  friendId: string,
+  handleSuccess: (response: any) => void,
+  handleError?: (error: any) => void
+) => {
+  await request({
+    method: 'delete', 
+    url: `/requests/un-friend?friendId=${friendId}`, 
+    onSuccess: handleSuccess,
+    onError: (error: AxiosError) => {
+      console.log('Error when unfriending:', error);
+      handleError?.(error);
+    },
+  });
 };

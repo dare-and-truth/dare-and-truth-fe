@@ -3,7 +3,4 @@ export interface LikePayload {
   isChallenge: boolean;
 }
 
-export type unlikeFeedPayload = Omit<
-  LikePayload,
-  'isChallenge'
->;
+export type unlikeFeedPayload = Omit<LikePayload, 'isChallenge'>;

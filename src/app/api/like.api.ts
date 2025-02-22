@@ -1,9 +1,9 @@
-import { LikePayload, unlikeFeedPayload } from "@/app/types";
-import request from "@/app/utils/Axiosconfig";
+import { LikePayload, unlikeFeedPayload } from '@/app/types';
+import request from '@/app/utils/Axiosconfig';
 
 export const likeFeed = async (
   data: LikePayload,
-  handleSuccess: () => void
+  handleSuccess: () => void,
 ) => {
   await request({
     method: 'post',
@@ -18,7 +18,10 @@ export const likeFeed = async (
   });
 };
 
-export const unlikeFeed = async (data: unlikeFeedPayload, handleSuccess: () => void) => {
+export const unlikeFeed = async (
+  data: unlikeFeedPayload,
+  handleSuccess: () => void,
+) => {
   await request({
     method: 'delete',
     url: '/likes',

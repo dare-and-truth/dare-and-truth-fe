@@ -67,12 +67,10 @@ export default function FriendRequestCard({
       const response = await acceptFriendRequest(
         { requestId }, 
         (response) => {
-          console.log('Accept success:', response);
           onAccept && onAccept(requestId);
           toast.success("Friend request accepted!");
         },
         (error) => {
-          console.error("Error:", error);
           toast.error("Failed to accept friend request.");
         }
       );
@@ -87,12 +85,10 @@ export default function FriendRequestCard({
       await rejectFriendRequest(
         { requestId },
         (response) => {
-          console.log('Reject success:', response);
           onReject && onReject(requestId);
           toast.info("Friend request rejected.");
         },
         (error) => {
-          console.error("Error:", error);
           toast.error("Failed to reject friend request.");
         }
       );
@@ -114,12 +110,10 @@ export default function FriendRequestCard({
       const response = await unFriend(
         targetId,
         (response) => {
-          console.log("Unfriend success:", response);
           onUnfriend && onUnfriend(requestId);
           toast.info("You have unfriended this user.");
         },
         (error) => {
-          console.error("Error:", error);
           toast.error("Failed to unfriend.");
         }
       );

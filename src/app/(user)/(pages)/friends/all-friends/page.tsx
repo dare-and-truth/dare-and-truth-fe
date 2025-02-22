@@ -15,7 +15,6 @@ export default function ListFriendPage() {
       setLoading(true);
       try {
         const data = await getAllFriendsList();
-        console.log("alllfrieddd",data);
         setFriends(data);
       } catch (error) {
         console.error('Failed to fetch friends list', error);

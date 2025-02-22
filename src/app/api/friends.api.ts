@@ -27,7 +27,7 @@ export const getAllFriendRequests = async () => {
       method: 'get',
       url: `/requests`, 
     });
-    return response;
+    return response?.data;
 };
 
 // API for fetching all accepted friends
@@ -36,7 +36,7 @@ export const getAllFriendsList = async () => {
       method: 'get',
       url: `/requests/acceptance`, 
     });
-    return response;
+    return response?.data;
 };
 
 // API for accepting a friend request

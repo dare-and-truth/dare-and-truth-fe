@@ -134,7 +134,7 @@ const request = async ({
     // Code here
     onSuccess(response?.data);
 
-    return response?.data;
+    return response;
   } catch (error: any) {
     console.log(error);
     // Xử lý hiển thị popup lỗi

@@ -5,25 +5,15 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { v4 as uuidv4 } from 'uuid';
-import { supabaseClient } from '@/app/utils/Supabase';
 import { CreateChallengePayload } from '@/app/types';
 import { postChallenge } from '@/app/api/challenge.api';
 import { X } from 'lucide-react';
-const supabase = supabaseClient;
+import { MAX_FILE_SIZE, VALID_FILE_TYPES } from '@/app/constants';
+import { uploadFileToSupabase } from '@/app/helpers/uploadFileToSupabase';
 
 // Type definitions
 type FormData = z.infer<typeof formSchema>;
 type FormErrors = Partial<Record<keyof FormData, string>>;
-
-// Constants
-const VALID_FILE_TYPES = [
-  'image/png',
-  'image/jpeg',
-  'video/mp4',
-  'video/mov',
-] as const;
-const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
 // Zod Schema
 const formSchema = z
@@ -128,23 +118,11 @@ export default function CreateChallengeForm() {
 
       // Upload file to Supabase
       const { file, ...formdata } = validatedData;
-      const fileExtension = file.name.split('.').pop();
-      const fileName = `${uuidv4()}.${fileExtension}`;
+      const mediaUrl = await uploadFileToSupabase(file);
 
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('uploads')
-        .upload(fileName, file);
-
-      if (uploadError) throw new Error(uploadError.message);
-
-      const { data: urlData } = supabase.storage
-        .from('uploads')
-        .getPublicUrl(fileName);
-
-      // Here you would send the complete data to your backend
       const createChallengePayload = {
         ...formdata,
-        mediaUrl: urlData.publicUrl,
+        mediaUrl,
       };
 
       await postChallenge(

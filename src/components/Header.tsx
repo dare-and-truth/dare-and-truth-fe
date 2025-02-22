@@ -1,8 +1,13 @@
 import { MobileMenu } from '@/components/MobileMenu';
 import { UserDropdown } from '@/components/UserDropdown';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 export default function Header() {
+  const [username, setUsername] = useState('');
+  useEffect(() => {
+    setUsername(localStorage.getItem('username') || '');
+  }, []);
   return (
     <div className="fixed left-0 right-0 top-0 z-10 flex h-16 items-center justify-between bg-white p-3 shadow-sm md:left-64">
       <div className="flex md:hidden">
@@ -17,7 +22,7 @@ export default function Header() {
 
       <div className="hidden max-w-4xl flex-1 items-center rounded-lg bg-gray-50 px-4 py-2 md:flex">
         <div className="sm:hidden md:block md:w-40 lg:block lg:w-56">
-          <p>Hi, Lam Nhat</p>
+          <p>Hi, {username}</p>
           <p>Welcome Back!</p>
         </div>
         <div className="relative w-full sm:hidden md:block lg:block">

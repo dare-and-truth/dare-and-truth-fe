@@ -7,3 +7,4 @@ export * from '@/app/types/badge.type';
 export * from '@/app/types/post.type';
 export * from '@/app/types/challenge.type';
 export * from '@/app/types/like.type';
+export * from '@/app/types/comment.type';

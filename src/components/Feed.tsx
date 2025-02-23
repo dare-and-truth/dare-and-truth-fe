@@ -1,17 +1,17 @@
 'use client';
 import { IPropsChallenge } from '@/app/types';
-import Image from 'next/image';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Heart, MessageSquare, Share2 } from 'lucide-react';
+import { Heart, MessageCircle, Share2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
-import { formatTimeAgo } from '@/app/helpers/formatTimeAgo';
 import { likeFeed, unlikeFeed } from '@/app/api/like.api';
+import { Button } from '@/components/ui/button';
+import FeedContent from '@/components/FeedContent';
+import CommentDialog from '@/components/CommentDialog';
 
 export default function Feed({ challenge }: IPropsChallenge) {
   const [liked, setLiked] = useState(challenge.isLiked);
   const [likeCount, setLikeCount] = useState(challenge.likeCount);
+  const [isCommentOpen, setIsCommentOpen] = useState(false);
   const handleLike = () => {
     if (liked) {
       unlikeFeed({ feedId: challenge.id }, () => {
@@ -25,64 +25,17 @@ export default function Feed({ challenge }: IPropsChallenge) {
       });
     }
   };
-  const isVideo = (mediaUrl: string) => {
-    return mediaUrl?.match(/\.(mp4|webm|ogg)$/i);
-  };
 
   return (
     <div className="bg-card text-card-foreground mt-4 rounded-2xl border shadow-lg">
       <div className="p-6">
-        <div className="mb-4 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <Avatar>
-              <AvatarImage src="/images/default-profile.png" />
-              <AvatarFallback>Linh</AvatarFallback>
-            </Avatar>
-            <div>
-              <h4 className="font-bold">{challenge.username}</h4>
-              <p className="text-muted-foreground text-sm">
-                {formatTimeAgo(challenge.createdAt)}
-              </p>
-            </div>
-          </div>
-          <Button variant="join">Join</Button>
-        </div>
+        <FeedContent challenge={challenge} />
 
-        <div className="mb-4">
-          <p className="font-bold text-blue-500">#{challenge.hashtag}</p>
-          <span className="font-bold">Starting: </span>
-          <span>
-            {challenge.startDate} - {challenge.endDate}
-          </span>
-
-          <p>{challenge.content}</p>
-        </div>
-
-        <div className="mb-4 overflow-hidden rounded-lg">
-          {isVideo(challenge.mediaUrl) ? (
-            <video
-              src={challenge.mediaUrl}
-              controls
-              className="w-full"
-              style={{ maxHeight: '400px' }}
-            />
-          ) : (
-            <Image
-              src={challenge.mediaUrl}
-              alt="Challenge media"
-              width={0}
-              height={10}
-              layout="responsive"
-              objectFit="cover"
-            />
-          )}
-        </div>
-
-        <div className="flex justify-between gap-6 border-t pt-4">
+        <div className="flex justify-between gap-6 border-t pt-2">
           <Button
             variant="ghost"
-            size="sm"
-            className="gap-2"
+            size="lg"
+            className="gap-2 hover:bg-red-300"
             onClick={handleLike}
           >
             <Heart
@@ -91,18 +44,33 @@ export default function Feed({ challenge }: IPropsChallenge) {
                 liked ? 'fill-red-500 stroke-red-500' : 'fill-none',
               )}
             />
-            <span>{likeCount}</span>
+            <span>
+              {likeCount} {likeCount === 1 ? 'Love' : 'Loves'}
+            </span>
           </Button>
-          <Button variant="ghost" size="sm" className="gap-2">
-            <MessageSquare className="h-4 w-4" />
-            <span>50 comments</span>
+          <Button
+            variant="ghost"
+            size="lg"
+            className="gap-2 hover:bg-orange-300"
+            onClick={() => setIsCommentOpen(true)}
+          >
+            <MessageCircle className="h-4 w-4" />
+            <span>
+              {challenge.commentCount}{' '}
+              {challenge.commentCount === 1 ? 'Comment' : 'Comments'}
+            </span>
           </Button>
-          <Button variant="ghost" size="sm" className="gap-2">
+          <Button variant="ghost" size="lg" className="gap-2 hover:bg-sky-300">
             <Share2 className="h-4 w-4" />
-            <span>66 Shares</span>
+            <span>Shares</span>
           </Button>
         </div>
       </div>
+      <CommentDialog
+        isCommentOpen={isCommentOpen}
+        setIsCommentOpen={setIsCommentOpen}
+        challenge={challenge}
+      />
     </div>
   );
 }

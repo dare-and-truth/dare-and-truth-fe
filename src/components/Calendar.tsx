@@ -13,7 +13,6 @@ import { CalendarList } from '@/components/CaledndarList';
 import { isBefore, startOfDay } from 'date-fns';
 
 export default function CalendarComponent() {
-  const today = new Date();
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
@@ -37,7 +36,7 @@ export default function CalendarComponent() {
         <Calendar
           mode="single"
           selected={date}
-          disabled={(day) => isBefore(startOfDay(day), startOfDay(today))}
+          disabled={(day) => isBefore(startOfDay(day), startOfDay(new Date()))}
           onSelect={handleDateSelect}
           className="flex items-center rounded-md border"
           classNames={{

@@ -22,6 +22,7 @@ export interface ChallengeAsFeed extends Challenge {
   userId: string;
   username: string;
   likeCount: number;
+  commentCount: number;
   isLiked: boolean;
   createdAt: string;
 }

@@ -11,7 +11,9 @@ import {
   MessageSquare,
   Plus,
   Trophy,
+  UserPlus,
   Users,
+  UsersRound,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
@@ -57,7 +59,21 @@ export default function UserLayout({
       icon: <Users size={20} />,
       text: 'Friends',
       href: '/friends',
-      active: pathname === '/friends',
+      active: pathname.startsWith('/friends'),
+      subMenu: [
+        {
+          icon: <UsersRound size={18} className="text-blue-500" />,
+          text: 'All Friends',
+          href: '/friends/all-friends',  
+          active: pathname === '/friends/all-friends',
+        },
+        {
+          icon: <UserPlus size={18} className="text-green-500" />,
+          text: 'Friend Requests',
+          href: '/friends/add-friends',  
+          active: pathname === '/friends/add-friends',
+        },
+      ],
     },
     {
       icon: <Calendar size={20} />,

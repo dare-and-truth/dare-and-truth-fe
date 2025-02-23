@@ -132,7 +132,7 @@ const request = async ({
     });
     // Xử lý hiển thị popup thành công
     // Code here
-    onSuccess(response.data);
+    onSuccess(response?.data);
 
     return response;
   } catch (error: any) {

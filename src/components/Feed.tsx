@@ -14,7 +14,7 @@ export default function Feed({ challenge }: IPropsChallenge) {
   const [likeCount, setLikeCount] = useState(challenge.likeCount);
   const handleLike = () => {
     if (liked) {
-      unlikeFeed({ feedId: challenge.id}, () => {
+      unlikeFeed({ feedId: challenge.id }, () => {
         setLikeCount((prev) => prev - 1);
         setLiked(!liked);
       });
@@ -30,9 +30,7 @@ export default function Feed({ challenge }: IPropsChallenge) {
   };
 
   return (
-    <div
-      className="bg-card text-card-foreground mt-4 rounded-2xl border shadow-lg"
-    >
+    <div className="bg-card text-card-foreground mt-4 rounded-2xl border shadow-lg">
       <div className="p-6">
         <div className="mb-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">

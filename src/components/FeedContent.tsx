@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { formatTimeAgo } from '@/app/helpers/formatTimeAgo';
 import { Button } from '@/components/ui/button';
 import { IPropsChallenge } from '@/app/types';
+import { JoinChallengeDialog } from '@/components/JoinChallengeDialog';
 
 const isVideo = (mediaUrl: string) => {
   return mediaUrl?.match(/\.(mp4|webm|ogg)$/i);
@@ -24,7 +25,11 @@ export default function FeedContent({ challenge }: IPropsChallenge) {
             </p>
           </div>
         </div>
-        <Button variant="join">Join</Button>
+
+        <JoinChallengeDialog
+          button={<Button variant="join">Join</Button>}
+          challenge={challenge}
+        />
       </div>
 
       <div className="mb-4">

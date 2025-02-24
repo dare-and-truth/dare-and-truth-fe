@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 export interface Challenge {
   id: string;
   userId: string;
@@ -16,6 +18,7 @@ export type CreateChallengePayload = Omit<
 
 export interface IPropsChallenge {
   challenge: ChallengeAsFeed;
+  button?: ReactNode;
 }
 
 export interface ChallengeAsFeed extends Challenge {

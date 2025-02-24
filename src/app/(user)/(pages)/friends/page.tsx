@@ -1,4 +1,4 @@
-import ListFriendPage from "./all-friends/page";
+import ListFriendPage from './all-friends/page';
 
 export default function FriendsPage() {
   return (

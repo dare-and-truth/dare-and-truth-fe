@@ -14,7 +14,7 @@ export default function AddFriendRequestsPage() {
     const fetchFriendRequests = async () => {
       setLoading(true);
       try {
-        const data = await getAllFriendRequests();   
+        const data = await getAllFriendRequests();
         setFriendRequests(data);
       } catch (error) {
         console.error('Failed to fetch friend requests', error);
@@ -28,11 +28,15 @@ export default function AddFriendRequestsPage() {
   }, []);
 
   const handleAccept = (requestId: string) => {
-    setFriendRequests(current => current.filter(request => request.id !== requestId));
+    setFriendRequests((current) =>
+      current.filter((request) => request.id !== requestId),
+    );
   };
-  
+
   const handleReject = (requestId: string) => {
-    setFriendRequests(current => current.filter(request => request.id !== requestId));
+    setFriendRequests((current) =>
+      current.filter((request) => request.id !== requestId),
+    );
   };
 
   return (
@@ -40,7 +44,9 @@ export default function AddFriendRequestsPage() {
       {loading ? (
         <p>Loading...</p>
       ) : friendRequests.length === 0 ? (
-        <p className="text-gray-500 text-center mt-4">Currently no friend requests.</p>
+        <p className="mt-4 text-center text-gray-500">
+          Currently no friend requests.
+        </p>
       ) : (
         <div className="flex flex-col items-center">
           {friendRequests.map((request) => (

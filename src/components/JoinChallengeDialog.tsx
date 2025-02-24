@@ -1,4 +1,5 @@
 'use client';
+
 import { useState } from 'react';
 import {
   Dialog,
@@ -7,18 +8,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, ChevronDown } from 'lucide-react';
 import { format } from 'date-fns';
-import { JoinDialogProps } from '@/app/types';
+import type { JoinDialogProps } from '@/app/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -31,47 +25,43 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { timeOptions } from '@/app/constants/index';
 
-const FormSchema = z
-  .object({
-    content: z
-      .string()
-      .min(10, { message: 'Reminder content must be at least 10 characters.' })
-      .max(160, {
-        message: 'Reminder content must not exceed 160 characters.',
-      }),
-    startTime: z.string(),
-    endTime: z.string(),
-  })
-  .refine((data) => data.startTime < data.endTime, {
-    message: 'Start time earlier than End time',
-    path: ['endTime'],
-  });
+const FormSchema = z.object({
+  content: z
+    .string()
+    .min(10, { message: 'Reminder content must be at least 10 characters.' })
+    .max(100, {
+      message: 'Reminder content must not exceed 100 characters.',
+    }),
+  startTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {
+    message: 'Please enter a valid time in HH:MM format',
+  }),
+});
 
 export function JoinChallengeDialog({ challenge, button }: JoinDialogProps) {
   const [open, setOpen] = useState(false);
-
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     mode: 'onChange',
     defaultValues: {
       startTime: '10:00',
-      endTime: '11:30',
-      content:
-        'It’s time to conquer today’s challenge! 💪   > Put on your running shoes and hit the road. Just 3km a day brings you closer to the reward and better health! 🚀',
+      content: 'The challenge is calling, head to DoDo!',
     },
   });
   const { reset } = form;
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    // Integrating api join on here =))
     console.log('Form submitted:', data);
     setOpen(false);
+    setIsDropdownOpen(false);
   }
 
   const handleCancel = () => {
     setOpen(false);
+    setIsDropdownOpen(false);
     reset();
   };
 
@@ -132,48 +122,41 @@ export function JoinChallengeDialog({ challenge, button }: JoinDialogProps) {
                       <FormLabel className="text-sm font-semibold text-blue-600">
                         Reminder Start
                       </FormLabel>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Start time" />
-                        </SelectTrigger>
-                        <SelectContent className="h-48">
-                          {timeOptions.map((time) => (
-                            <SelectItem key={time} value={time}>
-                              {time}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="endTime"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel className="text-sm font-semibold text-blue-600">
-                        Reminder End
-                      </FormLabel>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="End time" />
-                        </SelectTrigger>
-                        <SelectContent className="h-48">
-                          {timeOptions.map((time) => (
-                            <SelectItem key={time} value={time}>
-                              {time}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <div className="relative">
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="HH:MM"
+                            className="w-full pr-10"
+                            onFocus={() => setIsDropdownOpen(true)}
+                            onChange={(e) => {
+                              field.onChange(e.target.value);
+                              setIsDropdownOpen(false);
+                            }}
+                          />
+                        </FormControl>
+                        <ChevronDown
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500"
+                          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        />
+                        {isDropdownOpen && (
+                          <div className="absolute z-10 mt-2 max-h-48 w-full overflow-y-auto rounded-md border border-gray-300 bg-white shadow-md">
+                            {timeOptions.map((time) => (
+                              <button
+                                key={time}
+                                type="button"
+                                className="w-full px-4 py-2 text-left hover:bg-gray-100"
+                                onClick={() => {
+                                  field.onChange(time);
+                                  setIsDropdownOpen(false);
+                                }}
+                              >
+                                {time}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -192,7 +175,7 @@ export function JoinChallengeDialog({ challenge, button }: JoinDialogProps) {
                       <Textarea
                         placeholder="Can you modify your content?"
                         className="resize-none border-gray-300"
-                        rows={6}
+                        rows={5}
                         {...field}
                       />
                     </FormControl>

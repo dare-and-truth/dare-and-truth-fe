@@ -48,7 +48,7 @@ export function JoinChallengeDialog({ challenge, button }: JoinDialogProps) {
     mode: 'onChange',
     defaultValues: {
       startTime: '10:00',
-      content: 'The challenge is calling, head to DoDo!',
+      content: `Time to crush your # ${challenge.hashtag} challenge! 🏃‍♂️💨 Head to DoDo and let is make it happen! 🚀`,
     },
   });
   const { reset } = form;
@@ -120,7 +120,7 @@ export function JoinChallengeDialog({ challenge, button }: JoinDialogProps) {
                   render={({ field }) => (
                     <FormItem className="flex-1">
                       <FormLabel className="text-sm font-semibold text-blue-600">
-                        Reminder Start
+                        Reminder Time
                       </FormLabel>
                       <div className="relative">
                         <FormControl>
@@ -130,7 +130,12 @@ export function JoinChallengeDialog({ challenge, button }: JoinDialogProps) {
                             className="w-full pr-10"
                             onFocus={() => setIsDropdownOpen(true)}
                             onChange={(e) => {
-                              field.onChange(e.target.value);
+                              let value = e.target.value.replace(
+                                /[^0-9:]/g,
+                                '',
+                              );
+                              if (value.length > 5) value = value.slice(0, 5);
+                              field.onChange(value);
                               setIsDropdownOpen(false);
                             }}
                           />

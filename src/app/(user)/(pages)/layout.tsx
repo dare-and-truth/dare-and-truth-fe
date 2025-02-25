@@ -64,13 +64,13 @@ export default function UserLayout({
         {
           icon: <UsersRound size={18} className="text-blue-500" />,
           text: 'All Friends',
-          href: '/friends/all-friends',  
+          href: '/friends/all-friends',
           active: pathname === '/friends/all-friends',
         },
         {
           icon: <UserPlus size={18} className="text-green-500" />,
           text: 'Friend Requests',
-          href: '/friends/add-friends',  
+          href: '/friends/add-friends',
           active: pathname === '/friends/add-friends',
         },
       ],

@@ -1,0 +1,7 @@
+import { Challenge, IPropsChallenge } from '@/app/types/challenge.type';
+import { ReactNode } from 'react';
+
+export interface JoinDialogProps {
+  challenge: Challenge;
+  button: ReactNode;
+}

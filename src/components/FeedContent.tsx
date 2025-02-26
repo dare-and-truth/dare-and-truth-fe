@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { formatTimeAgo } from '@/app/helpers/formatTimeAgo';
 import { Button } from '@/components/ui/button';
 import { FeedType } from '@/app/types';
+import { JoinChallengeDialog } from '@/components/JoinChallengeDialog';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useState } from 'react';
 
@@ -28,7 +29,11 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
             </p>
           </div>
         </div>
-        {feed.type == 'challenge' && <Button variant="join">Join</Button>}
+
+        {feed.type == 'challenge' && <JoinChallengeDialog
+          button={<Button variant="join">Join</Button>}
+          challenge={feed}
+        />}
       </div>
 
       <div className="mb-4">

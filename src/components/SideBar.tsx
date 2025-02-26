@@ -71,8 +71,8 @@ type NavItemType = {
   text: string;
   href: string;
   active?: boolean;
-  subMenu?: NavItemType[]; 
-  onClick?: () => void; 
+  subMenu?: NavItemType[];
+  onClick?: () => void;
 };
 
 function NavItem({ icon, text, href, active = false, onClick }: NavItemType) {
@@ -81,7 +81,9 @@ function NavItem({ icon, text, href, active = false, onClick }: NavItemType) {
       <Link
         href={href}
         className={`flex w-full items-center space-x-3 rounded-lg px-4 py-2 transition-colors ${
-          active ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+          active
+            ? 'bg-blue-50 text-blue-600'
+            : 'text-gray-700 hover:bg-gray-100'
         }`}
         onClick={onClick} // Thêm onClick cho NavItem
       >
@@ -100,10 +102,12 @@ function SubMenu({ subMenu }: { subMenu: NavItemType[] }) {
           <Link
             href={item.href}
             className={`flex items-center space-x-2 rounded-lg p-2 transition-colors ${
-              item.active ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'
+              item.active
+                ? 'bg-blue-50 text-blue-600'
+                : 'text-gray-700 hover:bg-gray-100'
             }`}
           >
-            <span className="w-5 h-5 flex items-center justify-center text-gray-400">
+            <span className="flex h-5 w-5 items-center justify-center text-gray-400">
               {item.icon}
             </span>
             <span className="flex-1">{item.text}</span>
@@ -112,4 +116,4 @@ function SubMenu({ subMenu }: { subMenu: NavItemType[] }) {
       ))}
     </ul>
   );
-}  
+}

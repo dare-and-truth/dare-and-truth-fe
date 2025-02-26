@@ -8,3 +8,8 @@ export interface Post {
 }
 
 export type CreatePostPayload = Omit<Post, 'id' | 'userId' | 'isActive'>;
+
+export interface CreatePostFormProps {
+  selectedItemHashtag: string;
+  setSelectedItemHashtag: React.Dispatch<React.SetStateAction<string | null>>;
+}

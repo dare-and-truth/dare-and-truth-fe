@@ -28,12 +28,7 @@ import type {
   CreateCalendarDialogProps,
   Event,
 } from '@/app/types/calendar.type';
-
-const timeOptions = Array.from({ length: 24 * 4 }).map((_, index) => {
-  const hour = Math.floor(index / 4);
-  const minute = (index % 4) * 15;
-  return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-});
+import { timeOptions } from '@/app/constants/index';
 
 export function CreateCalendarDialog({
   isOpen,

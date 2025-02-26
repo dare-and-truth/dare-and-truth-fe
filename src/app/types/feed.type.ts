@@ -4,12 +4,13 @@ export interface FeedType {
   hashtag: string;
   content: string;
   mediaUrl: string;
-  startDate?: string;
-  endDate?: string;
+  startDate: string;
+  endDate: string;
   createdAt: string;
   userId: string;
   username: string;
   likeCount: number;
   commentCount: number;
   liked: boolean;
+  isActive: boolean;
 }

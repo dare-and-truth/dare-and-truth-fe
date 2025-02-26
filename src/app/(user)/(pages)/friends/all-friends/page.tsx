@@ -29,14 +29,16 @@ export default function ListFriendPage() {
   }, []);
 
   const handleUnfriend = (requestId: string) => {
-    setFriends(current => current.filter(friend => friend.id !== requestId));
+    setFriends((current) =>
+      current.filter((friend) => friend.id !== requestId),
+    );
   };
   return (
     <div className="mt-16 h-[calc(100vh-4rem)] overflow-y-auto p-4 pb-20 md:pb-4">
       {loading ? (
         <Loading />
       ) : friends.length === 0 ? (
-        <p className="text-gray-500 text-center mt-4">Currently no friends.</p>
+        <p className="mt-4 text-center text-gray-500">Currently no friends.</p>
       ) : (
         <div className="flex flex-col items-center">
           {friends.map((friend) => (
@@ -45,7 +47,7 @@ export default function ListFriendPage() {
               avatar={'/images/default-profile.png'}
               username={friend.follower.username}
               isAccepted={friend.isAccepted}
-              acceptedAt={friend.acceptedAt} 
+              acceptedAt={friend.acceptedAt}
               requestId={friend.id}
               followerId={friend.follower.id}
               userId={friend.user.id}

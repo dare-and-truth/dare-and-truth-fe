@@ -1,3 +1,4 @@
+// components/FeedList.tsx
 'use client';
 import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
@@ -6,10 +7,10 @@ import Feed from '@/components/Feed';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { ITEMS_PER_PAGE } from '@/app/constants';
 import { getFeeds } from '@/app/api/feed.api';
-import { useFeedContext } from '@/app/contexts';
+import { useFeedContext } from '@/app/contexts/feedContext';
 import Loading from '@/components/Loading';
 
-export default function HomePage() {
+export default function FeedList() {
   const { feeds, setFeeds, page, setPage, hasMore, setHasMore } =
     useFeedContext();
   const [loading, setLoading] = useState(false);
@@ -22,7 +23,7 @@ export default function HomePage() {
       const newFeeds = await getFeeds(page, ITEMS_PER_PAGE);
 
       if (newFeeds && newFeeds.length > 0) {
-        setFeeds((prev) => [...prev, ...newFeeds.sort(() => 0.5 - Math.random())]);
+        setFeeds((prev) => [...prev, ...newFeeds]);
         if (newFeeds.length < ITEMS_PER_PAGE) {
           setHasMore(false);
         }
@@ -38,10 +39,8 @@ export default function HomePage() {
   }, [loading, page, setFeeds, setHasMore, setPage]);
 
   useEffect(() => {
-    if (feeds.length === 0) {
-      fetchChallenges();
-    }
-  }, []);
+    fetchChallenges();
+ }, []);
 
   return (
     <div

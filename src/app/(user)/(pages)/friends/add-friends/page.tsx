@@ -5,6 +5,7 @@ import { getAllFriendRequests } from '@/app/api/friends.api';
 import FriendRequestCard from '@/components/FriendsRequestCard';
 import { FriendRequest } from '@/app/types';
 import { toast } from 'react-toastify';
+import Loading from '@/components/Loading';
 
 export default function AddFriendRequestsPage() {
   const [friendRequests, setFriendRequests] = useState<FriendRequest[]>([]);
@@ -42,7 +43,7 @@ export default function AddFriendRequestsPage() {
   return (
     <div className="mt-16 h-[calc(100vh-4rem)] overflow-y-auto p-4 pb-20 md:pb-4">
       {loading ? (
-        <p>Loading...</p>
+        <Loading />
       ) : friendRequests.length === 0 ? (
         <p className="mt-4 text-center text-gray-500">
           Currently no friend requests.

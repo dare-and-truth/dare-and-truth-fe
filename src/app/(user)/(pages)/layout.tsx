@@ -16,6 +16,7 @@ import {
   UsersRound,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { FeedProvider } from '@/app/contexts';
 
 export default function UserLayout({
   children,
@@ -99,7 +100,7 @@ export default function UserLayout({
       <SideBar navItems={userNavItems} />
       <div className="min-h-full flex-1 md:ml-64">
         <Header />
-        {children}
+        <FeedProvider>{children}</FeedProvider>
         <MobileNav />
       </div>
     </div>

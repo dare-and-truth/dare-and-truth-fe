@@ -54,7 +54,6 @@ export function JoinChallengeDialog({ challenge, button }: JoinDialogProps) {
   const { reset } = form;
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log('Form submitted:', data);
     setOpen(false);
     setIsDropdownOpen(false);
   }

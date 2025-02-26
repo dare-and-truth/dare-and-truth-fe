@@ -11,3 +11,4 @@ export * from '@/app/types/like.type';
 export * from '@/app/types/calendar.type';
 export * from '@/app/types/comment.type';
 export * from '@/app/types/join.type';
+export * from '@/app/types/feed.type';

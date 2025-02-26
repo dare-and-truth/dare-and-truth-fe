@@ -10,7 +10,7 @@ import {
 } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Image, SendHorizontal, X } from 'lucide-react';
+import { Image, Loader2, SendHorizontal, X } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MAX_FILE_SIZE, VALID_FILE_TYPES } from '@/app/constants';
 import { uploadFileToSupabase } from '@/app/helpers/uploadFileToSupabase';
@@ -24,15 +24,20 @@ type FormErrors = {
 
 export default function CommentForm({
   feedId,
+  isChallenge,
   setLoadComment,
+  setCommentCount,
 }: {
   feedId: string;
+  isChallenge: boolean;
   setLoadComment: Dispatch<SetStateAction<boolean>>;
+  setCommentCount: Dispatch<SetStateAction<number>>;
 }) {
   const [content, setContent] = useState('');
   const [media, setMedia] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -96,28 +101,32 @@ export default function CommentForm({
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (validateForm()) {
-      try {
-        let mediaUrl;
-        if (media) {
-          mediaUrl = await uploadFileToSupabase(media);
-        }
+    if (!validateForm() || isLoading) return; // Ngăn gửi nếu đang loading
 
-        const createCommentPayload: CreateCommentPayload = {
-          feedId,
-          content,
-          mediaUrl,
-          isChallenge: true,
-        };
-        await postComment(createCommentPayload, handleCommentSuccess);
-      } catch (error) {
-        console.error('Error submitting comment:', error);
+    setIsLoading(true); // Bắt đầu loading
+    try {
+      let mediaUrl;
+      if (media) {
+        mediaUrl = await uploadFileToSupabase(media);
       }
+
+      const createCommentPayload: CreateCommentPayload = {
+        feedId,
+        content,
+        mediaUrl,
+        isChallenge,
+      };
+      await postComment(createCommentPayload, handleCommentSuccess);
+    } catch (error) {
+      console.error('Error submitting comment:', error);
+    } finally {
+      setIsLoading(false); // Kết thúc loading dù thành công hay thất bại
     }
   };
 
   const handleCommentSuccess = () => {
-    setLoadComment((pre) => (pre = !pre));
+    setLoadComment((pre) => !pre);
+    setCommentCount((pre) => pre + 1);
     setContent('');
     setMedia(null);
     setPreview(null);
@@ -140,6 +149,7 @@ export default function CommentForm({
             className={`w-full ${errors.content ? 'border-red-500' : ''}`}
             value={content}
             onChange={handleContentChange}
+            disabled={isLoading} // Vô hiệu hóa textarea khi loading
           />
           <div className="ml-2 flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -149,12 +159,14 @@ export default function CommentForm({
                 className="hidden"
                 ref={fileInputRef}
                 onChange={handleMediaChange}
+                disabled={isLoading} // Vô hiệu hóa input file khi loading
               />
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
                 onClick={() => fileInputRef.current?.click()}
+                disabled={isLoading} // Vô hiệu hóa nút upload khi loading
               >
                 <Image className="h-7 w-7" />
               </Button>
@@ -162,10 +174,14 @@ export default function CommentForm({
             <Button
               type="submit"
               variant={'join'}
-              disabled={!content && !media}
+              disabled={(!content && !media) || isLoading} // Vô hiệu hóa nút gửi khi loading
               className="m-1"
             >
-              <SendHorizontal className="h-4 w-4" />
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <SendHorizontal className="h-4 w-4" />
+              )}
             </Button>
           </div>
         </form>
@@ -187,6 +203,7 @@ export default function CommentForm({
             size="icon"
             className="absolute right-0 top-0 rounded-full"
             onClick={removeMedia}
+            disabled={isLoading} // Vô hiệu hóa nút xóa khi loading
           >
             <X className="h-4 w-4" />
           </Button>

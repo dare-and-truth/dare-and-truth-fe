@@ -33,3 +33,31 @@ body {
     background: #c0a0b9;
   }
 }
+
+
+@keyframes custom-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes custom-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+}
+
+.animate-spin {
+  animation: custom-spin 1s linear infinite;
+}
+
+.animate-pulse {
+  animation: custom-pulse 1.5s ease-in-out infinite;
+}
+

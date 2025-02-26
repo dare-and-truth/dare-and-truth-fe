@@ -56,28 +56,24 @@ httpClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     if (error.response?.status === 401 || error.response?.status === 403) {
-      console.log('refresh');
       const refreshToken = localStorage.getItem('refreshToken');
       if (refreshToken) {
         if (!isRefreshing) {
           isRefreshing = true;
           try {
             // Gọi API refresh token
-            const refreshResponse = await axios({
+            const refreshResponse = await request({
               method: 'post',
-              url:
-                process.env.NEXT_PUBLIC_BASE_SERVER_URL + '/auth/refresh-token',
-              data: { refreshToken },
-              headers: { 'Content-Type': 'application/json' },
-              withCredentials: true,
+              url: '/auth/refresh-token',
+              data: { refreshToken }
             });
-            const newAccessToken = refreshResponse.data.data.access_token;
+            const newAccessToken = refreshResponse?.data.access_token;
             localStorage.setItem('accessToken', newAccessToken);
             isRefreshing = false;
             onRefreshed(newAccessToken);
             // Retry request ban đầu với token mới
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-            return axios(originalRequest);
+            return httpClient(originalRequest);
           } catch (refreshError) {
             isRefreshing = false;
             localStorage.removeItem('accessToken');
@@ -91,7 +87,7 @@ httpClient.interceptors.response.use(
           return new Promise((resolve) => {
             subscribeTokenRefresh((newToken) => {
               originalRequest.headers.Authorization = `Bearer ${newToken}`;
-              resolve(axios(originalRequest));
+              resolve(httpClient(originalRequest));
             });
           });
         }

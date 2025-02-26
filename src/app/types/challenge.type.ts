@@ -14,10 +14,6 @@ export type CreateChallengePayload = Omit<
   'id' | 'userId' | 'isActive'
 >;
 
-export interface IPropsChallenge {
-  challenge: ChallengeAsFeed;
-}
-
 export interface ChallengeAsFeed extends Challenge {
   userId: string;
   username: string;

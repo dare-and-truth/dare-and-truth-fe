@@ -5,6 +5,7 @@ import { getAllFriendsList } from '@/app/api/friends.api'; // Gọi đúng API l
 import FriendRequestCard from '@/components/FriendsRequestCard';
 import { FriendList } from '@/app/types';
 import { toast } from 'react-toastify';
+import Loading from '@/components/Loading';
 
 export default function ListFriendPage() {
   const [friends, setFriends] = useState<FriendList[]>([]);
@@ -33,7 +34,7 @@ export default function ListFriendPage() {
   return (
     <div className="mt-16 h-[calc(100vh-4rem)] overflow-y-auto p-4 pb-20 md:pb-4">
       {loading ? (
-        <p>Loading...</p>
+        <Loading />
       ) : friends.length === 0 ? (
         <p className="text-gray-500 text-center mt-4">Currently no friends.</p>
       ) : (

@@ -1,5 +1,5 @@
 'use client';
-import { IPropsChallenge } from '@/app/types';
+import { FeedType } from '@/app/types';
 import { Heart, MessageCircle, Share2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
@@ -8,18 +8,19 @@ import { Button } from '@/components/ui/button';
 import FeedContent from '@/components/FeedContent';
 import CommentDialog from '@/components/CommentDialog';
 
-export default function Feed({ challenge }: IPropsChallenge) {
-  const [liked, setLiked] = useState(challenge.isLiked);
-  const [likeCount, setLikeCount] = useState(challenge.likeCount);
+export default function Feed({ feed }: {feed: FeedType}) {
+  const [liked, setLiked] = useState(feed.liked);
+  const [likeCount, setLikeCount] = useState(feed.likeCount);
+  const [commentCount, setCommentCount] = useState(feed.commentCount);
   const [isCommentOpen, setIsCommentOpen] = useState(false);
   const handleLike = () => {
     if (liked) {
-      unlikeFeed({ feedId: challenge.id }, () => {
+      unlikeFeed({ feedId: feed.id }, () => {
         setLikeCount((prev) => prev - 1);
         setLiked(!liked);
       });
     } else {
-      likeFeed({ feedId: challenge.id, isChallenge: true }, () => {
+      likeFeed({ feedId: feed.id, isChallenge: feed.type === 'challenge' }, () => {
         setLikeCount((prev) => prev + 1);
         setLiked(!liked);
       });
@@ -29,7 +30,7 @@ export default function Feed({ challenge }: IPropsChallenge) {
   return (
     <div className="bg-card text-card-foreground mt-4 rounded-2xl border shadow-lg">
       <div className="p-6">
-        <FeedContent challenge={challenge} />
+        <FeedContent feed={feed} />
 
         <div className="flex justify-between gap-6 border-t pt-2">
           <Button
@@ -56,8 +57,8 @@ export default function Feed({ challenge }: IPropsChallenge) {
           >
             <MessageCircle className="h-4 w-4" />
             <span>
-              {challenge.commentCount}{' '}
-              {challenge.commentCount === 1 ? 'Comment' : 'Comments'}
+              {commentCount}{' '}
+              {commentCount === 1 ? 'Comment' : 'Comments'}
             </span>
           </Button>
           <Button variant="ghost" size="lg" className="gap-2 hover:bg-sky-300">
@@ -69,7 +70,8 @@ export default function Feed({ challenge }: IPropsChallenge) {
       <CommentDialog
         isCommentOpen={isCommentOpen}
         setIsCommentOpen={setIsCommentOpen}
-        challenge={challenge}
+        setCommentCount={setCommentCount}
+        feed={feed}
       />
     </div>
   );

@@ -6,29 +6,58 @@ import { Card } from '@/components/ui/card';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
-import { Event } from '@/app/types/calendar.type';
+import { useState, useEffect } from 'react';
+import { Event } from '@/app/types/reminder.type'; // Đổi sang reminder.type
 import { CreateCalendarDialog } from '@/components/CreateCalendarDialog';
-import { CalendarList } from '@/components/CaledndarList';
-import { isBefore, startOfDay } from 'date-fns';
+import { CalendarList } from '@/components/CalendarList';
+import { getAllRemindersByDate } from '@/app/api/reminder.api'; // Đúng file reminder.api.ts
 
 export default function CalendarComponent() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
 
+  useEffect(() => {
+    if (date) {
+      fetchEventsByDate(date);
+    }
+  }, [date]);
+
   const handleDateSelect = (selectedDate: Date | undefined) => {
     setDate(selectedDate);
   };
 
   const handleCreateEvent = (newEvent: Event) => {
-    setEvents((prevEvents) => [newEvent, ...prevEvents]);
+    setEvents((prevEvents) => [newEvent, ...prevEvents]); // Thêm sự kiện tạm thời
     setIsDialogOpen(false);
   };
 
-  const filteredEvents = events
-    .filter((event) => event.startDate === date?.toISOString())
-    .sort((a, b) => Number.parseInt(b.id) - Number.parseInt(a.id));
+  const fetchEventsByDate = async (selectedDate: Date) => {
+    try {
+      console.log('fetchEventsByDate - Selected date:', selectedDate);
+      const formattedDate = format(selectedDate, 'yyyy-MM-dd');
+      const reminders = await getAllRemindersByDate(formattedDate);
+      const fetchedEvents: Event[] = reminders.map((item: any) => ({
+        id: item.id,
+        title: item.title,
+        hashtag: item.hashtag,
+        startDate: item.startDate,
+        endDate: item.endDate,
+        reminderContent: item.reminderContent,
+        reminderTime: item.reminderTime ? item.reminderTime.slice(0, 5) : undefined, // HH:mm
+        startTime: item.startTime? item.startTime.slice(0, 5) : undefined, // HH:mm
+        endTime: item.endTime? item.endTime.slice(0, 5) :undefined,     // HH:mm
+        userId: item.userId,
+        color: item.hashtag ? 'bg-blue-400' : 'bg-orange-300', // Phân màu dựa trên hashtag/title
+      }));
+      setEvents(fetchedEvents);
+    } catch (error) {
+      console.error('Error fetching reminders:', error);
+      setEvents([]);
+    }
+  };
+
+  const filteredEvents = events.sort((a, b) => Number.parseInt(b.id) - Number.parseInt(a.id));
 
   return (
     <>
@@ -36,7 +65,6 @@ export default function CalendarComponent() {
         <Calendar
           mode="single"
           selected={date}
-          disabled={(day) => isBefore(startOfDay(day), startOfDay(new Date()))}
           onSelect={handleDateSelect}
           className="flex items-center rounded-md border"
           classNames={{
@@ -46,10 +74,9 @@ export default function CalendarComponent() {
               'hover:bg-blue-400 hover:text-white',
               'aria-selected:bg-blue-500 aria-selected:text-white',
             ),
-            head_cell: ' w-20',
+            head_cell: 'w-20',
             caption_label: 'text-lg font-bold',
             months: 'lg:ml-4',
-            day_disabled: 'text-gray-400 opacity-50 cursor-not-allowed',
             day_selected: 'bg-blue-500 text-white',
           }}
         />
@@ -76,9 +103,11 @@ export default function CalendarComponent() {
         </div>
 
         <div className="space-y-3">
-          {filteredEvents.map((event) => (
-            <CalendarList event={event} key={event.id} />
-          ))}
+          {filteredEvents.length === 0 ? (
+            <p className="text-gray-500 text-center">There are no events for this day</p>
+          ) : (
+            filteredEvents.map((event) => <CalendarList event={event} key={event.id} />)
+          )}
         </div>
       </div>
     </>

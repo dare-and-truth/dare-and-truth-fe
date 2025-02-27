@@ -7,7 +7,7 @@ import Feed from '@/components/Feed';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { ITEMS_PER_PAGE } from '@/app/constants';
 import { getFeeds } from '@/app/api/feed.api';
-import { useFeedContext } from '@/app/contexts/feedContext';
+import { useFeedContext } from '@/app/contexts/FeedContext';
 import Loading from '@/components/Loading';
 
 export default function FeedList() {
@@ -40,7 +40,7 @@ export default function FeedList() {
 
   useEffect(() => {
     fetchChallenges();
- }, []);
+  }, []);
 
   return (
     <div

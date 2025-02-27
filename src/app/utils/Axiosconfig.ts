@@ -13,18 +13,13 @@ const httpClient = axios.create({
 
 httpClient.interceptors.request.use(
   function (config) {
-    // Do something before request is sent
-    // console.log('interceptors.request', config);
-    // config.headers.Authorization = `Bearer ${localStorage.getItem("accessToken")}`;
     const token = localStorage.getItem('accessToken');
     if (token) {
-      // Set the Authorization header with the token
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
   function (error) {
-    // Do something with request error
     console.log('interceptors.request.error', error);
     return Promise.reject(error);
   },
@@ -55,49 +50,58 @@ httpClient.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
-    if (error.response?.status === 401 || error.response?.status === 403) {
+
+    // Nếu gặp lỗi 401 (token hết hạn hoặc không hợp lệ)
+    if (error.response?.status === 401) {
       const refreshToken = localStorage.getItem('refreshToken');
-      if (refreshToken) {
-        if (!isRefreshing) {
-          isRefreshing = true;
-          try {
-            // Gọi API refresh token
-            const refreshResponse = await request({
-              method: 'post',
-              url: '/auth/refresh-token',
-              data: { refreshToken }
-            });
-            const newAccessToken = refreshResponse?.data.access_token;
-            localStorage.setItem('accessToken', newAccessToken);
-            isRefreshing = false;
-            onRefreshed(newAccessToken);
-            // Retry request ban đầu với token mới
-            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-            return httpClient(originalRequest);
-          } catch (refreshError) {
-            isRefreshing = false;
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            toast.error('Session expired. Please log in again.');
-            window.location.href = '/auth/login';
-            return Promise.reject(refreshError);
-          }
-        } else {
-          // Nếu đang refresh, đợi token mới được cung cấp
-          return new Promise((resolve) => {
-            subscribeTokenRefresh((newToken) => {
-              originalRequest.headers.Authorization = `Bearer ${newToken}`;
-              resolve(httpClient(originalRequest));
-            });
-          });
-        }
-      } else {
+
+      if (!refreshToken) {
+        // Không có refresh token, chuyển hướng về login ngay lập tức
         localStorage.removeItem('accessToken');
         toast.error('Session expired. Please log in again.');
         window.location.href = '/auth/login';
-        return new Promise(() => {});
+        return Promise.reject(error);
+      }
+
+      if (!isRefreshing) {
+        isRefreshing = true;
+        try {
+          // Gọi API refresh token
+          const refreshResponse = await request({
+            method: 'post',
+            url: '/auth/refresh-token',
+            data: { refreshToken },
+          });
+
+          const newAccessToken = refreshResponse?.data.access_token;
+          localStorage.setItem('accessToken', newAccessToken);
+          isRefreshing = false;
+          onRefreshed(newAccessToken);
+
+          // Thử lại request ban đầu với token mới
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          return httpClient(originalRequest);
+        } catch (refreshError) {
+          // Nếu refresh token thất bại (hết hạn hoặc không hợp lệ), chuyển hướng về login
+          isRefreshing = false;
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          toast.error('Session expired. Please log in again.');
+          window.location.href = '/auth/login';
+          return Promise.reject(refreshError);
+        }
+      } else {
+        // Nếu đang refresh, đợi token mới
+        return new Promise((resolve) => {
+          subscribeTokenRefresh((newToken) => {
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            resolve(httpClient(originalRequest));
+          });
+        });
       }
     }
+
+    // Xử lý các lỗi khác ngoài 401
     return Promise.reject({
       code: error.response?.status || 500,
       message: error.response?.data?.message || 'Network error occurred',
@@ -126,23 +130,17 @@ const request = async ({
       url,
       data,
     });
-    // Xử lý hiển thị popup thành công
-    // Code here
     onSuccess(response?.data);
-
     return response;
   } catch (error: any) {
     console.log(error);
-    // Xử lý hiển thị popup lỗi
-    // Code here
     if (axios.isAxiosError(error)) {
-      // Nếu là lỗi từ Axios, sử dụng error.response.data
       onError(error.response?.data);
     } else {
-      // Nếu không phải lỗi từ Axios, xử lý một cách phù hợp
       onError(error);
       toast.error(error.message);
     }
+    throw error; // Ném lỗi để caller có thể xử lý nếu cần
   }
 };
 

@@ -12,12 +12,14 @@ import { toast } from 'react-toastify';
 import { ErrorFormLogin } from '@/app/types';
 import { postSignIn } from '@/app/api/auth.api';
 import { jwtDecode } from 'jwt-decode';
+import { useLoading } from '@/app/contexts';
 
 type JwtPayload = {
   role: string;
 };
 
 export default function LoginForm() {
+  const { setIsLoading } = useLoading();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [errors, setErrors] = useState<ErrorFormLogin>({
@@ -49,6 +51,8 @@ export default function LoginForm() {
     e.preventDefault();
     if (!validateForm()) return;
 
+    setIsLoading(true);
+
     try {
       const response = await postSignIn({ email, password });
 
@@ -79,6 +83,8 @@ export default function LoginForm() {
       } else {
         toast.error('An error occurred during sign in.');
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 

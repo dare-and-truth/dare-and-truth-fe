@@ -16,7 +16,7 @@ export const createReminder = async (
 ) => {
   await request({
     method: 'post',
-    url: '/reminders', // Endpoint từ BE: POST /reminder
+    url: '/reminders', 
     data,
     onSuccess: handleSuccess,
     onError: (error: AxiosError) => {
@@ -31,13 +31,13 @@ export const createReminder = async (
 export const getAllRemindersByDate = async (date: string): Promise<ReminderSummaryProjection[]> => {
   const response = await request({
     method: 'get',
-    url: `/reminders?date=${date}`, // Endpoint từ BE: GET /reminder?date={date}
+    url: `/reminders?date=${date}`, 
     onError: (error: AxiosError) => {
       console.log('Error when fetching reminders:', error);
       throw error;
     },
   });
-  return response?.data || []; // BE trả về AppApiResponse, dữ liệu nằm trong response.data.data
+  return response?.data || []; 
 };
 
 // API để cập nhật một reminder
@@ -49,7 +49,7 @@ export const updateReminder = async (
 ) => {
   await request({
     method: 'patch',
-    url: `/reminders/${reminderId}`, // Endpoint từ BE: PATCH /reminder/{reminderId}
+    url: `/reminders/${reminderId}`, 
     data,
     onSuccess: handleSuccess,
     onError: (error: AxiosError) => {
@@ -68,7 +68,7 @@ export const deleteReminder = async (
 ) => {
   await request({
     method: 'delete',
-    url: `/reminders/${reminderId}`, // Endpoint từ BE: DELETE /reminder/{reminderId}
+    url: `/reminders/${reminderId}`, 
     onSuccess: handleSuccess,
     onError: (error: AxiosError) => {
       console.log('Error when deleting reminder:', error);

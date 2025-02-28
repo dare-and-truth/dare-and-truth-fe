@@ -1,31 +1,34 @@
+import { Dispatch, SetStateAction } from "react";
+
 export interface CreateCalendarDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onCreateEvent: (event: Event) => void;
   selectedDate?: Date;
-  event?: Event; // Optional cho Update
-  isUpdate?: boolean; // Optional để phân biệt Create/Update
+  event?: Event; 
+  isUpdate?: boolean; 
 }
 
 export interface Event {
   id: string;
   title?: string;
   hashtag?: string;
-  startDate: string; // YYYY-MM-DD
-  endDate: string;   // YYYY-MM-DD
+  startDate: string;  
+  endDate: string;   
   reminderContent: string;
-  reminderTime?: string; // HH:mm
-  startTime: string; // HH:mm, optional vì chỉ dùng khi không có hashtag
-  endTime: string;   // HH:mm, optional vì chỉ dùng khi không có hashtag
+  reminderTime?: string; 
+  startTime: string; 
+  endTime: string;   
   userId?: string;
   color?: string;
 }
 
 export interface EventListProps {
   event: Event;
+  setIsRefreshingCalendarList: Dispatch<SetStateAction<boolean>>;
+  
 }
 
-// @/app/types/index.ts
 
 export interface CreateReminderRequest {
   title: string;

@@ -1,40 +1,48 @@
 'use client';
 
-import { format } from 'date-fns';
+import { format,isBefore, startOfDay } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { Card } from '@/components/ui/card';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
-import { Event } from '@/app/types/reminder.type'; // Đổi sang reminder.type
+import { Event } from '@/app/types/reminder.type'; 
 import { CreateCalendarDialog } from '@/components/CreateCalendarDialog';
 import { CalendarList } from '@/components/CalendarList';
-import { getAllRemindersByDate } from '@/app/api/reminder.api'; // Đúng file reminder.api.ts
+import { getAllRemindersByDate } from '@/app/api/reminder.api'; 
+import { useLoading } from '@/app/contexts';
+
+const getInitialDate = (): Date => {
+  const savedDate = localStorage.getItem('selectedDate');
+  return savedDate ? new Date(savedDate) : new Date();
+};
 
 export default function CalendarComponent() {
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [date, setDate] = useState<Date | undefined>(getInitialDate());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
+  const [isRefreshingCalendarList, setIsRefreshingCalendarList] = useState(false);
+  const {setIsLoading} = useLoading();
 
   useEffect(() => {
     if (date) {
       fetchEventsByDate(date);
+      localStorage.setItem('selectedDate', date.toISOString());
     }
-  }, [date]);
+  }, [date, isRefreshingCalendarList]);
 
   const handleDateSelect = (selectedDate: Date | undefined) => {
     setDate(selectedDate);
   };
 
   const handleCreateEvent = (newEvent: Event) => {
-    setEvents((prevEvents) => [newEvent, ...prevEvents]); // Thêm sự kiện tạm thời
+    setEvents((prevEvents) => [newEvent, ...prevEvents]); 
     setIsDialogOpen(false);
   };
 
   const fetchEventsByDate = async (selectedDate: Date) => {
     try {
-      console.log('fetchEventsByDate - Selected date:', selectedDate);
       const formattedDate = format(selectedDate, 'yyyy-MM-dd');
       const reminders = await getAllRemindersByDate(formattedDate);
       const fetchedEvents: Event[] = reminders.map((item: any) => ({
@@ -44,11 +52,11 @@ export default function CalendarComponent() {
         startDate: item.startDate,
         endDate: item.endDate,
         reminderContent: item.reminderContent,
-        reminderTime: item.reminderTime ? item.reminderTime.slice(0, 5) : undefined, // HH:mm
-        startTime: item.startTime? item.startTime.slice(0, 5) : undefined, // HH:mm
-        endTime: item.endTime? item.endTime.slice(0, 5) :undefined,     // HH:mm
+        reminderTime: item.reminderTime ? item.reminderTime.slice(0, 5) : undefined,
+        startTime: item.startTime? item.startTime.slice(0, 5) : undefined, 
+        endTime: item.endTime? item.endTime.slice(0, 5) :undefined,    
         userId: item.userId,
-        color: item.hashtag ? 'bg-blue-400' : 'bg-orange-300', // Phân màu dựa trên hashtag/title
+        color: item.hashtag ? 'bg-blue-400' : 'bg-orange-300', 
       }));
       setEvents(fetchedEvents);
     } catch (error) {
@@ -73,6 +81,7 @@ export default function CalendarComponent() {
               'h-14 w-20 transition-colors',
               'hover:bg-blue-400 hover:text-white',
               'aria-selected:bg-blue-500 aria-selected:text-white',
+              
             ),
             head_cell: 'w-20',
             caption_label: 'text-lg font-bold',
@@ -106,7 +115,7 @@ export default function CalendarComponent() {
           {filteredEvents.length === 0 ? (
             <p className="text-gray-500 text-center">There are no events for this day</p>
           ) : (
-            filteredEvents.map((event) => <CalendarList event={event} key={event.id} />)
+            filteredEvents.map((event) => <CalendarList event={event} setIsRefreshingCalendarList = {setIsRefreshingCalendarList} key={event.id} />)
           )}
         </div>
       </div>

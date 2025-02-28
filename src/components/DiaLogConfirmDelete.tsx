@@ -1,4 +1,5 @@
 'use client';
+
 import { DialogConfirmProps } from '@/app/types';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,20 +16,28 @@ export function DialogConfirm({
   button,
   title,
   onConfirm,
+  onClose,
 }: DialogConfirmProps) {
   const [open, setOpen] = useState(false);
+
   const handleConfirm = async () => {
     await onConfirm();
     setOpen(false);
+    if (onClose) onClose(); 
   };
+
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(isOpen) => {
+      setOpen(isOpen);
+      if (!isOpen && onClose) onClose(); 
+    }}>
       <DialogTrigger asChild>{button}</DialogTrigger>
       <DialogContent>
         <DialogHeader className="flex items-center">
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle>{title} </DialogTitle>
         </DialogHeader>
-        <DialogFooter className="flex sm:justify-center">
+        <DialogFooter className="flex sm:justify-center gap-2">
           <Button
             type="button"
             className="flex items-center"

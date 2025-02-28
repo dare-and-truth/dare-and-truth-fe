@@ -113,6 +113,7 @@ export function CalendarList({ event, setIsRefreshingCalendarList }: EventListPr
         selectedDate={undefined}
         event={event}
         isUpdate={true}
+        setIsRefreshingCalendarList={setIsRefreshingCalendarList}
       />
     </>
   );

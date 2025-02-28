@@ -48,6 +48,7 @@ export function CreateCalendarDialog({
   selectedDate,
   event,
   isUpdate = false,
+  setIsRefreshingCalendarList
 }: CreateCalendarDialogProps) {
   const [eventTitle, setEventTitle] = useState(event ? event.title || '' : '');
   const [startTime, setStartTime] = useState<string>(event?.startTime || '10:00');
@@ -143,6 +144,7 @@ export function CreateCalendarDialog({
             toast.success('Reminder updated successfully!');
             onCreateEvent(updatedEvent);
             onClose();
+            setIsRefreshingCalendarList(pre => !pre)
           },
           (error) => {
             toast.error('Failed to update reminder. Please try again.');
@@ -164,6 +166,7 @@ export function CreateCalendarDialog({
             toast.success('Reminder created successfully!');
             onCreateEvent(updatedEvent);
             onClose();
+            setIsRefreshingCalendarList(pre => !pre)
           },
           (error) => {
             toast.error('Failed to create reminder. Please try again.');

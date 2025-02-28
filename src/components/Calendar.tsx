@@ -11,7 +11,6 @@ import { Event } from '@/app/types/reminder.type';
 import { CreateCalendarDialog } from '@/components/CreateCalendarDialog';
 import { CalendarList } from '@/components/CalendarList';
 import { getAllRemindersByDate } from '@/app/api/reminder.api'; 
-import { useLoading } from '@/app/contexts';
 
 const getInitialDate = (): Date => {
   const savedDate = localStorage.getItem('selectedDate');
@@ -23,7 +22,6 @@ export default function CalendarComponent() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
   const [isRefreshingCalendarList, setIsRefreshingCalendarList] = useState(false);
-  const {setIsLoading} = useLoading();
 
   useEffect(() => {
     if (date) {
@@ -94,6 +92,7 @@ export default function CalendarComponent() {
           onClose={() => setIsDialogOpen(false)}
           onCreateEvent={handleCreateEvent}
           selectedDate={date}
+          setIsRefreshingCalendarList={setIsRefreshingCalendarList}
         />
       </Card>
 

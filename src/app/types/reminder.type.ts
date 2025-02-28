@@ -7,6 +7,7 @@ export interface CreateCalendarDialogProps {
   selectedDate?: Date;
   event?: Event; 
   isUpdate?: boolean; 
+  setIsRefreshingCalendarList: (value: boolean | ((prev: boolean) => boolean)) => void;
 }
 
 export interface Event {

@@ -6,18 +6,23 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react'; // Import useState để quản lý trạng thái mở menu
 import { postLogout } from '@/app/api/auth.api';
+import { useLoading } from '@/app/contexts';
 
 export default function SideBar({ navItems }: { navItems: NavItemType[] }) {
   const router = useRouter();
   const [openMenu, setOpenMenu] = useState<number | null>(null); // Quản lý menu đang mở
+  const { setIsLoading } = useLoading();
 
   const handleLogout = async () => {
     try {
+      setIsLoading(true);
       await postLogout(router);
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
     } catch (error) {
       console.log('Error during logout', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 

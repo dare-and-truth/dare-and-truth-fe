@@ -8,7 +8,7 @@ export * from '@/app/types/post.type';
 export * from '@/app/types/challenge.type';
 export * from '@/app/types/friends.type';
 export * from '@/app/types/like.type';
-export * from '@/app/types/calendar.type';
+export * from '@/app/types/reminder.type';
 export * from '@/app/types/comment.type';
 export * from '@/app/types/join.type';
 export * from '@/app/types/feed.type';

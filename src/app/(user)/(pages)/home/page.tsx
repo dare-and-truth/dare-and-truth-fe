@@ -22,7 +22,10 @@ export default function HomePage() {
       const newFeeds = await getFeeds(page, ITEMS_PER_PAGE);
 
       if (newFeeds && newFeeds.length > 0) {
-        setFeeds((prev) => [...prev, ...newFeeds.sort(() => 0.5 - Math.random())]);
+        setFeeds((prev) => [
+          ...prev,
+          ...newFeeds.sort(() => 0.5 - Math.random()),
+        ]);
         if (newFeeds.length < ITEMS_PER_PAGE) {
           setHasMore(false);
         }

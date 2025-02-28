@@ -60,7 +60,7 @@ export default function SignUpForm() {
               Get started with DODO 👋
             </h1>
             <p className="mb-4 text-gray-600">
-              Today is a new day. It's your day. You shape it.
+              Today is a new day. It&apos;s your day. You shape it.
               <br />
               Sign in to start enjoying the DoDo app
             </p>

@@ -5,7 +5,12 @@ import { formatTimeAgo } from '@/app/helpers/formatTimeAgo';
 import { Button } from '@/components/ui/button';
 import { FeedType } from '@/app/types';
 import { JoinChallengeDialog } from '@/components/JoinChallengeDialog';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { useState } from 'react';
 
 const isVideo = (mediaUrl: string) => {
@@ -30,10 +35,12 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
           </div>
         </div>
 
-        {feed.type == 'challenge' && <JoinChallengeDialog
-          button={<Button variant="join">Join</Button>}
-          challenge={feed}
-        />}
+        {feed.type == 'challenge' && (
+          <JoinChallengeDialog
+            button={<Button variant="join">Join</Button>}
+            challenge={feed}
+          />
+        )}
       </div>
 
       <div className="mb-4">
@@ -86,7 +93,7 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
 
           {/* Nội dung trong dialog khi phóng to */}
           <DialogContent className="max-w-3xl p-0">
-            <DialogTitle/>
+            <DialogTitle />
             {isVideo(feed.mediaUrl) ? (
               <video
                 src={feed.mediaUrl}

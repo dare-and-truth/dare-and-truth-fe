@@ -124,7 +124,7 @@ export default function CreatePostDialog(props: any) {
       const fileExtension = file.name.split('.').pop();
       const fileName = `${uuidv4()}.${fileExtension}`;
 
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('uploads')
         .upload(fileName, file);
 

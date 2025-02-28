@@ -97,7 +97,7 @@ export default function LoginForm() {
           <div className="flex-1">
             <h1 className="mb-2 text-3xl font-bold">Welcome Back 👋</h1>
             <p className="mb-8 text-gray-600">
-              Today is a new day. It's your day. You shape it.
+              Today is a new day. It&apos;s your day. You shape it.
               <br />
               Sign in to start enjoying the DoDo app
             </p>
@@ -172,7 +172,7 @@ export default function LoginForm() {
             </div>
 
             <p className="mt-8 text-center text-sm text-gray-600">
-              Don't you have an account?{' '}
+              Don&apos;t you have an account?{' '}
               <Link
                 href="/auth/sign-up"
                 className="font-medium text-blue-600 hover:underline"

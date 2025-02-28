@@ -38,7 +38,10 @@ export default function CommentComponent({ comment }: any) {
                 <Dialog>
                   <DialogTrigger>
                     <Image
-                      src={comment.mediaUrl || '/public/images/placeholder-image.png'}
+                      src={
+                        comment.mediaUrl ||
+                        '/public/images/placeholder-image.png'
+                      }
                       alt="Comment media"
                       width={96}
                       height={96}

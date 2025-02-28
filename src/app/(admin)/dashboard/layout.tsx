@@ -8,6 +8,10 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
+interface JwtPayload {
+  role: string;
+}
+
 export default function AdminLayout({
   children,
 }: Readonly<{
@@ -21,7 +25,7 @@ export default function AdminLayout({
   const getRoleFromToken = (token: string | null) => {
     if (!token) return null;
     try {
-      const payload: any = jwtDecode(token);
+      const payload: JwtPayload = jwtDecode(token);
       return payload.role;
     } catch (error) {
       console.error('Invalid token:', error);

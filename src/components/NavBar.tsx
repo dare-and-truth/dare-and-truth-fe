@@ -3,6 +3,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 export default function NavBar() {
   const [username, setUsername] = useState('');
@@ -15,11 +16,12 @@ export default function NavBar() {
       <SidebarTrigger className="-ml-1" />
       <Separator orientation="vertical" className="mr-2 h-4" />
       <div className="ml-auto">
-        
-        <Avatar className="h-10 w-10 rounded-lg">
-          <AvatarImage src="/images/default-profile.png" alt={username} />
-          <AvatarFallback className="rounded-lg">{username}</AvatarFallback>
-        </Avatar>
+        <Link href='/profile'>
+          <Avatar className="h-10 w-10 rounded-lg">
+            <AvatarImage src="/images/default-profile.png" alt={username} />
+            <AvatarFallback className="rounded-lg">{username}</AvatarFallback>
+          </Avatar>
+        </Link>
       </div>
     </header>
   );

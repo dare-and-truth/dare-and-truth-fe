@@ -21,11 +21,11 @@ export function SearchChallengeUser() {
   };
 
   return (
-    <div className="relative mx-auto mt-2 max-w-sm">
+    <div className="relative mx-auto mt-2 max-w-sm ml-2">
       <form onSubmit={handleSearch} className="relative flex">
         <button
           type="submit"
-          className="rounded-l-md border border-gray-300 bg-gray-100 px-4 text-gray-700 hover:bg-gray-200 focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-200"
+          className="rounded-l-md border border-gray-300 bg-gray-100 px-2 text-gray-700 hover:bg-gray-200 focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-200"
         >
           <Search className="h-5 w-5" />
         </button>
@@ -35,7 +35,7 @@ export function SearchChallengeUser() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="w-full rounded-r-md border border-gray-300 px-4 py-2 shadow-sm focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-100"
+          className="w-full rounded-r-md border border-gray-300 px-2 py-2 shadow-sm focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-100"
         />
       </form>
     </div>

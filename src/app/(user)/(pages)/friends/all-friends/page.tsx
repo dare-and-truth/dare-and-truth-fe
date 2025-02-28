@@ -34,7 +34,7 @@ export default function ListFriendPage() {
     );
   };
   return (
-    <div className="mt-16 h-[calc(100vh-4rem)] overflow-y-auto p-4 pb-20 md:pb-4">
+    <div className="h-[calc(100vh-4rem)] overflow-y-auto p-4 pb-20 md:pb-4">
       {loading ? (
         <Loading />
       ) : friends.length === 0 ? (

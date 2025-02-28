@@ -24,7 +24,7 @@ import {
   UsersRound,
   UserPlus,
 } from 'lucide-react';
-import { SearchForm } from '@/components/SearchForm';
+import { SearchChallengeUser } from '@/components/SearchChallengeUser';
 
 export function MainSideBar({ ...props }) {
   const pathname = usePathname();
@@ -108,9 +108,8 @@ export function MainSideBar({ ...props }) {
       <SidebarHeader>
         <LogoSideBar />
       </SidebarHeader>
-
       <SidebarContent>
-        <SearchForm />
+        <SearchChallengeUser />
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>

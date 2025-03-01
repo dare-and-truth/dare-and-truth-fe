@@ -1,6 +1,6 @@
 'use client';
 
-import { format,isBefore, startOfDay } from 'date-fns';
+import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { Card } from '@/components/ui/card';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -22,6 +22,10 @@ export default function CalendarComponent() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
   const [isRefreshingCalendarList, setIsRefreshingCalendarList] = useState(false);
+
+  if(!date) {
+    setDate(new Date());
+  }
 
   useEffect(() => {
     if (date) {

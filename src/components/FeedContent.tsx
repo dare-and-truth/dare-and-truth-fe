@@ -14,6 +14,8 @@ const isVideo = (mediaUrl: string) => {
 
 export default function FeedContent({ feed }: { feed: FeedType }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isJoined, setIsJoined] = useState(feed.joined);
+  console.log(isJoined);
   return (
     <>
       <div className="mb-2 flex items-center justify-between gap-4">
@@ -30,10 +32,44 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
           </div>
         </div>
 
-        {feed.type == 'challenge' && <JoinChallengeDialog
-          button={<Button variant="join">Join</Button>}
-          challenge={feed}
-        />}
+        {feed.type == 'challenge' && !isJoined && (
+          <JoinChallengeDialog
+            button={
+              <Button
+                variant="default"
+                className="rounded-full bg-blue-600 px-6 py-2 font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md"
+              >
+                Join Challenge
+              </Button>
+            }
+            challenge={feed}
+            setIsJoined={setIsJoined}
+          />
+        )}
+
+        {feed.type == 'challenge' && isJoined && (
+          <Button
+            variant="outline"
+            className="flex items-center gap-2 rounded-full border-blue-200 bg-blue-50 px-6 py-2 font-medium text-blue-600"
+            disabled
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-blue-600"
+            >
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+            Joined
+          </Button>
+        )}
       </div>
 
       <div className="mb-4">
@@ -86,7 +122,7 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
 
           {/* Nội dung trong dialog khi phóng to */}
           <DialogContent className="max-w-3xl p-0">
-            <DialogTitle/>
+            <DialogTitle />
             {isVideo(feed.mediaUrl) ? (
               <video
                 src={feed.mediaUrl}

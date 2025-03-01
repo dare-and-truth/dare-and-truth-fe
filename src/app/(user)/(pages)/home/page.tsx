@@ -8,6 +8,7 @@ import { ITEMS_PER_PAGE } from '@/app/constants';
 import { getFeeds } from '@/app/api/feed.api';
 import { useFeedContext } from '@/app/contexts';
 import Loading from '@/components/Loading';
+import EndOfFeed from '@/components/EndOfFeed';
 
 export default function HomePage() {
   const { feeds, setFeeds, page, setPage, hasMore, setHasMore } =
@@ -41,7 +42,13 @@ export default function HomePage() {
     if (feeds.length === 0) {
       fetchChallenges();
     }
-  }, []);
+  }, [feeds]);
+
+  const refreshFeed = () => {
+    setFeeds([]); // Clear existing feeds
+    setPage(0);
+    setHasMore(true);
+  };
 
   return (
     <div
@@ -55,9 +62,7 @@ export default function HomePage() {
           hasMore={hasMore}
           loader={<Loading />}
           endMessage={
-            <p style={{ textAlign: 'center' }}>
-              <b>Yay! You have seen it all</b>
-            </p>
+            <EndOfFeed refreshFeed={refreshFeed} />
           }
           scrollableTarget="scrollableDiv"
         >

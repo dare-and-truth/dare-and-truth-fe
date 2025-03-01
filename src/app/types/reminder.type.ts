@@ -32,14 +32,14 @@ export interface EventListProps {
 
 
 export interface CreateReminderRequest {
-  title: string;
+  title?: string;
   hashtag?: string;
   startDate: string; 
   endDate: string;  
   reminderContent: string;
   reminderTime?: string; 
-  startTime: string; 
-  endTime: string;   
+  startTime?: string; 
+  endTime?: string;   
 }
 
 export interface UpdateReminderRequest {

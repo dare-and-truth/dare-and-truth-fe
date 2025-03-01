@@ -27,39 +27,67 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { timeOptions } from '@/app/constants/index';
+import { createReminder } from '@/app/api/reminder.api';
+import { useLoading } from '@/app/contexts';
+import { toast } from 'react-toastify';
 
 const FormSchema = z.object({
-  content: z
+  reminderContent: z
     .string()
     .min(10, { message: 'Reminder content must be at least 10 characters.' })
     .max(100, {
       message: 'Reminder content must not exceed 100 characters.',
     }),
-  startTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {
+  reminderTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {
     message: 'Please enter a valid time in HH:MM format',
   }),
+  hashtag: z.string(),
+  startDate: z.string(),
+  endDate: z.string(),
 });
 
-export function JoinChallengeDialog({ challenge, button }: JoinDialogProps) {
+export function JoinChallengeDialog({
+  challenge,
+  button,
+  setIsJoined,
+}: JoinDialogProps) {
+  const { setIsLoading } = useLoading();
   const [open, setOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     mode: 'onChange',
     defaultValues: {
-      startTime: '10:00',
-      content: `Time to crush your # ${challenge.hashtag} challenge! 🏃‍♂️💨 Head to DoDo and let is make it happen! 🚀`,
+      reminderTime: '10:00',
+      reminderContent: `Time to crush your # ${challenge.hashtag} challenge! 🏃‍♂️💨 Head to DoDo and let is make it happen! 🚀`,
+      hashtag: challenge.hashtag,
+      startDate: challenge.startDate,
+      endDate: challenge.endDate,
     },
   });
   const { reset } = form;
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    setOpen(false);
-    setIsDropdownOpen(false);
-  }
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    try {
+      setIsLoading(true);
+      createReminder(data, handleSubmitSuccess);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleCancel = () => {
     setOpen(false);
+    setIsDropdownOpen(false);
+    reset();
+  };
+
+  const handleSubmitSuccess = () => {
+    setIsJoined(true);
+    setOpen(false);
+    toast.success('Join challenge successfully!');
     setIsDropdownOpen(false);
     reset();
   };
@@ -115,7 +143,7 @@ export function JoinChallengeDialog({ challenge, button }: JoinDialogProps) {
               <div className="flex gap-4">
                 <FormField
                   control={form.control}
-                  name="startTime"
+                  name="reminderTime"
                   render={({ field }) => (
                     <FormItem className="flex-1">
                       <FormLabel className="text-sm font-semibold text-blue-600">
@@ -169,7 +197,7 @@ export function JoinChallengeDialog({ challenge, button }: JoinDialogProps) {
 
               <FormField
                 control={form.control}
-                name="content"
+                name="reminderContent"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-sm font-semibold text-blue-600">

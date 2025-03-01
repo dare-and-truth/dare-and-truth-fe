@@ -12,3 +12,4 @@ export * from '@/app/types/reminder.type';
 export * from '@/app/types/comment.type';
 export * from '@/app/types/join.type';
 export * from '@/app/types/feed.type';
+export * from '@/app/types/notification.type';

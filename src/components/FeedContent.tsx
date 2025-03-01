@@ -15,7 +15,7 @@ const isVideo = (mediaUrl: string) => {
 export default function FeedContent({ feed }: { feed: FeedType }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isJoined, setIsJoined] = useState(feed.joined);
-  console.log(isJoined);
+  
   return (
     <>
       <div className="mb-2 flex items-center justify-between gap-4">

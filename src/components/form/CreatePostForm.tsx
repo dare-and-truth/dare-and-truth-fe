@@ -5,11 +5,12 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { CreateChallengePayload, CreatePostFormProps } from '@/app/types';
-import { postChallenge } from '@/app/api/challenge.api';
+import { CreatePostFormProps, CreatePostPayload } from '@/app/types';
 import { X } from 'lucide-react';
 import { MAX_FILE_SIZE, VALID_FILE_TYPES } from '@/app/constants';
 import { uploadFileToSupabase } from '@/app/helpers/uploadFileToSupabase';
+import { postPost } from '@/app/api/post.api';
+import { useRouter } from 'next/router';
 
 // Type definitions
 type FormData = z.infer<typeof formSchema>;
@@ -44,6 +45,7 @@ export default function CreatePostForm({
   const [errors, setErrors] = useState<FormErrors>({});
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const router = useRouter();
 
   // Handle file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,12 +110,11 @@ export default function CreatePostForm({
         mediaUrl,
         hashtag: selectedItemHashtag,
       };
-      console.log('data post', createChallengePayload);
       // Integrate API create post here
-      // await postChallenge(
-      //   createChallengePayload as CreateChallengePayload,
-      //   handleCreateSuccess,
-      // );
+      await postPost(
+        createChallengePayload as CreatePostPayload,
+        handleCreateSuccess,
+      );
     } catch (error) {
       if (error instanceof z.ZodError) {
         const newErrors: FormErrors = {};
@@ -131,13 +132,7 @@ export default function CreatePostForm({
   };
 
   const handleCreateSuccess = () => {
-    // Reset form
-    setFormData({});
-    setFilePreview('');
-    setErrors({});
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    router.push('/home');
   };
 
   const handleRemoveFile = () => {

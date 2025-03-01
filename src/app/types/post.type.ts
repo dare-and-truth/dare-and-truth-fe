@@ -1,3 +1,5 @@
+import { HashtagForDoChallengeResponse } from "@/app/types/reminder.type";
+
 export interface Post {
   id: string;
   userId: string;
@@ -11,5 +13,7 @@ export type CreatePostPayload = Omit<Post, 'id' | 'userId' | 'isActive'>;
 
 export interface CreatePostFormProps {
   selectedItemHashtag: string;
-  setSelectedItemHashtag: React.Dispatch<React.SetStateAction<string | null>>;
+  setSelectedItemHashtag: React.Dispatch<
+    React.SetStateAction<HashtagForDoChallengeResponse | null>
+  >;
 }

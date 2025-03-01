@@ -22,6 +22,7 @@ export default function AdminLayout({
     if (!token) return null;
     try {
       const payload: any = jwtDecode(token);
+      console.log(payload);
       return payload.role;
     } catch (error) {
       console.error('Invalid token:', error);
@@ -34,7 +35,7 @@ export default function AdminLayout({
     const token = localStorage.getItem('accessToken');
     const role = getRoleFromToken(token);
 
-    if (!token || role !== 'ADMIN') {
+    if (!token || role !== 'admin') {
       setIsAuthorized(false);
       toast.error('You are not an admin. Please log in as an admin.');
       router.push('/auth/login');

@@ -12,5 +12,6 @@ export interface FeedType {
   likeCount: number;
   commentCount: number;
   liked: boolean;
+  joined: boolean;
   isActive: boolean;
 }

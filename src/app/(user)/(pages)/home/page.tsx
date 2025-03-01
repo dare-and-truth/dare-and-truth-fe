@@ -1,5 +1,4 @@
 'use client';
-import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { FeedType } from '@/app/types';
 import Feed from '@/components/Feed';
@@ -22,7 +21,10 @@ export default function HomePage() {
       const newFeeds = await getFeeds(page, ITEMS_PER_PAGE);
 
       if (newFeeds && newFeeds.length > 0) {
-        setFeeds((prev) => [...prev, ...newFeeds.sort(() => 0.5 - Math.random())]);
+        setFeeds((prev) => [
+          ...prev,
+          ...newFeeds.sort(() => 0.5 - Math.random()),
+        ]);
         if (newFeeds.length < ITEMS_PER_PAGE) {
           setHasMore(false);
         }
@@ -45,7 +47,7 @@ export default function HomePage() {
 
   return (
     <div
-      className="mt-16 h-[calc(100vh-4rem)] overflow-y-auto p-7 pb-20 md:pb-4"
+      className="h-[calc(100vh-4rem)] overflow-y-auto p-7 pb-20 md:pb-4"
       id="scrollableDiv"
     >
       <div className="mx-auto max-w-2xl p-4">

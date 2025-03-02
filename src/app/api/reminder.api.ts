@@ -3,7 +3,8 @@
 import {
   CreateReminderRequest,
   UpdateReminderRequest,
-  ReminderSummaryProjection
+  ReminderSummaryProjection,
+  HashtagForDoChallengeResponse
 } from '@/app/types'; 
 import request from '@/app/utils/Axiosconfig';
 import { AxiosError } from 'axios';
@@ -76,4 +77,17 @@ export const deleteReminder = async (
       throw error;
     },
   });
+};
+
+// API để lấy tất cả reminders theo ngày
+export const getHashtags = async (): Promise<HashtagForDoChallengeResponse[]> => {
+  const response = await request({
+    method: 'get',
+    url: `/reminders/hashtags`,
+    onError: (error: AxiosError) => {
+      console.log('Error when fetching reminders:', error);
+      throw error;
+    },
+  });
+  return response?.data || [];
 };

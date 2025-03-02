@@ -22,7 +22,6 @@ export default function AdminLayout({
     if (!token) return null;
     try {
       const payload: any = jwtDecode(token);
-      console.log(payload);
       return payload.role;
     } catch (error) {
       console.error('Invalid token:', error);

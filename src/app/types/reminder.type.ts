@@ -1,3 +1,4 @@
+import { hash } from "crypto";
 import { Dispatch, SetStateAction } from "react";
 
 export interface CreateCalendarDialogProps {
@@ -29,7 +30,6 @@ export interface EventListProps {
   setIsRefreshingCalendarList: Dispatch<SetStateAction<boolean>>;
   
 }
-
 
 export interface CreateReminderRequest {
   title?: string;
@@ -64,4 +64,9 @@ export interface ReminderSummaryProjection {
   startTime: string;
   endTime: string;
   userId: string;
+}
+
+export interface HashtagForDoChallengeResponse {
+  hashtag: string;
+  did: boolean;
 }

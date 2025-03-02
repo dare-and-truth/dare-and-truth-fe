@@ -1,3 +1,4 @@
+// app/add-friend-requests/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -10,13 +11,19 @@ import Loading from '@/components/Loading';
 export default function AddFriendRequestsPage() {
   const [friendRequests, setFriendRequests] = useState<FriendRequest[]>([]);
   const [loading, setLoading] = useState(false);
+  const currentUserId = localStorage.getItem('userId');
 
   useEffect(() => {
     const fetchFriendRequests = async () => {
       setLoading(true);
       try {
         const data = await getAllFriendRequests();
-        setFriendRequests(data);
+        // Lọc các yêu cầu mà người dùng hiện tại là người nhận (user) và chưa được chấp nhận
+        const filteredRequests = data.filter(
+          (request: FriendRequest) => 
+          request.user.id === currentUserId && !request.isAccepted
+        );
+        setFriendRequests(filteredRequests);
       } catch (error) {
         console.error('Failed to fetch friend requests', error);
         toast.error('Failed to fetch friend requests');
@@ -30,18 +37,18 @@ export default function AddFriendRequestsPage() {
 
   const handleAccept = (requestId: string) => {
     setFriendRequests((current) =>
-      current.filter((request) => request.id !== requestId),
+      current.filter((request) => request.id !== requestId)
     );
   };
 
   const handleReject = (requestId: string) => {
     setFriendRequests((current) =>
-      current.filter((request) => request.id !== requestId),
+      current.filter((request) => request.id !== requestId)
     );
   };
 
   return (
-    <div className=" h-[calc(100vh-4rem)] overflow-y-auto p-4 pb-20 md:pb-4">
+    <div className="h-[calc(100vh-4rem)] overflow-y-auto p-4 pb-20 md:pb-4">
       {loading ? (
         <Loading />
       ) : friendRequests.length === 0 ? (
@@ -53,14 +60,17 @@ export default function AddFriendRequestsPage() {
           {friendRequests.map((request) => (
             <FriendRequestCard
               key={request.id}
+              mode="requests" // Sử dụng chế độ 'requests'
               avatar={'/images/default-profile.png'}
               username={request.follower.username}
               followedAt={request.followedAt}
               isAccepted={request.isAccepted}
               requestId={request.id}
               followerId={request.follower.id}
+              userId={request.user.id}
               onAccept={handleAccept}
               onReject={handleReject}
+              onUnfriend={() => {}} // Không cần logic unfriend ở đây
             />
           ))}
         </div>

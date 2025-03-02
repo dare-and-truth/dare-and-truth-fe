@@ -1,6 +1,5 @@
 import {
   CreateRequestRequestPayload,
-  AcceptedFriendPayLoad,
 } from '@/app/types';
 import request from '@/app/utils/Axiosconfig';
 import { AxiosError } from 'axios';
@@ -44,13 +43,13 @@ export const getAllFriendsList = async () => {
 
 // API for accepting a friend request
 export const acceptFriendRequest = async (
-  data: AcceptedFriendPayLoad,
+  requestId:string,
   handleSuccess: (response: any) => void,
   handleError?: (error: any) => void,
 ) => {
   await request({
     method: 'patch',
-    url: `/requests/accept?requestId=${data.requestId}`,
+    url: `/requests/accept?requestId=${requestId}`,
     onSuccess: handleSuccess,
     onError: (error: AxiosError) => {
       console.log('Error when accepting request:', error);
@@ -61,13 +60,13 @@ export const acceptFriendRequest = async (
 
 // API for rejecting a friend request
 export const rejectFriendRequest = async (
-  data: AcceptedFriendPayLoad,
+  requestId:string,
   handleSuccess: (response: any) => void,
   handleError?: (error: any) => void,
 ) => {
   await request({
     method: 'delete',
-    url: `/requests/reject?requestId=${data.requestId}`,
+    url: `/requests/reject?requestId=${requestId}`,
     onSuccess: handleSuccess,
     onError: (error: AxiosError) => {
       console.log('Error when rejecting request:', error);
@@ -78,13 +77,13 @@ export const rejectFriendRequest = async (
 
 // API for deleting (unfriending) a friend
 export const unFriend = async (
-  friendId: string,
+  targetId: string,
   handleSuccess: (response: any) => void,
   handleError?: (error: any) => void,
 ) => {
   await request({
     method: 'delete',
-    url: `/requests/un-friend?friendId=${friendId}`,
+    url: `/requests/un-friend?friendId=${targetId}`,
     onSuccess: handleSuccess,
     onError: (error: AxiosError) => {
       console.log('Error when unfriending:', error);

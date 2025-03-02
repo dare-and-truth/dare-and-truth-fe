@@ -1,4 +1,3 @@
-// app/add-friend-requests/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -18,11 +17,13 @@ export default function AddFriendRequestsPage() {
       setLoading(true);
       try {
         const data = await getAllFriendRequests();
-        // Lọc các yêu cầu mà người dùng hiện tại là người nhận (user) và chưa được chấp nhận
+        console.log("dataaaaaaaaaaa:", data);
+        // Lọc các yêu cầu mà người dùng hiện tại là người nhận (user)
         const filteredRequests = data.filter(
           (request: FriendRequest) => 
-          request.user.id === currentUserId && !request.isAccepted
+          request.user.id === currentUserId
         );
+        console.log("dataa filet",filteredRequests);
         setFriendRequests(filteredRequests);
       } catch (error) {
         console.error('Failed to fetch friend requests', error);
@@ -70,7 +71,7 @@ export default function AddFriendRequestsPage() {
               userId={request.user.id}
               onAccept={handleAccept}
               onReject={handleReject}
-              onUnfriend={() => {}} // Không cần logic unfriend ở đây
+              onUnfriend={() => {}} 
             />
           ))}
         </div>

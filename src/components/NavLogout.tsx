@@ -18,6 +18,8 @@ export function Logout() {
       await postLogout(router);
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
+      localStorage.removeItem('username');
+      localStorage.removeItem('userId');
     } catch (error) {
       console.log('Error during logout', error);
     }

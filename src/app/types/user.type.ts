@@ -8,3 +8,24 @@ export interface User {
   avatar?: string;
   isAdmin?: string;
 }
+
+export interface UserWithRequestsResponse {
+  user: {
+    id: string;
+    username: string;
+  };
+  requests: Array<{
+    id: string;
+    followedAt: string;
+    acceptedAt?: string;
+    user: {
+      id: string;
+      username: string;
+    };
+    isAccepted: boolean;
+    follower: {
+      id: string;
+      username: string;
+    };
+  }>;
+}

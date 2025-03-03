@@ -15,3 +15,20 @@ export interface FeedType {
   joined: boolean;
   isActive: boolean;
 }
+
+export interface GetFeedResponse {
+  id: string;
+  type: string;
+  hashtag: string;
+  content: string;
+  mediaUrl: string;
+  startDate: string;
+  endDate: string;
+  createdAt: string;
+  userId: string;
+  username: string;
+  likeCount: number;
+  commentCount: number;
+  liked: boolean;
+  joined: boolean;
+}

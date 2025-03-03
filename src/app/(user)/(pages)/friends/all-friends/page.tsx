@@ -21,7 +21,6 @@ export default function ListFriendPage() {
         // Không cần lọc, giữ nguyên tất cả bạn bè đã chấp nhận
         setFriends(data);
       } catch (error) {
-        console.error('Failed to fetch friends list', error);
         toast.error('Failed to fetch friends list');
       } finally {
         setLoading(false);

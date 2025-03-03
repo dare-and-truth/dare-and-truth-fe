@@ -1,8 +1,9 @@
+// components/FriendRequestCard.tsx
 import { Button } from '@/components/ui/button';
 import { useEffect, useState, useMemo } from 'react';
-import { acceptFriendRequest, rejectFriendRequest, unFriend } from '@/app/api/friends.api';
+import { acceptFriendRequest, rejectFriendRequest, unFriend, createFriendRequest } from '@/app/api/friends.api';
 import { toast } from 'react-toastify';
-import { FriendRequestCardProps } from '@/app/types/friends.type';
+import { FriendRequestCardProps } from '@/app/types';
 
 export default function FriendRequestCard({ 
   avatar, 
@@ -13,36 +14,34 @@ export default function FriendRequestCard({
   requestId, 
   followerId,
   userId,
+  width = "w-[65%]",
   onAccept,        
   onReject,        
   onUnfriend,   
-  mode = 'requests' // Prop mới để kiểm soát chế độ: 'requests' hoặc 'friends'
-}: FriendRequestCardProps & { mode?: 'requests' | 'friends' }) {
+  onAddFriend,     
+  mode = 'requests' // Prop mới để kiểm soát chế độ: 'requests', 'friends', hoặc 'search'
+}: FriendRequestCardProps ) {
   const [isAccepted, setIsAccepted] = useState(initialAccepted || false);
   const [loading, setLoading] = useState(false);
   const [maxUsernameLength, setMaxUsernameLength] = useState(30);
-  const [cardWidth, setCardWidth] = useState("w-[65%]");
 
   // Lấy userId từ localStorage
   const currentUserId = localStorage.getItem('userId');
-  const currentUsername = localStorage.getItem('username');
 
-  // Kiểm tra nếu mode là 'requests' và người dùng hiện tại là người gửi, trả về null để không hiển thị
-  if (mode === 'requests' && (!currentUserId || followerId === currentUserId)) {
-    return null; // Không hiển thị card nếu là người gửi trong chế độ yêu cầu
+  // Kiểm tra nếu mode là 'requests' và người dùng hiện tại là người gửi, không hiển thị
+  if (mode === 'requests' && currentUserId && followerId === currentUserId) {
+    return null;
   }
+
 
   useEffect(() => {
     const updateUI = () => {
       if (window.innerWidth < 1024) {
         setMaxUsernameLength(25);
-        setCardWidth("w-[100%]"); 
       } else if (window.innerWidth < 1280) {
         setMaxUsernameLength(20);
-        setCardWidth("w-[65%]");
       } else {
         setMaxUsernameLength(30);
-        setCardWidth("w-[65%]");
       }
     };
 
@@ -52,13 +51,11 @@ export default function FriendRequestCard({
   }, []);
 
   const isCurrentUserReceiver = userId === currentUserId;
-
-  // Debug log để kiểm tra vai trò
-  console.log('Card props:', { mode, requestId, followerId, userId, currentUserId, isCurrentUserReceiver, isAccepted, username });
+  const isCurrentUserSender = followerId === currentUserId;
 
   const truncatedUsername = username?.length > maxUsernameLength 
-  ? `${username.slice(0, maxUsernameLength)}...` 
-  : username || "Unknown User";
+    ? `${username.slice(0, maxUsernameLength)}...` 
+    : username || "Unknown User";
 
   const timeAgo = useMemo(() => {
     const fromDate = new Date(
@@ -78,20 +75,40 @@ export default function FriendRequestCard({
     return `${diffMonths} month${diffMonths > 1 ? "s" : ""} ago`;
   }, [followedAt, acceptedAt, isAccepted]);
   
+  const handleAddFriend = async () => {
+    if (!userId || !currentUserId) {
+      toast.error("Invalid user ID.");
+      return;
+    }
+    setLoading(true);
+    try {
+      await createFriendRequest(
+        { userId, followerId: currentUserId },
+        () => {
+          setIsAccepted(false); 
+          onAddFriend?.(userId, currentUserId);
+          toast.success("Friend request sent!");
+        }
+      );
+    } catch (error) {
+      toast.error("Failed to send friend request.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleAccept = async () => {
     if (!requestId || !currentUserId) {
       toast.error("Invalid request or user ID.");
       return;
     }
     setLoading(true);
-    console.log("request id check",requestId);
     try {
       const response = await acceptFriendRequest(
-        requestId , 
+        requestId, 
         (response) => {
-          console.log("ré pon",response);
           setIsAccepted(true);
-          onAccept && onAccept(requestId);
+          onAccept?.(requestId);
           toast.success("Friend request accepted!");
         },
         (error) => {
@@ -100,7 +117,7 @@ export default function FriendRequestCard({
       );
     } finally {
       setLoading(false);
-    }
+    };
   };
   
   const handleReject = async () => {
@@ -113,7 +130,7 @@ export default function FriendRequestCard({
       await rejectFriendRequest(
         requestId,
         (response) => {
-          onReject && onReject(requestId);
+          onReject?.(requestId);
           toast.info("Friend request rejected.");
         },
         (error) => {
@@ -122,7 +139,7 @@ export default function FriendRequestCard({
       );
     } finally {
       setLoading(false);
-    }
+    };
   };
   
   const handleUnfriend = async () => {
@@ -132,17 +149,16 @@ export default function FriendRequestCard({
     }
     setLoading(true);
     try {
-      const targetId = currentUserId === followerId ? userId : followerId;
-      
-      console.log("unfriend id",targetId);
-      if (!targetId) {
-        throw new Error("Target ID is undefined.");
+      const friendId = currentUserId === userId ? followerId : userId; // ID của người bạn cần xóa
+      if (!friendId) {
+        throw new Error("Friend ID is undefined.");
       }
-  
+
       const response = await unFriend(
-        targetId,
+        friendId,
         (response) => {
-          onUnfriend && onUnfriend(requestId);
+          onUnfriend?.(requestId);
+          setIsAccepted(false); 
           toast.info("You have unfriended this user.");
         },
         (error) => {
@@ -151,11 +167,11 @@ export default function FriendRequestCard({
       );
     } finally {
       setLoading(false);
-    }
+    };
   };
 
   return (
-    <div className={`flex items-center p-4 bg-white rounded-lg shadow-sm mb-4 ${cardWidth} transition-all duration-300`}>
+    <div className={`flex items-center p-4 bg-white rounded-lg shadow-sm mb-4 ${width} transition-all duration-300`}>
       <div className="flex-shrink-0">
         <img src={avatar || '/images/default-profile.png'} alt="User Avatar" className="w-12 h-12 rounded-full" />
       </div>
@@ -166,9 +182,13 @@ export default function FriendRequestCard({
           <p className="text-sm text-gray-500">
             {isAccepted ? `Became friends ${timeAgo}` : `Sent friend request ${timeAgo}`}
           </p>
-        ) : (
+        ) : mode === 'friends' ? (
           <p className="text-sm text-gray-500">
             {isAccepted ? `Became friends ${timeAgo}` : 'Friend'}
+          </p>
+        ) : ( // Mode 'search'
+          <p className="text-sm text-gray-500">
+            {isAccepted ? `Became friends ${timeAgo}` : 'Not friends'}
           </p>
         )}
       </div>
@@ -181,8 +201,9 @@ export default function FriendRequestCard({
                 variant="outline" 
                 className="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg"
                 onClick={handleUnfriend}
-                disabled={loading}>
-                  {loading ? "Unfriending...":"Unfriend"}
+                disabled={loading}
+              >
+                {loading ? "Unfriending..." : "Unfriend"}
               </Button>
             ) : isCurrentUserReceiver ? (
               <>
@@ -208,22 +229,68 @@ export default function FriendRequestCard({
             <Button 
               variant="default" 
               className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg" 
-              onClick={() => {}} // Thay bằng handleAddFriend nếu cần
+              onClick={handleAddFriend}
               disabled={loading}
             >
               {loading ? "Adding..." : "Add Friend"}
             </Button>
           )
-        ) : (
+        ) : mode === 'friends' ? (
           requestId && isAccepted && (
             <Button 
               variant="outline" 
               className="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg"
               onClick={handleUnfriend}
-              disabled={loading}>
-                {loading ? "Unfriending..." : "Unfriend"}
+              disabled={loading}
+            >
+              {loading ? "Unfriending..." : "Unfriend"}
             </Button>
           )
+        ) : ( // Mode 'search'
+          userId && currentUserId ? (
+            requestId ? (
+              isAccepted ? (
+                <Button 
+                  variant="outline" 
+                  className="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg"
+                  onClick={handleUnfriend}
+                  disabled={loading}
+                >
+                  {loading ? "Unfriending..." : "Unfriend"}
+                </Button>
+              ) : isCurrentUserSender ? (
+                <span className="text-gray-500 font-semibold">Request Sent</span>
+              ) : isCurrentUserReceiver ? (
+                <>
+                  <Button 
+                    variant="default" 
+                    className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg" 
+                    onClick={handleAccept}
+                    disabled={loading}
+                  >
+                    {loading ? "Accepting..." : "Accept"}
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg"
+                    onClick={handleReject}
+                    disabled={loading}
+                  >
+                    {loading ? "Rejecting..." : "Reject"}
+                  </Button>
+                </>
+              ) : null
+            ) : (
+              <Button 
+                variant="default" 
+                className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg" 
+                onClick={handleAddFriend}
+                disabled={loading}
+              >
+                {loading ? "Adding..." : "Add Friend"}
+              </Button>
+            )
+          ) : null
         )}
       </div>
     </div>

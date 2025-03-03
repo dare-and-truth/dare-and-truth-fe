@@ -17,16 +17,13 @@ export default function AddFriendRequestsPage() {
       setLoading(true);
       try {
         const data = await getAllFriendRequests();
-        console.log("dataaaaaaaaaaa:", data);
         // Lọc các yêu cầu mà người dùng hiện tại là người nhận (user)
         const filteredRequests = data.filter(
           (request: FriendRequest) => 
           request.user.id === currentUserId
         );
-        console.log("dataa filet",filteredRequests);
         setFriendRequests(filteredRequests);
       } catch (error) {
-        console.error('Failed to fetch friend requests', error);
         toast.error('Failed to fetch friend requests');
       } finally {
         setLoading(false);

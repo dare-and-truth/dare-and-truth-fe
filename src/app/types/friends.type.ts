@@ -44,6 +44,7 @@ export interface FriendRequestCardProps {
   requestId: string;
   followerId: string;
   userId?: string;
+  width?: string;
   onAccept?: (requestId: string) => void;
   onReject?: (requestId: string) => void;
   onUnfriend?: (requestId: string) => void;

@@ -1,15 +1,16 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { CreateChallengePayload, CreatePostFormProps } from '@/app/types';
-import { postChallenge } from '@/app/api/challenge.api';
+import { CreatePostFormProps, CreatePostPayload } from '@/app/types';
 import { X } from 'lucide-react';
 import { MAX_FILE_SIZE, VALID_FILE_TYPES } from '@/app/constants';
 import { uploadFileToSupabase } from '@/app/helpers/uploadFileToSupabase';
+import { postPost } from '@/app/api/post.api';
+import { useRouter } from 'next/navigation';
 
 // Type definitions
 type FormData = z.infer<typeof formSchema>;
@@ -30,9 +31,7 @@ const formSchema = z.object({
   content: z
     .string()
     .min(10, { message: 'Content must be at least 10 characters.' })
-    .max(225, {
-      message: 'Content must not exceed 225 characters.',
-    }),
+    .max(225, { message: 'Content must not exceed 225 characters.' }),
 });
 
 export default function CreatePostForm({
@@ -44,6 +43,7 @@ export default function CreatePostForm({
   const [errors, setErrors] = useState<FormErrors>({});
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const router = useRouter();
 
   // Handle file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,26 +51,12 @@ export default function CreatePostForm({
     if (!file) return;
 
     try {
-      // Validate single file
-      const validatedFile = z
-        .instanceof(File)
-        .refine(
-          (file) => file.size <= MAX_FILE_SIZE,
-          'File size must be less than 50MB',
-        )
-        .refine(
-          (file) => VALID_FILE_TYPES.includes(file.type as any),
-          'Invalid file type',
-        )
-        .parse(file);
-
+      const validatedFile = formSchema.shape.file.parse(file);
       setFormData((prev) => ({ ...prev, file: validatedFile }));
       setErrors((prev) => ({ ...prev, file: undefined }));
 
-      // Create preview
       const objectUrl = URL.createObjectURL(file);
       setFilePreview(objectUrl);
-      return () => URL.revokeObjectURL(objectUrl);
     } catch (error) {
       if (error instanceof z.ZodError) {
         setErrors((prev) => ({ ...prev, file: error.errors[0].message }));
@@ -78,14 +64,19 @@ export default function CreatePostForm({
     }
   };
 
+  // Cleanup file preview when file changes or component unmounts
+  useEffect(() => {
+    return () => {
+      if (filePreview) URL.revokeObjectURL(filePreview);
+    };
+  }, [filePreview]);
+
   // Handle field changes
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-
-    // Clear error when user starts typing
     setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
@@ -96,10 +87,7 @@ export default function CreatePostForm({
     setErrors({});
 
     try {
-      // Validate form data
       const validatedData = formSchema.parse(formData);
-
-      // Upload file to Supabase
       const { file, ...formdata } = validatedData;
       const mediaUrl = await uploadFileToSupabase(file);
 
@@ -108,12 +96,10 @@ export default function CreatePostForm({
         mediaUrl,
         hashtag: selectedItemHashtag,
       };
-      console.log('data post', createChallengePayload);
-      // Integrate API create post here
-      // await postChallenge(
-      //   createChallengePayload as CreateChallengePayload,
-      //   handleCreateSuccess,
-      // );
+      await postPost(
+        createChallengePayload as CreatePostPayload,
+        handleCreateSuccess,
+      );
     } catch (error) {
       if (error instanceof z.ZodError) {
         const newErrors: FormErrors = {};
@@ -131,22 +117,20 @@ export default function CreatePostForm({
   };
 
   const handleCreateSuccess = () => {
-    // Reset form
-    setFormData({});
+    router.push('/home');
+  };
+
+  const handleRemoveFile = () => {
+    setFormData((prev) => ({ ...prev, file: undefined })); // Giữ lại content nếu muốn
     setFilePreview('');
-    setErrors({});
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
-  const handleRemoveFile = () => {
-    setFormData({ file: undefined });
-    setFilePreview('');
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''; // Reset input file
-    }
-  };
+  // Kiểm tra form có hợp lệ để enable nút Post
+  const isFormValid =
+    formData.file && formData.content && !errors.file && !errors.content;
 
   return (
     <div className="rounded-lg border p-6 shadow-md">
@@ -184,9 +168,9 @@ export default function CreatePostForm({
             disabled={isUploading}
           />
           {errors.file && <p className="text-sm text-red-500">{errors.file}</p>}
-          {filePreview && (
+          {filePreview && formData.file && (
             <div className="relative w-full">
-              {formData.file?.type.startsWith('image/') ? (
+              {formData.file.type.startsWith('image/') ? (
                 <img
                   src={filePreview}
                   alt="Preview"
@@ -197,7 +181,7 @@ export default function CreatePostForm({
                   controls
                   className="h-[250px] w-full rounded-md border-red-600"
                 >
-                  <source src={filePreview} type={formData.file?.type} />
+                  <source src={filePreview} type={formData.file.type} />
                   Your browser does not support the video tag.
                 </video>
               )}
@@ -219,7 +203,11 @@ export default function CreatePostForm({
           >
             Back
           </Button>
-          <Button type="submit" disabled={isUploading} variant="join">
+          <Button
+            type="submit"
+            disabled={isUploading || !isFormValid}
+            variant="join"
+          >
             {isUploading ? 'Uploading...' : 'Post'}
           </Button>
         </div>

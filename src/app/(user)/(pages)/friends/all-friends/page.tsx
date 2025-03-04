@@ -1,7 +1,8 @@
+// app/list-friend/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getAllFriendsList } from '@/app/api/friends.api'; // Gọi đúng API lấy danh sách bạn
+import { getAllFriendsList } from '@/app/api/friends.api';
 import FriendRequestCard from '@/components/FriendsRequestCard';
 import { FriendList } from '@/app/types';
 import { toast } from 'react-toastify';
@@ -10,15 +11,16 @@ import Loading from '@/components/Loading';
 export default function ListFriendPage() {
   const [friends, setFriends] = useState<FriendList[]>([]);
   const [loading, setLoading] = useState(false);
+  const currentUserId = localStorage.getItem('userId'); // Lấy userId từ localStorage
 
   useEffect(() => {
     const fetchFriends = async () => {
       setLoading(true);
       try {
         const data = await getAllFriendsList();
+        // Không cần lọc, giữ nguyên tất cả bạn bè đã chấp nhận
         setFriends(data);
       } catch (error) {
-        console.error('Failed to fetch friends list', error);
         toast.error('Failed to fetch friends list');
       } finally {
         setLoading(false);
@@ -33,6 +35,7 @@ export default function ListFriendPage() {
       current.filter((friend) => friend.id !== requestId),
     );
   };
+
   return (
     <div className="h-[calc(100vh-4rem)] overflow-y-auto p-4 pb-20 md:pb-4">
       {loading ? (
@@ -44,14 +47,16 @@ export default function ListFriendPage() {
           {friends.map((friend) => (
             <FriendRequestCard
               key={friend.id}
+              mode="friends" // Sử dụng chế độ 'friends'
               avatar={'/images/default-profile.png'}
-              username={friend.follower.username}
+              // Kiểm tra followerId so với currentUserId để chọn username
+              username={currentUserId && friend.follower.id === currentUserId ? friend.user.username : friend.follower.username}
               isAccepted={friend.isAccepted}
               acceptedAt={friend.acceptedAt}
+              followedAt={friend.followedAt}
               requestId={friend.id}
               followerId={friend.follower.id}
               userId={friend.user.id}
-              followedAt={friend.followedAt}
               onUnfriend={handleUnfriend}
             />
           ))}

@@ -55,25 +55,40 @@ httpClient.interceptors.response.use(
     if (error.response?.status === 401) {
       const refreshToken = localStorage.getItem('refreshToken');
 
+      // Nếu không có refresh token, logout ngay
       if (!refreshToken) {
-        // Không có refresh token, chuyển hướng về login ngay lập tức
         localStorage.removeItem('accessToken');
         toast.error('Session expired. Please log in again.');
         window.location.href = '/auth/login';
         return Promise.reject(error);
       }
 
+      // Nếu lỗi 401 đến từ chính /auth/refresh-token, logout ngay
+      if (originalRequest.url.includes('/auth/refresh-token')) {
+        isRefreshing = false;
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        window.location.href = '/auth/login';
+        return Promise.reject(error);
+      }
+
+      // Nếu chưa refresh, thực hiện refresh token
       if (!isRefreshing) {
         isRefreshing = true;
         try {
-          // Gọi API refresh token
-          const refreshResponse = await request({
-            method: 'post',
-            url: '/auth/refresh-token',
-            data: { refreshToken },
+          // Gọi trực tiếp httpClient thay vì request
+          const refreshResponse = await httpClient.post('/auth/refresh-token', {
+            refreshToken,
           });
 
-          const newAccessToken = refreshResponse?.data.access_token;
+          // Điều chỉnh theo cấu trúc response thực tế của bạn (ví dụ: data.access_token)
+          const newAccessToken =
+            refreshResponse?.data?.data?.access_token ||
+            refreshResponse?.data?.access_token;
+          if (!newAccessToken) {
+            throw new Error('No access token in refresh response');
+          }
+
           localStorage.setItem('accessToken', newAccessToken);
           isRefreshing = false;
           onRefreshed(newAccessToken);
@@ -82,7 +97,7 @@ httpClient.interceptors.response.use(
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           return httpClient(originalRequest);
         } catch (refreshError) {
-          // Nếu refresh token thất bại (hết hạn hoặc không hợp lệ), chuyển hướng về login
+          // Nếu refresh token thất bại, logout
           isRefreshing = false;
           localStorage.removeItem('accessToken');
           localStorage.removeItem('refreshToken');

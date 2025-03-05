@@ -54,7 +54,7 @@ export function MainSideBar({ ...props }) {
         text: 'Notification',
         href: '/notification',
         active: pathname === '/notification',
-        isButton:true
+        isButton: true,
       },
       {
         icon: <MessageSquare size={22} />,

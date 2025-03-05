@@ -16,12 +16,12 @@ export function SearchChallengeUser() {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      e.preventDefault(); 
+      e.preventDefault();
     }
   };
 
   return (
-    <div className="relative mx-auto mt-2 max-w-sm ml-2">
+    <div className="relative mx-auto ml-2 mt-2 max-w-sm">
       <form onSubmit={handleSearch} className="relative flex">
         <button
           type="submit"

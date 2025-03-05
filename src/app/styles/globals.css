@@ -52,7 +52,6 @@ body {
   }
 }
 
-
 @keyframes custom-spin {
   to {
     transform: rotate(360deg);
@@ -78,4 +77,3 @@ body {
 .animate-pulse {
   animation: custom-pulse 1.5s ease-in-out infinite;
 }
-

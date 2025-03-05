@@ -16,7 +16,7 @@ export default function NavBar() {
       <SidebarTrigger className="-ml-1" />
       <Separator orientation="vertical" className="mr-2 h-4" />
       <div className="ml-auto">
-        <Link href='/profile'>
+        <Link href="/profile">
           <Avatar className="h-10 w-10 rounded-lg">
             <AvatarImage src="/images/default-profile.png" alt={username} />
             <AvatarFallback className="rounded-lg">{username}</AvatarFallback>

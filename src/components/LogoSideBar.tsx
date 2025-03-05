@@ -13,18 +13,18 @@ export function LogoSideBar() {
       <SidebarMenuItem>
         <SidebarMenuButton size="lg">
           <Link href="/home" className="flex items-center">
-            <div className="flex  bg-gray-200 size-12 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+            <div className="flex size-12 items-center justify-center rounded-lg bg-gray-200 bg-sidebar-primary text-sidebar-primary-foreground">
               <Image
-                src='/images/logo.png'
+                src="/images/logo.png"
                 alt="Logo"
                 width={80}
                 height={32}
-                className="h-10 w-10" 
+                className="h-10 w-10"
               />
             </div>
-            <div className="ml-2 grid flex-1 text-left text-md leading-tight">
+            <div className="text-md ml-2 grid flex-1 text-left leading-tight">
               <span className="truncate font-semibold">Do Do</span>
-              <span className="truncate ">Welcome back</span>
+              <span className="truncate">Welcome back</span>
             </div>
           </Link>
         </SidebarMenuButton>

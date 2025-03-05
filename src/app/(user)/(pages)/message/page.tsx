@@ -1,16 +1,5 @@
-import type { Metadata } from 'next';
-import ChatLayout from '@/components/chat/chat-layout';
+import ChatLayout from '@/components/chat/ChatLayout';
 
-export const metadata: Metadata = {
-  title: 'Instagram • Chats',
-  description: 'Instagram Clone Chat Interface',
-};
-
-export default function InboxPage() {
-  return (
-    <div className="h-[calc(100vh-4rem)] overflow-hidden p-2 md:pb-4">
-      <ChatLayout />
-    </div>
-  );
- 
+export default function ChatPage() {
+  return <ChatLayout />;
 }

@@ -2,7 +2,7 @@ import { MessageSquare } from 'lucide-react';
 
 export function EmptyChat() {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center bg-white p-6 dark:bg-[#1c1c1c] md:border-l md:border-stone-300 md:dark:border-stone-700">
+    <div className="flex h-full w-full flex-col items-center justify-center rounded-r-lg bg-white p-6">
       <div className="flex h-24 w-24 items-center justify-center rounded-full border-2 border-current">
         <MessageSquare className="h-12 w-12" />
       </div>

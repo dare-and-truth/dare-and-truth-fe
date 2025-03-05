@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import FeedContent from '@/components/FeedContent';
 import CommentDialog from '@/components/CommentDialog';
 
-export default function Feed({ feed }: {feed: FeedType}) {
+export default function Feed({ feed }: { feed: FeedType }) {
   const [liked, setLiked] = useState(feed.liked);
   const [likeCount, setLikeCount] = useState(feed.likeCount);
   const [commentCount, setCommentCount] = useState(feed.commentCount);
@@ -20,10 +20,13 @@ export default function Feed({ feed }: {feed: FeedType}) {
         setLiked(!liked);
       });
     } else {
-      likeFeed({ feedId: feed.id, isChallenge: feed.type === 'challenge' }, () => {
-        setLikeCount((prev) => prev + 1);
-        setLiked(!liked);
-      });
+      likeFeed(
+        { feedId: feed.id, isChallenge: feed.type === 'challenge' },
+        () => {
+          setLikeCount((prev) => prev + 1);
+          setLiked(!liked);
+        },
+      );
     }
   };
 
@@ -57,8 +60,7 @@ export default function Feed({ feed }: {feed: FeedType}) {
           >
             <MessageCircle className="h-4 w-4" />
             <span>
-              {commentCount}{' '}
-              {commentCount === 1 ? 'Comment' : 'Comments'}
+              {commentCount} {commentCount === 1 ? 'Comment' : 'Comments'}
             </span>
           </Button>
           <Button variant="ghost" size="lg" className="gap-2 hover:bg-sky-300">

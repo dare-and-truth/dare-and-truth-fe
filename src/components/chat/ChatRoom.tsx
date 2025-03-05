@@ -1,60 +1,64 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type KeyboardEvent } from 'react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { MessageInput } from '@/components/chat/MessageInput';
-import { Button } from '@/components/ui/button';
-import { formatMessageTime } from '@/lib/format-time';
-import { ChatData, Message, MessageBubbleProps } from '@/app/types/chat.type';
-import { useIsMobile } from '@/hooks/use-mobile';
+import TextareaAutosize from 'react-textarea-autosize';
+import { Image, Send, Smile, X } from 'lucide-react';
+import { EmojiPicker } from '@/components/chat/EmojiPicker';
+import { Chat, Message, MessageList } from '@/app/types/chat.type';
+import { MessageBubble } from '@/components/chat/MessageBubble';
+import {
+  shouldShowAvatar,
+  shouldShowTimestamp,
+} from '@/app/helpers/formatMessage';
+
 interface ChatRoomProps {
-  chatId: string;
+  activeChat: Chat;
 }
 
-const MockDataDB: ChatData = {
-  chats: [
-    { id: '1', name: 'Chat 1' },
-    { id: '2', name: 'Chat 2' },
-  ],
-  chat_users: [
-    { chat_id: '1', user_id: '101' },
-    { chat_id: '1', user_id: '102' },
-    { chat_id: '2', user_id: '103' },
-  ],
+const MockDataDB: MessageList = {
   messages: [
     {
-      chat_id: '1',
-      content: 'Hello!',
-      sender_id: '101',
-      time: '2024-03-04T10:00:00Z',
+      chatId: '1',
+      content: '',
+      imgUrl:
+        'https://ldzbpqvspnjrhgfgigev.supabase.co/storage/v1/object/public/uploads/6b41950b-aa50-4953-b015-e7948f22730b.png',
+      senderId: '2d904da6-fd76-43ea-8887-0259581135df',
+      updated_at: '2025-03-02 13:55:58.123456',
       id: '1',
     },
     {
-      chat_id: '1',
-      content: 'Hi there!',
-      sender_id: '102',
-      time: '2024-03-04T10:05:00Z',
+      chatId: '1',
+      content: '',
+      imgUrl:
+        'https://ldzbpqvspnjrhgfgigev.supabase.co/storage/v1/object/public/uploads/fef0bddd-2e6c-4ffb-9d8c-a3e947baf2ed.png',
+      senderId: '102',
+      updated_at: '2025-03-02 13:56:10.654321',
       id: '2',
     },
     {
-      chat_id: '2',
-      content: 'Hey!',
-      sender_id: '103',
-      time: '2024-03-04T10:10:00Z',
+      chatId: '2',
+      content: '',
+      imgUrl:
+        'https://ldzbpqvspnjrhgfgigev.supabase.co/storage/v1/object/public/uploads/fef0bddd-2e6c-4ffb-9d8c-a3e947baf2ed.png',
+      senderId: '103',
+      updated_at: '2025-03-02 14:00:45.987654',
       id: '3',
     },
   ],
 };
 
-export function ChatRoom({ chatId }: ChatRoomProps) {
-  const [messages, setMessages] = useState<{ [chatId: string]: Message[] }>({});
+export function ChatRoom({ activeChat }: ChatRoomProps) {
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
-    const isMobile =useIsMobile();
-  const avatarURL = 'https://i.pravatar.cc/150?img=15';
-  const chatName = 'ryan_clark';
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const emojiButtonRef = useRef<HTMLButtonElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const userId= '101'
+  const currentUser = localStorage.getItem('userId');
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -62,172 +66,196 @@ export function ChatRoom({ chatId }: ChatRoomProps) {
 
   useEffect(() => {
     const filteredMessages = MockDataDB.messages
-      .filter((message) => message.chat_id === (chatId))
-      .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+      .filter((message) => message.chatId === activeChat.chatId)
+      .sort(
+        (a, b) =>
+          new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime(),
+      );
 
-    setMessages((prevMessages) => ({
-      ...prevMessages,
-      [chatId]: filteredMessages,
-    }));
-  }, [chatId]);
+    setMessages(filteredMessages);
+  }, [activeChat.chatId]);
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = async () => {
-    if (!inputText.trim()) return;
+  const handleSendMessage = () => {
+    if (!inputText.trim() && !selectedImage) return;
 
-    const newMessage = {
-      chat_id: chatId,
+    const newMessage: Message = {
+      chatId: activeChat.chatId,
       content: inputText,
-      sender_id: userId,
-      time: new Date().toISOString(),
+      senderId: currentUser || '',
+      imgUrl: selectedImage ? URL.createObjectURL(selectedImage) : '',
+      updated_at: new Date().toISOString(),
       id: Date.now().toString(),
     };
-    setMessages((prevMessages) => ({
-      ...prevMessages,
-      [chatId]: [...(prevMessages[chatId] || []), newMessage],
-    }));
+
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
     setInputText('');
+    setSelectedImage(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  function shouldShowTimestamp(
-    messages: Message[] | undefined,
-    index: number,
-  ): boolean {
-    if (!messages) return true;
-    if (index === 0) return true;
-
-    const currentMessageTime = new Date(messages[index].time).getTime();
-    const previousMessageTime = new Date(messages[index - 1].time).getTime();
-
-    if (messages[index].sender_id === messages[index - 1].sender_id) {
-      const differenceInMinutes =
-        Math.abs(currentMessageTime - previousMessageTime) / (1000 * 60);
-      return differenceInMinutes >= 5;
-    } else {
-      return true;
+  const handleKeyPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
     }
-  }
+  };
+
+  const handleEmojiSelect = (emoji: string) => {
+    setInputText(inputText + emoji);
+    inputRef.current?.focus();
+  };
+
+  const toggleEmojiPicker = () => {
+    setShowEmojiPicker(!showEmojiPicker);
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedImage(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        showEmojiPicker &&
+        emojiButtonRef.current &&
+        !emojiButtonRef.current.contains(event.target as Node) &&
+        !document.querySelector('.emoji-picker')?.contains(event.target as Node)
+      ) {
+        setShowEmojiPicker(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showEmojiPicker]);
 
   return (
     <div className="absolute inset-0 flex flex-col bg-white dark:bg-[#1c1c1c] md:left-[350px]">
-      <div className="flex h-[60px] items-center gap-2 border-b border-stone-300 pl-2 dark:border-stone-700 md:gap-4 md:pl-6">
+      <div className="flex h-[60px] items-center gap-2 border-b border-stone-300 pl-6 dark:border-stone-700 md:gap-4 md:pl-6">
         <Link href="/profile">
           <Avatar className="h-10 w-10 cursor-pointer">
-            {avatarURL && (
-              <AvatarImage src={avatarURL} alt={`${chatName}'s profile`} />
+            {activeChat.avatarURL && (
+              <AvatarImage
+                src={activeChat.avatarURL}
+                alt={`${activeChat.username}'s profile`}
+              />
             )}
-            <AvatarFallback>{chatName.charAt(0).toUpperCase()}</AvatarFallback>
+            <AvatarFallback>
+              {activeChat.username.charAt(0).toUpperCase()}
+            </AvatarFallback>
           </Avatar>
         </Link>
-        <span className="font-medium">{chatName}</span>
+        <span className="font-medium">{activeChat.username}</span>
       </div>
 
       <div className="flex flex-1 flex-col overflow-y-auto border-t border-stone-300 px-1 py-2 dark:border-stone-700 dark:[color-scheme:dark] md:px-5">
-        <div className="m-10 flex h-[100px] flex-col items-center justify-center gap-2 px-4">
-          <div className="flex flex-col items-center gap-2">
+        <div className="m-4 flex h-[100px] flex-col items-center justify-center gap-2 px-4">
+          <Link href="/profile" className="flex flex-col items-center gap-2">
             <Avatar className="h-12 w-12 cursor-pointer">
-              {avatarURL ? (
-                <AvatarImage src={avatarURL} alt={`${chatName}'s profile`} />
-              ) : (
-                <AvatarFallback>
-                  {chatName.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              )}
+              <AvatarImage src={activeChat.avatarURL} alt="image profile" />
             </Avatar>
-            <span className="text-md font-semibold">{chatName}</span>
-          </div>
-          <Link href="/profile">
-            <Button variant="join" className="font-medium">
-              View Profile
-            </Button>
+            <span className="text-md font-semibold">{activeChat.username}</span>
           </Link>
         </div>
 
-        {messages[chatId]?.map((message, index) => (
+        {messages.map((message, index) => (
           <MessageBubble
             key={message.id}
             message={message}
-            isCurrentUser={message.sender_id === userId}
-            avatarURL={avatarURL}
-            chatName={chatName}
-            showAvatar={shouldShowAvatar(messages[chatId], index)}
-            showTimestamp={shouldShowTimestamp(messages[chatId], index)}
+            isCurrentUser={message.senderId === currentUser}
+            avatarURL={activeChat.avatarURL}
+            showAvatar={shouldShowAvatar(messages, index)}
+            showTimestamp={shouldShowTimestamp(messages, index)}
           />
         ))}
+
         <div ref={messagesEndRef} />
       </div>
 
-      <MessageInput
-        inputText={inputText}
-        setInputText={setInputText}
-        onSend={handleSendMessage}
-      />
-    </div>
-  );
-}
-
-function shouldShowAvatar(
-  messages: Message[] | undefined,   // chỉ hiển thị một ảnh đại dienj khi gửi nhiều tin
-  index: number,
-): boolean {
-  if (!messages) return true;
-  if (index === 0) return true;
-  return messages[index].sender_id !== messages[index - 1].sender_id;
-}
-
-
-function MessageBubble({
-  message,
-  isCurrentUser,
-  avatarURL,
-  chatName,
-  showAvatar,
-  showTimestamp,
-}: MessageBubbleProps) {
-  return (
-    <div
-      className={`my-1 flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}
-    >
-      {!isCurrentUser && showAvatar ? (
-        <div className="mr-2 mt-auto">
-          <Avatar className="h-6 w-6">
-            <AvatarImage src={avatarURL} alt={`${chatName}'s profile`} />
-            <AvatarFallback>{chatName.charAt(0).toUpperCase()}</AvatarFallback>
-          </Avatar>
-        </div>
-      ) : (
-        !isCurrentUser && <div className="w-8" />
-      )}
-      <div className="group flex max-w-[60%] flex-col md:max-w-[50%]">
-        <div
-          className={`${
-            isCurrentUser
-              ? 'rounded-[10px] rounded-tr-sm bg-blue-600 text-white dark:bg-[#070707]'
-              : 'rounded-[10px] rounded-tl-sm border border-stone-200 bg-gray-100 dark:border-stone-700'
-          } p-2 text-xs md:p-3 md:text-sm`}
-        >
-          {message.content}
-        </div>
-        {showTimestamp ? (
-          <div
-            className={`mt-1 text-xs text-gray-500 ${
-              isCurrentUser ? 'text-right' : 'text-left'
-            }`}
-          >
-            {formatMessageTime(message.time)}
-          </div>
-        ) : (
-          <div
-            className={`mt-1 hidden text-xs text-gray-500 group-hover:block ${
-              isCurrentUser ? 'text-right' : 'text-left'
-            }`}
-          >
-            {formatMessageTime(message.time)}
+      <div className="sticky bottom-0 bg-white px-4 py-3 dark:bg-[#1c1c1c]">
+        {selectedImage && (
+          <div className="relative mb-2 flex items-center justify-start">
+            <img
+              src={URL.createObjectURL(selectedImage)}
+              alt="Preview"
+              className="h-20 w-20 rounded-lg"
+            />
+            <button
+              className="absolute right-0 top-0 rounded-full bg-black bg-opacity-50 p-1"
+              onClick={removeImage}
+              aria-label="Remove image"
+            >
+              <X className="h-5 w-5 text-white" />
+            </button>
           </div>
         )}
+
+        <div className="relative flex items-center rounded-full border border-stone-200 bg-white px-3 py-1 dark:border-stone-700 dark:bg-[#262626]">
+          <button
+            ref={emojiButtonRef}
+            className="flex-shrink-0 p-1"
+            type="button"
+            onClick={toggleEmojiPicker}
+            aria-label="Open emoji selector"
+          >
+            <Smile className="h-5 w-5 text-gray-500" />
+          </button>
+
+          <TextareaAutosize
+            ref={inputRef}
+            className="mx-2 flex-1 resize-none bg-transparent py-2 text-sm focus:outline-none dark:bg-[#262626] dark:text-white"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            placeholder="Message..."
+            maxRows={1}
+            minRows={1}
+            onKeyDown={handleKeyPress}
+          />
+
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            accept="image/*"
+            onChange={handleFileChange}
+          />
+
+          <button
+            className="pr-2"
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Image className="h-5 w-5" />
+          </button>
+
+          <button
+            type="button"
+            onClick={handleSendMessage}
+            disabled={inputText.trim() === '' && !selectedImage}
+          >
+            <Send className="h-5 w-5" />
+          </button>
+
+          {showEmojiPicker && (
+            <div className="absolute bottom-12 left-0 z-10">
+              <EmojiPicker onEmojiSelect={handleEmojiSelect} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,26 +1,28 @@
-import { hash } from "crypto";
-import { Dispatch, SetStateAction } from "react";
+import { hash } from 'crypto';
+import { Dispatch, SetStateAction } from 'react';
 
 export interface CreateCalendarDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onCreateEvent: (event: Event) => void;
   selectedDate?: Date;
-  event?: Event; 
-  isUpdate?: boolean; 
-  setIsRefreshingCalendarList: (value: boolean | ((prev: boolean) => boolean)) => void;
+  event?: Event;
+  isUpdate?: boolean;
+  setIsRefreshingCalendarList: (
+    value: boolean | ((prev: boolean) => boolean),
+  ) => void;
 }
 
 export interface Event {
   id: string;
   title?: string;
   hashtag?: string;
-  startDate: string;  
-  endDate: string;   
+  startDate: string;
+  endDate: string;
   reminderContent: string;
-  reminderTime?: string; 
-  startTime: string; 
-  endTime: string;   
+  reminderTime?: string;
+  startTime: string;
+  endTime: string;
   userId?: string;
   color?: string;
 }
@@ -28,18 +30,17 @@ export interface Event {
 export interface EventListProps {
   event: Event;
   setIsRefreshingCalendarList: Dispatch<SetStateAction<boolean>>;
-  
 }
 
 export interface CreateReminderRequest {
   title?: string;
   hashtag?: string;
-  startDate: string; 
-  endDate: string;  
+  startDate: string;
+  endDate: string;
   reminderContent: string;
-  reminderTime?: string; 
-  startTime?: string; 
-  endTime?: string;   
+  reminderTime?: string;
+  startTime?: string;
+  endTime?: string;
 }
 
 export interface UpdateReminderRequest {

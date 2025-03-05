@@ -7,10 +7,10 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
-import { Event } from '@/app/types/reminder.type'; 
+import { Event } from '@/app/types/reminder.type';
 import { CreateCalendarDialog } from '@/components/CreateCalendarDialog';
 import { CalendarList } from '@/components/CalendarList';
-import { getAllRemindersByDate } from '@/app/api/reminder.api'; 
+import { getAllRemindersByDate } from '@/app/api/reminder.api';
 
 const getInitialDate = (): Date => {
   const savedDate = localStorage.getItem('selectedDate');
@@ -21,9 +21,10 @@ export default function CalendarComponent() {
   const [date, setDate] = useState<Date | undefined>(getInitialDate());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
-  const [isRefreshingCalendarList, setIsRefreshingCalendarList] = useState(false);
+  const [isRefreshingCalendarList, setIsRefreshingCalendarList] =
+    useState(false);
 
-  if(!date) {
+  if (!date) {
     setDate(new Date());
   }
 
@@ -39,7 +40,7 @@ export default function CalendarComponent() {
   };
 
   const handleCreateEvent = (newEvent: Event) => {
-    setEvents((prevEvents) => [newEvent, ...prevEvents]); 
+    setEvents((prevEvents) => [newEvent, ...prevEvents]);
     setIsDialogOpen(false);
   };
 
@@ -54,11 +55,13 @@ export default function CalendarComponent() {
         startDate: item.startDate,
         endDate: item.endDate,
         reminderContent: item.reminderContent,
-        reminderTime: item.reminderTime ? item.reminderTime.slice(0, 5) : undefined,
-        startTime: item.startTime? item.startTime.slice(0, 5) : undefined, 
-        endTime: item.endTime? item.endTime.slice(0, 5) :undefined,    
+        reminderTime: item.reminderTime
+          ? item.reminderTime.slice(0, 5)
+          : undefined,
+        startTime: item.startTime ? item.startTime.slice(0, 5) : undefined,
+        endTime: item.endTime ? item.endTime.slice(0, 5) : undefined,
         userId: item.userId,
-        color: item.hashtag ? 'bg-blue-400' : 'bg-orange-300', 
+        color: item.hashtag ? 'bg-blue-400' : 'bg-orange-300',
       }));
       setEvents(fetchedEvents);
     } catch (error) {
@@ -67,7 +70,9 @@ export default function CalendarComponent() {
     }
   };
 
-  const filteredEvents = events.sort((a, b) => Number.parseInt(b.id) - Number.parseInt(a.id));
+  const filteredEvents = events.sort(
+    (a, b) => Number.parseInt(b.id) - Number.parseInt(a.id),
+  );
 
   return (
     <>
@@ -83,7 +88,6 @@ export default function CalendarComponent() {
               'h-14 w-20 transition-colors',
               'hover:bg-blue-400 hover:text-white',
               'aria-selected:bg-blue-500 aria-selected:text-white',
-              
             ),
             head_cell: 'w-20',
             caption_label: 'text-lg font-bold',
@@ -116,9 +120,17 @@ export default function CalendarComponent() {
 
         <div className="space-y-3">
           {filteredEvents.length === 0 ? (
-            <p className="text-gray-500 text-center">There are no events for this day</p>
+            <p className="text-center text-gray-500">
+              There are no events for this day
+            </p>
           ) : (
-            filteredEvents.map((event) => <CalendarList event={event} setIsRefreshingCalendarList = {setIsRefreshingCalendarList} key={event.id} />)
+            filteredEvents.map((event) => (
+              <CalendarList
+                event={event}
+                setIsRefreshingCalendarList={setIsRefreshingCalendarList}
+                key={event.id}
+              />
+            ))
           )}
         </div>
       </div>

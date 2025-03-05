@@ -1,6 +1,4 @@
-import {
-  CreateRequestRequestPayload,
-} from '@/app/types';
+import { CreateRequestRequestPayload } from '@/app/types';
 import request from '@/app/utils/Axiosconfig';
 import { AxiosError } from 'axios';
 
@@ -43,7 +41,7 @@ export const getAllFriendsList = async () => {
 
 // API for accepting a friend request
 export const acceptFriendRequest = async (
-  requestId:string,
+  requestId: string,
   handleSuccess: (response: any) => void,
   handleError?: (error: any) => void,
 ) => {
@@ -60,7 +58,7 @@ export const acceptFriendRequest = async (
 
 // API for rejecting a friend request
 export const rejectFriendRequest = async (
-  requestId:string,
+  requestId: string,
   handleSuccess: (response: any) => void,
   handleError?: (error: any) => void,
 ) => {

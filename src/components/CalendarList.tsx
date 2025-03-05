@@ -13,12 +13,15 @@ import { useState } from 'react';
 import { CreateCalendarDialog } from '@/components/CreateCalendarDialog';
 import { useLoading } from '@/app/contexts';
 
-export function CalendarList({ event, setIsRefreshingCalendarList }: EventListProps) {
+export function CalendarList({
+  event,
+  setIsRefreshingCalendarList,
+}: EventListProps) {
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false); 
+  const [isDeleting, setIsDeleting] = useState(false);
   const hasHashtag = !!event.hashtag;
-  const {setIsLoading, isLoading} = useLoading();
+  const { setIsLoading, isLoading } = useLoading();
 
   const handleDeleteCalendar = async (calendarId: string) => {
     setIsLoading(true);
@@ -27,22 +30,22 @@ export function CalendarList({ event, setIsRefreshingCalendarList }: EventListPr
         calendarId,
         () => {
           toast.success('Reminder deleted successfully');
-          setIsRefreshingCalendarList(pre => !pre)
+          setIsRefreshingCalendarList((pre) => !pre);
         },
         (error) => {
           toast.error('Error deleting reminder. Please try again');
-          setIsDeleting(false); 
-        }
+          setIsDeleting(false);
+        },
       );
     } catch (error) {
       toast.error('Error deleting reminder. Please try again');
-    }finally{
+    } finally {
       setIsLoading(false);
     }
   };
 
   const handleCardClick = () => {
-    if (!isDeleteDialogOpen && !isDeleting) { 
+    if (!isDeleteDialogOpen && !isDeleting) {
       setIsUpdateDialogOpen(true);
     }
   };
@@ -66,24 +69,29 @@ export function CalendarList({ event, setIsRefreshingCalendarList }: EventListPr
         onClick={handleCardClick}
       >
         <div className="flex items-center gap-3">
-        {hasHashtag ? (
-          <Trophy className="h-6 w-6" /> 
-        ) : (
-          <Calendar className="h-6 w-6" />
-        )}
+          {hasHashtag ? (
+            <Trophy className="h-6 w-6" />
+          ) : (
+            <Calendar className="h-6 w-6" />
+          )}
           <div className="flex-1">
             <p className="text-lg font-bold">{displayTitle}</p>
             <p className="text-muted-foreground text-sm">
-            {event.startTime ? (
-              <>
-                <span className="font-bold">{event.startTime}</span> -{' '}
-                <span className="font-bold">{event.endTime}{' | '}</span>
-              </>
-            ) : (
-              <span className="font-bold">{event.reminderTime} {' | '}</span>
-            )}
-            {format(new Date(event.startDate), 'MMM dd')} -{' '}
-            {format(new Date(event.endDate), 'MMM dd')} 
+              {event.startTime ? (
+                <>
+                  <span className="font-bold">{event.startTime}</span> -{' '}
+                  <span className="font-bold">
+                    {event.endTime}
+                    {' | '}
+                  </span>
+                </>
+              ) : (
+                <span className="font-bold">
+                  {event.reminderTime} {' | '}
+                </span>
+              )}
+              {format(new Date(event.startDate), 'MMM dd')} -{' '}
+              {format(new Date(event.endDate), 'MMM dd')}
             </p>
           </div>
           {!isUpdateDialogOpen && (

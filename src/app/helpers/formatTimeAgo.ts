@@ -37,3 +37,25 @@ export function formatTimeAgo(createdAt: string): string {
     day: 'numeric',
   });
 }
+
+import { format, formatDistanceToNow, isToday, isYesterday } from 'date-fns';
+import { enUS } from 'date-fns/locale';
+
+export const formatMessageTime = (dateString: string) => {
+  const date = new Date(dateString);
+  if (isToday(date)) {
+    const distance = formatDistanceToNow(date, {
+      locale: enUS,
+      addSuffix: true,
+    });
+
+    // Nếu thời gian hiển thị là "less than a minute ago", chỉ hiển thị giờ
+    if (distance.includes('minute') || distance.includes('second')) {
+      return format(date, 'HH:mm');
+    }
+
+    return distance.includes('hour') ? distance : format(date, 'HH:mm');
+  }
+  if (isYesterday(date)) return 'Yesterday';
+  return format(date, 'dd/MM/yyyy');
+};

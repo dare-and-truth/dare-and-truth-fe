@@ -3,95 +3,107 @@
 import { useEffect, useState } from 'react';
 import { ChatRoomPreview } from './ChatRoomPreview';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ChatSidebarProps, UserChat } from '@/app/types';
-import { ChevronLeft, Edit } from 'lucide-react';
+import { Chat } from '@/app/types';
+import { ChevronLeft } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useChat } from '@/app/contexts/ChatContext';
 
-const mockUsers: UserChat[] = [
+const mockUsers: Chat[] = [
   {
     chatId: '1',
+    userId: '1',
     avatarURL: 'https://i.pravatar.cc/150?img=15',
-    userName: 'ryan_clark',
+    username: 'ryan_clark',
     lastMessage: 'Xin chào!',
-    lastMessageTime: 1700000000,
+    updated_at: '2025-03-05 13:55:58.897563',
   },
   {
     chatId: '2',
+    userId: '2',
     avatarURL: 'https://i.pravatar.cc/150?img=20',
-    userName: 'julia_watson',
+    username: 'julia_watson',
     lastMessage: 'Hôm nay bạn thế nào?',
-    lastMessageTime: 1699990000,
+    updated_at: '2025-03-04 13:45:32.654321',
   },
   {
     chatId: '3',
+    userId: '3',
     avatarURL: 'https://i.pravatar.cc/150?img=25',
-    userName: 'michael_lee',
+    username: 'michael_lee',
     lastMessage: 'Gặp nhau lúc 3h nhé!',
-    lastMessageTime: 1699980000,
+    updated_at: '2025-03-05 13:35:20.123456',
   },
   {
     chatId: '4',
+    userId: '4',
     avatarURL: 'https://i.pravatar.cc/150?img=30',
-    userName: 'sophia_nguyen',
+    username: 'sophia_nguyen',
     lastMessage: 'Cảm ơn bạn!',
-    lastMessageTime: 1699970000,
+    updated_at: '2025-03-02 13:25:10.789012',
   },
   {
     chatId: '5',
+    userId: '5',
     avatarURL: 'https://i.pravatar.cc/150?img=35',
-    userName: 'daniel_kim',
+    username: 'daniel_kim',
     lastMessage: 'Bạn có rảnh tối nay không?',
-    lastMessageTime: 1699900000,
+    updated_at: '2025-03-02 12:55:05.456789',
   },
   {
     chatId: '6',
+    userId: '6',
     avatarURL: 'https://i.pravatar.cc/150?img=40',
-    userName: 'emily_smith',
+    username: 'emily_smith',
     lastMessage: 'Chúng ta đã hoàn thành chưa?',
-    lastMessageTime: 1699800000,
+    updated_at: '2025-03-02 12:45:30.987654',
   },
   {
     chatId: '7',
+    userId: '7',
     avatarURL: 'https://i.pravatar.cc/150?img=45',
-    userName: 'alex_johnson',
+    username: 'alex_johnson',
     lastMessage: 'Tôi sẽ gửi tài liệu sớm!',
-    lastMessageTime: 1699700000,
+    updated_at: '2025-03-02 12:35:45.321098',
   },
   {
     chatId: '8',
+    userId: '8',
     avatarURL: 'https://i.pravatar.cc/150?img=50',
-    userName: 'linda_moore',
+    username: 'linda_moore',
     lastMessage: 'Hãy cùng nhau học bài!',
-    lastMessageTime: 1699600000,
+    updated_at: '2025-03-02 12:25:15.654987',
   },
   {
     chatId: '9',
+    userId: '9',
     avatarURL: 'https://i.pravatar.cc/150?img=55',
-    userName: 'william_brown',
+    username: 'william_brown',
     lastMessage: 'Nhớ đặt lịch hẹn nhé!',
-    lastMessageTime: 1699500000,
+    updated_at: '2025-03-02 12:15:55.789654',
   },
   {
     chatId: '10',
+    userId: '10',
     avatarURL: 'https://i.pravatar.cc/150?img=60',
-    userName: 'olivia_wilson',
+    username: 'olivia_wilson',
     lastMessage: 'Chúc ngủ ngon!',
-    lastMessageTime: 1699400000,
+    updated_at: '2025-03-02 12:05:40.456123',
   },
   {
     chatId: '11',
+    userId: '11',
     avatarURL: 'https://i.pravatar.cc/150?img=65',
-    userName: 'ethan_taylor',
+    username: 'ethan_taylor',
     lastMessage: 'Đừng quên kiểm tra email!',
-    lastMessageTime: 1699300000,
+    updated_at: '2025-03-02 11:55:20.789321',
   },
 ];
 
-export function ChatSidebar({ activeChat, setActiveChat }: ChatSidebarProps) {
+export function ChatSidebar() {
   const [loading, setLoading] = useState(false);
-  const userId = localStorage.getItem('userId');
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const isMobile = useIsMobile();
+  const { activeChat, setActiveChat } = useChat();
   // Hide sidebar on mobile when chat is selected
   useEffect(() => {
     if (isMobile && activeChat) {
@@ -101,7 +113,7 @@ export function ChatSidebar({ activeChat, setActiveChat }: ChatSidebarProps) {
     }
   }, [isMobile, activeChat]);
   const handleBackToList = () => {
-    setActiveChat('');
+    setActiveChat(null);
     setSidebarVisible(true);
   };
 
@@ -109,8 +121,8 @@ export function ChatSidebar({ activeChat, setActiveChat }: ChatSidebarProps) {
     return null;
   }
 
-  const handleChatSelect = (chatId: string) => {
-    setActiveChat(chatId);
+  const handleChatSelect = (chat: Chat) => {
+    setActiveChat(chat);
   };
 
   return (
@@ -139,14 +151,13 @@ export function ChatSidebar({ activeChat, setActiveChat }: ChatSidebarProps) {
             mockUsers.map((chat) => (
               <button
                 key={chat.chatId}
-                onClick={() => handleChatSelect(chat.chatId)}
+                onClick={() => handleChatSelect(chat)}
                 className="w-full text-left"
-                aria-label={`Chat with ${chat.userName}`}
+                aria-label={`Chat with ${chat.username}`}
               >
                 <ChatRoomPreview
                   chat={chat}
-                  isActive={activeChat === chat.chatId}
-                  userId={userId || ''}
+                  isActive={activeChat?.chatId === chat.chatId}
                 />
               </button>
             ))

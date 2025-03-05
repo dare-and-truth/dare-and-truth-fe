@@ -4,5 +4,5 @@ export interface DialogConfirmProps {
   button: ReactNode;
   title: string;
   onConfirm: () => void;
-  onClose?:() => void;
+  onClose?: () => void;
 }

@@ -1,13 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { formatTime } from '@/lib/format-time';
 import { ChatRoomPreviewProps } from '@/app/types/chat.type';
+import { formatMessageTime } from '@/app/helpers/formatTimeAgo';
 
-export function ChatRoomPreview({
-  chat,
-  isActive,
-  userId,
-}: ChatRoomPreviewProps) {
-  const hasNewMessage = `${userId} NewMessage`;
+export function ChatRoomPreview({ chat, isActive }: ChatRoomPreviewProps) {
   return (
     <div
       className={`${
@@ -20,33 +15,25 @@ export function ChatRoomPreview({
         <Avatar className="h-12 w-12">
           <AvatarImage
             src={chat.avatarURL || ''}
-            alt={`${chat.userName}'s profile`}
+            alt={`${chat.username}'s profile`}
           />
           <AvatarFallback className="bg-[#ebebeb] dark:bg-[#313131]">
-            {chat.userName.charAt(0).toUpperCase()}
+            {chat.username.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
       </div>
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between">
-          <h2 className="truncate font-medium">{chat.userName}</h2>
+          <h2 className="truncate font-medium">{chat.username}</h2>
           <span className="ml-1 flex-shrink-0 text-xs text-gray-500">
-            {chat.lastMessageTime ? formatTime(chat.lastMessageTime) : ''}
+            {chat.updated_at ? formatMessageTime(chat.updated_at) : ''}
           </span>
         </div>
 
-        <div className="flex items-center">
-          <p className="truncate text-xs text-gray-500">
-            {chat.lastMessage || 'No messages yet'}
-          </p>
-          {hasNewMessage && (
-            <div
-              className="ml-2 h-2 w-2 rounded-full bg-[#0095f6]"
-              aria-label="New message"
-            />
-          )}
-        </div>
+        <p className="truncate text-xs text-gray-500">
+          {chat.lastMessage || 'No messages yet'}
+        </p>
       </div>
     </div>
   );

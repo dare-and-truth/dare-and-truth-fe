@@ -63,9 +63,7 @@ export default function HomePage() {
           next={fetchChallenges}
           hasMore={hasMore}
           loader={<Loading />}
-          endMessage={
-            <EndOfFeed refreshFeed={refreshFeed} />
-          }
+          endMessage={<EndOfFeed refreshFeed={refreshFeed} />}
           scrollableTarget="scrollableDiv"
         >
           {feeds.map((feed: FeedType) => (

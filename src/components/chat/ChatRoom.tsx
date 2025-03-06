@@ -162,7 +162,7 @@ export function ChatRoom({ activeChat }: ChatRoomProps) {
         <span className="font-medium">{activeChat.username}</span>
       </div>
 
-      <div className="flex flex-1 flex-col overflow-y-auto border-t border-stone-300 px-1 py-2 dark:border-stone-700 dark:[color-scheme:dark] md:px-5">
+      <div className="scrollbar flex flex-1 flex-col overflow-y-auto border-t border-stone-300 px-1 py-2 dark:border-stone-700 dark:[color-scheme:dark] md:px-5">
         <div className="m-4 flex h-[100px] flex-col items-center justify-center gap-2 px-4">
           <Link href="/profile" className="flex flex-col items-center gap-2">
             <Avatar className="h-12 w-12 cursor-pointer">
@@ -217,7 +217,7 @@ export function ChatRoom({ activeChat }: ChatRoomProps) {
 
           <TextareaAutosize
             ref={inputRef}
-            className="mx-2 flex-1 resize-none bg-transparent py-2 text-sm focus:outline-none dark:bg-[#262626] dark:text-white"
+            className="scrollbar mx-2 flex-1 resize-none bg-transparent py-2 text-sm focus:outline-none dark:bg-[#262626] dark:text-white"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder="Message..."

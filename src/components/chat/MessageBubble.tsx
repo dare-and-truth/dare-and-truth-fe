@@ -37,7 +37,7 @@ export function MessageBubble({
                 isCurrentUser
                   ? 'rounded rounded-tr-sm bg-blue-600 text-white dark:bg-[#070707]'
                   : 'rounded rounded-tl-sm border border-stone-200 bg-gray-100 dark:border-stone-700'
-              } p-2 text-sm`}
+              } w-fit max-w-[99%] break-words p-2 text-sm`}
             >
               {message.content}
             </div>

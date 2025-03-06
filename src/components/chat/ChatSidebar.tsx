@@ -144,7 +144,7 @@ export function ChatSidebar() {
           </div>
         </div>
 
-        <div className="h-[calc(100%-60px)] w-full overflow-y-auto overflow-x-hidden dark:[color-scheme:dark]">
+        <div className="scrollbar overflow-x-hidden h-[calc(100%-60px)] w-full overflow-y-auto dark:[color-scheme:dark]">
           {loading ? (
             <ChatRoomSkeleton />
           ) : (

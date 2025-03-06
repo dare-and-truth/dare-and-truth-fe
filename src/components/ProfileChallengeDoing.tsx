@@ -1,5 +1,5 @@
 'use client';
-import { Grid, Heart, MessageCircle, Square, User, Video } from 'lucide-react';
+import { Bolt, Grid, Heart, MessageCircle, Square, User, Video } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
@@ -27,7 +27,8 @@ export default function ProfileChallengeDoing({ userId }: { userId: string }) {
     try {
       setLoading(true);
       if (activeTab === 'challenges') {
-        const fetchFunc = activeTab === 'challenges' ? getChallengeByUserId : getPostByUserId;
+        const fetchFunc =
+          activeTab === 'challenges' ? getChallengeByUserId : getPostByUserId;
         const response = await fetchFunc(userId, page, ITEMS_PER_PAGE);
         if (response && response.length > 0) {
           setFeeds((prev) => [...prev, ...response]);
@@ -72,7 +73,7 @@ export default function ProfileChallengeDoing({ userId }: { userId: string }) {
             className="flex items-center p-3"
             onClick={() => setActiveTab('challenges')}
           >
-            <Grid className="mr-1 h-5 w-5 md:h-4 md:w-4" />
+            <Bolt className="mr-1 h-5 w-5 md:h-4 md:w-4" />
             <span className="">Challenges</span>
           </button>
         </li>
@@ -85,7 +86,7 @@ export default function ProfileChallengeDoing({ userId }: { userId: string }) {
             className="flex items-center p-3"
             onClick={() => setActiveTab('posts')}
           >
-            <Square className="mr-1 h-5 w-5 md:h-4 md:w-4" />
+            <Grid className="mr-1 h-5 w-5 md:h-4 md:w-4" />
             <span className="">Posts</span>
           </button>
         </li>
@@ -93,26 +94,20 @@ export default function ProfileChallengeDoing({ userId }: { userId: string }) {
 
       {/* Posts Grid */}
 
-      {activeTab === 'challenges' ? (
-        <>
-          <div className="mx-auto max-w-2xl p-4">
-            <InfiniteScroll
-              dataLength={feeds.length}
-              next={fetchChallenges}
-              hasMore={hasMore}
-              loader={<Loading />}
-              endMessage={<EndOfFeed refreshFeed={refreshFeed} />}
-              scrollableTarget="scrollableDiv"
-            >
-              {feeds.map((feed: FeedType) => (
-                <Feed feed={feed} key={feed.id} />
-              ))}
-            </InfiniteScroll>
-          </div>
-        </>
-      ) : (
-        <></>
-      )}
+      <div className="mx-auto max-w-2xl p-4">
+        <InfiniteScroll
+          dataLength={feeds.length}
+          next={fetchChallenges}
+          hasMore={hasMore}
+          loader={<Loading />}
+          endMessage={<EndOfFeed refreshFeed={refreshFeed} />}
+          scrollableTarget="scrollableDiv"
+        >
+          {feeds.map((feed: FeedType) => (
+            <Feed feed={feed} key={feed.id} />
+          ))}
+        </InfiniteScroll>
+      </div>
     </div>
   );
 }

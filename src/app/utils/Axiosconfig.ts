@@ -128,6 +128,7 @@ interface RequestOptions {
   method: AxiosRequestConfig['method'];
   url: string;
   data?: any;
+  params?: Record<string, any>; // Add support for query parameters
   onSuccess?: (data: any) => void;
   onError?: (error: any) => void;
 }
@@ -136,6 +137,7 @@ const request = async ({
   method,
   url,
   data,
+  params, // New parameter for query params
   onSuccess = () => {},
   onError = () => {},
 }: RequestOptions) => {
@@ -144,6 +146,7 @@ const request = async ({
       method,
       url,
       data,
+      params, // Pass query parameters to the request
     });
     onSuccess(response?.data);
     return response;

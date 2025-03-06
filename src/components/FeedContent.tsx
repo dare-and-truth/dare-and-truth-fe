@@ -91,7 +91,7 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
             </p>
           </div>
         )}
-        <p>{feed.content}</p>
+        <p className="whitespace-pre-wrap">{feed.content}</p>
       </div>
 
       <div className="mb-4 overflow-hidden rounded-lg">

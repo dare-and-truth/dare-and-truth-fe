@@ -165,42 +165,6 @@ export default function CreateChallengeForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Input
-          ref={fileInputRef}
-          type="file"
-          accept={VALID_FILE_TYPES.join(',')}
-          onChange={handleFileChange}
-          disabled={isUploading}
-        />
-        {errors.file && <p className="text-sm text-red-500">{errors.file}</p>}
-        {filePreview && (
-          <div className="relative w-full">
-            {formData.file?.type.startsWith('image/') ? (
-              <img
-                src={filePreview}
-                alt="Preview"
-                className="w-full rounded-md object-contain"
-              />
-            ) : (
-              <video controls className="w-full rounded-md">
-                <source src={filePreview} type={formData.file?.type} />
-                Your browser does not support the video tag.
-              </video>
-            )}
-
-            {/* Dấu "X" để xóa file */}
-            <button
-              type="button"
-              onClick={handleRemoveFile}
-              className="absolute right-2 top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
-            >
-              <X size={20} />
-            </button>
-          </div>
-        )}
-      </div>
-
       {/* Hashtag */}
       <div className="space-y-2">
         <div className="font-bold">Hashtag</div>
@@ -260,6 +224,45 @@ export default function CreateChallengeForm() {
           )}
         </div>
       </div>
+
+      {/* Media */}
+      <div className="space-y-2">
+        <div className="font-bold">Media</div>
+        <Input
+          ref={fileInputRef}
+          type="file"
+          accept={VALID_FILE_TYPES.join(',')}
+          onChange={handleFileChange}
+          disabled={isUploading}
+        />
+        {errors.file && <p className="text-sm text-red-500">{errors.file}</p>}
+        {filePreview && (
+          <div className="relative w-full">
+            {formData.file?.type.startsWith('image/') ? (
+              <img
+                src={filePreview}
+                alt="Preview"
+                className="w-full rounded-md object-contain"
+              />
+            ) : (
+              <video controls className="w-full rounded-md">
+                <source src={filePreview} type={formData.file?.type} />
+                Your browser does not support the video tag.
+              </video>
+            )}
+
+            {/* Dấu "X" để xóa file */}
+            <button
+              type="button"
+              onClick={handleRemoveFile}
+              className="absolute right-2 top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
+            >
+              <X size={20} />
+            </button>
+          </div>
+        )}
+      </div>
+
       <div className="text-right">
         <Button type="submit" disabled={isUploading} className="">
           {isUploading ? 'Uploading...' : 'Submit'}

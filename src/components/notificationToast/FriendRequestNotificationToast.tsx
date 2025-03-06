@@ -13,12 +13,12 @@ interface FriendRequestToastProps extends ToastContentProps {
   senderId: string;
 }
 
-export const FriendRequestToast = ({
+export const FriendRequestNotificationToast = ({
   closeToast,
   name,
   avatarUrl,
   requestId,
-  senderId,
+  // senderId,
 }: FriendRequestToastProps) => {
   const handleAccept = async () => {
     acceptFriendRequest(

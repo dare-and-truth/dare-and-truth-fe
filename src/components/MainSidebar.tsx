@@ -13,7 +13,6 @@ import { LogoSideBar } from '@/components/LogoSideBar';
 import { Logout } from '@/components/NavLogout';
 import {
   Home,
-  Plus,
   Trophy,
   Bell,
   MessageSquare,
@@ -23,6 +22,7 @@ import {
   Bookmark,
   UsersRound,
   UserPlus,
+  PlusSquare,
 } from 'lucide-react';
 import { SearchChallengeUser } from '@/components/SearchChallengeUser';
 
@@ -38,7 +38,7 @@ export function MainSideBar({ ...props }) {
         active: pathname === '/home',
       },
       {
-        icon: <Plus size={22} />,
+        icon: <PlusSquare size={22} />,
         text: 'Create Challenge',
         href: '/create-challenge',
         active: pathname === '/create-challenge',
@@ -54,7 +54,7 @@ export function MainSideBar({ ...props }) {
         text: 'Notification',
         href: '/notification',
         active: pathname === '/notification',
-        isButton:true
+        isButton: true,
       },
       {
         icon: <MessageSquare size={22} />,

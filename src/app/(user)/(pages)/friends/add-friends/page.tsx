@@ -19,8 +19,7 @@ export default function AddFriendRequestsPage() {
         const data = await getAllFriendRequests();
         // Lọc các yêu cầu mà người dùng hiện tại là người nhận (user)
         const filteredRequests = data.filter(
-          (request: FriendRequest) => 
-          request.user.id === currentUserId
+          (request: FriendRequest) => request.user.id === currentUserId,
         );
         setFriendRequests(filteredRequests);
       } catch (error) {
@@ -35,13 +34,13 @@ export default function AddFriendRequestsPage() {
 
   const handleAccept = (requestId: string) => {
     setFriendRequests((current) =>
-      current.filter((request) => request.id !== requestId)
+      current.filter((request) => request.id !== requestId),
     );
   };
 
   const handleReject = (requestId: string) => {
     setFriendRequests((current) =>
-      current.filter((request) => request.id !== requestId)
+      current.filter((request) => request.id !== requestId),
     );
   };
 
@@ -68,7 +67,7 @@ export default function AddFriendRequestsPage() {
               userId={request.user.id}
               onAccept={handleAccept}
               onReject={handleReject}
-              onUnfriend={() => {}} 
+              onUnfriend={() => {}}
             />
           ))}
         </div>

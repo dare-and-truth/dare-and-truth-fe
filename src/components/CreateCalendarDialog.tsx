@@ -26,7 +26,10 @@ import {
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { toast } from 'react-toastify';
-import type { CreateCalendarDialogProps, Event } from '@/app/types/reminder.type';
+import type {
+  CreateCalendarDialogProps,
+  Event,
+} from '@/app/types/reminder.type';
 import { timeOptions } from '@/app/constants/index';
 import { createReminder, updateReminder } from '@/app/api/reminder.api';
 import { format, isBefore, startOfDay } from 'date-fns';
@@ -48,22 +51,26 @@ export function CreateCalendarDialog({
   selectedDate,
   event,
   isUpdate = false,
-  setIsRefreshingCalendarList
+  setIsRefreshingCalendarList,
 }: CreateCalendarDialogProps) {
   const [eventTitle, setEventTitle] = useState(event ? event.title || '' : '');
-  const [startTime, setStartTime] = useState<string>(event?.startTime || '10:00');
+  const [startTime, setStartTime] = useState<string>(
+    event?.startTime || '10:00',
+  );
   const [endTime, setEndTime] = useState<string>(event?.endTime || '11:30');
-  const [reminderContent, setReminderContent] = useState(event?.hashtag ? (event.reminderContent || '') : '');
-  const {setIsLoading} = useLoading();
+  const [reminderContent, setReminderContent] = useState(
+    event?.hashtag ? event.reminderContent || '' : '',
+  );
+  const { setIsLoading } = useLoading();
   const [reminderTime, setReminderTime] = useState(
-    event?.reminderTime || calculateReminderTime('10:00')
+    event?.reminderTime || calculateReminderTime('10:00'),
   );
 
   const [startDate, setStartDate] = useState<Date | undefined>(
-    event ? new Date(event.startDate) : selectedDate
+    event ? new Date(event.startDate) : selectedDate,
   );
   const [endDate, setEndDate] = useState<Date | undefined>(
-    event ? new Date(event.endDate) : selectedDate
+    event ? new Date(event.endDate) : selectedDate,
   );
   const [error, setError] = useState<string | null>(null);
 
@@ -95,7 +102,7 @@ export function CreateCalendarDialog({
     }
 
     const today = startOfDay(new Date());
-    if (!isUpdate &&startDate && isBefore(startDate, today)) {
+    if (!isUpdate && startDate && isBefore(startDate, today)) {
       setError('Start date cannot be in the past.');
       return;
     }
@@ -110,15 +117,21 @@ export function CreateCalendarDialog({
     }
 
     const hasHashtag = isUpdate && event?.hashtag;
-    const reminderContentValue = hasHashtag ? reminderContent : `Time for ${eventTitle} at ${startTime}`;
-    const reminderTimeValue = hasHashtag ? reminderTime : calculateReminderTime(startTime);
+    const reminderContentValue = hasHashtag
+      ? reminderContent
+      : `Time for ${eventTitle} at ${startTime}`;
+    const reminderTimeValue = hasHashtag
+      ? reminderTime
+      : calculateReminderTime(startTime);
 
     const updatedEvent: Event = {
       id: event ? event.id : Date.now().toString(),
       title: hasHashtag ? event.hashtag : eventTitle,
       hashtag: hasHashtag ? event.hashtag : undefined,
       startDate: format(startDate, 'yyyy-MM-dd'),
-      endDate: endDate ? format(endDate, 'yyyy-MM-dd') : format(startDate, 'yyyy-MM-dd'),
+      endDate: endDate
+        ? format(endDate, 'yyyy-MM-dd')
+        : format(startDate, 'yyyy-MM-dd'),
       reminderContent: reminderContentValue,
       reminderTime: reminderTimeValue,
       startTime: hasHashtag ? '' : startTime,
@@ -127,7 +140,7 @@ export function CreateCalendarDialog({
       color: hasHashtag ? 'bg-blue-400' : 'bg-orange-300',
     };
 
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       if (isUpdate && event) {
         await updateReminder(
@@ -135,28 +148,34 @@ export function CreateCalendarDialog({
           {
             title: hasHashtag ? event.hashtag : eventTitle,
             startDate: format(startDate, 'yyyy-MM-dd'),
-            endDate: endDate ? format(endDate, 'yyyy-MM-dd') : format(startDate, 'yyyy-MM-dd'),
+            endDate: endDate
+              ? format(endDate, 'yyyy-MM-dd')
+              : format(startDate, 'yyyy-MM-dd'),
             reminderContent: reminderContentValue,
             reminderTime: `${reminderTimeValue}:00`,
-            ...(hasHashtag ? {} : { startTime: `${startTime}:00`, endTime: `${endTime}:00` }),
+            ...(hasHashtag
+              ? {}
+              : { startTime: `${startTime}:00`, endTime: `${endTime}:00` }),
           },
           () => {
             toast.success('Reminder updated successfully!');
             onCreateEvent(updatedEvent);
             onClose();
-            setIsRefreshingCalendarList(pre => !pre)
+            setIsRefreshingCalendarList((pre) => !pre);
           },
           (error) => {
             toast.error('Failed to update reminder. Please try again.');
             setError('Failed to update reminder. Please try again.');
-          }
+          },
         );
       } else {
         await createReminder(
           {
             title: eventTitle,
             startDate: format(startDate, 'yyyy-MM-dd'),
-            endDate: endDate ? format(endDate, 'yyyy-MM-dd') : format(startDate, 'yyyy-MM-dd'),
+            endDate: endDate
+              ? format(endDate, 'yyyy-MM-dd')
+              : format(startDate, 'yyyy-MM-dd'),
             reminderContent: reminderContentValue,
             reminderTime: `${reminderTimeValue}:00`,
             startTime: `${startTime}:00`,
@@ -166,19 +185,18 @@ export function CreateCalendarDialog({
             toast.success('Reminder created successfully!');
             onCreateEvent(updatedEvent);
             onClose();
-            setIsRefreshingCalendarList(pre => !pre)
+            setIsRefreshingCalendarList((pre) => !pre);
           },
           (error) => {
             toast.error('Failed to create reminder. Please try again.');
             setError('Failed to create reminder. Please try again.');
-          }
+          },
         );
       }
     } catch (error) {
       toast.error('Something went wrong. Please try again.');
       setError('Something went wrong. Please try again.');
-    }
-    finally{
+    } finally {
       setIsLoading(false);
     }
   };
@@ -194,18 +212,27 @@ export function CreateCalendarDialog({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="text-center">{isUpdate ? 'Update Reminder' : 'Create Reminder'}</DialogTitle>
+          <DialogTitle className="text-center">
+            {isUpdate ? 'Update Reminder' : 'Create Reminder'}
+          </DialogTitle>
           <DialogDescription className="text-center">
-            {isUpdate ? 'Edit the details of your reminder below.' : 'Create a new reminder by filling in the details below.'}
+            {isUpdate
+              ? 'Edit the details of your reminder below.'
+              : 'Create a new reminder by filling in the details below.'}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-          <label className="mb-1 block text-sm font-medium">
-            {hasHashtag ? 'Hashtag' : 'Title'}
-          </label>
+            <label className="mb-1 block text-sm font-medium">
+              {hasHashtag ? 'Hashtag' : 'Title'}
+            </label>
             {hasHashtag ? (
-              <Input placeholder="Hashtag" value={`#${event.hashtag}`} disabled maxLength={255} />
+              <Input
+                placeholder="Hashtag"
+                value={`#${event.hashtag}`}
+                disabled
+                maxLength={255}
+              />
             ) : (
               <Input
                 placeholder="Event title"
@@ -217,7 +244,9 @@ export function CreateCalendarDialog({
           </div>
           {hasHashtag && (
             <div className="space-y-2">
-              <label className="mb-1 block text-sm font-medium">Reminder content</label>
+              <label className="mb-1 block text-sm font-medium">
+                Reminder content
+              </label>
               <Textarea
                 placeholder="Reminder content"
                 value={reminderContent}
@@ -230,7 +259,9 @@ export function CreateCalendarDialog({
           <div className="space-y-2">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="mb-1 block text-sm font-medium">Start Date</label>
+                <label className="mb-1 block text-sm font-medium">
+                  Start Date
+                </label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -239,7 +270,9 @@ export function CreateCalendarDialog({
                       disabled={!!event?.hashtag}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {startDate ? format(startDate, 'MM/dd/yyyy') : 'Select date'}
+                      {startDate
+                        ? format(startDate, 'MM/dd/yyyy')
+                        : 'Select date'}
                     </Button>
                   </PopoverTrigger>
                   {!hasHashtag && (
@@ -255,7 +288,9 @@ export function CreateCalendarDialog({
                 </Popover>
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium">End Date</label>
+                <label className="mb-1 block text-sm font-medium">
+                  End Date
+                </label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -283,7 +318,9 @@ export function CreateCalendarDialog({
 
             {hasHashtag ? (
               <div className="space-y-2">
-                <label className="mb-1 block text-sm font-medium">Reminder Time</label>
+                <label className="mb-1 block text-sm font-medium">
+                  Reminder Time
+                </label>
                 <Select value={reminderTime} onValueChange={setReminderTime}>
                   <SelectTrigger>
                     <SelectValue placeholder="Reminder time" />
@@ -300,7 +337,9 @@ export function CreateCalendarDialog({
             ) : (
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <label className="mb-1 block text-sm font-medium">Start Time</label>
+                  <label className="mb-1 block text-sm font-medium">
+                    Start Time
+                  </label>
                   <Select value={startTime} onValueChange={setStartTime}>
                     <SelectTrigger>
                       <SelectValue placeholder="Start time" />
@@ -315,7 +354,9 @@ export function CreateCalendarDialog({
                   </Select>
                 </div>
                 <div className="flex-1">
-                  <label className="mb-1 block text-sm font-medium">End Time</label>
+                  <label className="mb-1 block text-sm font-medium">
+                    End Time
+                  </label>
                   <Select value={endTime} onValueChange={setEndTime}>
                     <SelectTrigger>
                       <SelectValue placeholder="End time" />
@@ -337,7 +378,11 @@ export function CreateCalendarDialog({
             <Button
               variant="join"
               onClick={handleSubmit}
-              disabled={hasHashtag ? !event?.hashtag || !startDate : !eventTitle || !startDate}
+              disabled={
+                hasHashtag
+                  ? !event?.hashtag || !startDate
+                  : !eventTitle || !startDate
+              }
             >
               {isUpdate ? 'Update' : 'Create'}
             </Button>

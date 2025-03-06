@@ -38,10 +38,11 @@ export default function SearchPage() {
           const filteredUsers = response.filter(
             (user: UserWithRequestsResponse) => {
               const hasRequestForCurrentUser = user.requests.some(
-                (request) => request.user.id === currentUserId && !request.isAccepted
+                (request) =>
+                  request.user.id === currentUserId && !request.isAccepted,
               );
               return user.user.id !== currentUserId || hasRequestForCurrentUser;
-            }
+            },
           );
           setUsers(filteredUsers);
         }
@@ -67,12 +68,15 @@ export default function SearchPage() {
                   acceptedAt: undefined,
                   user: { id: userId, username: user.user.username },
                   isAccepted: false,
-                  follower: { id: followerId, username: localStorage.getItem('username') || '' },
+                  follower: {
+                    id: followerId,
+                    username: localStorage.getItem('username') || '',
+                  },
                 },
               ],
             }
-          : user
-      )
+          : user,
+      ),
     );
   };
 
@@ -81,7 +85,7 @@ export default function SearchPage() {
       current.map((user) => ({
         ...user,
         requests: user.requests.filter((r) => r.id !== requestId),
-      }))
+      })),
     );
   };
 
@@ -90,9 +94,9 @@ export default function SearchPage() {
       current.map((user) => ({
         ...user,
         requests: user.requests.map((r) =>
-          r.id === requestId ? { ...r, isAccepted: true } : r
+          r.id === requestId ? { ...r, isAccepted: true } : r,
         ),
-      }))
+      })),
     );
   };
 
@@ -101,7 +105,7 @@ export default function SearchPage() {
       current.map((user) => ({
         ...user,
         requests: user.requests.filter((r) => r.id !== requestId),
-      }))
+      })),
     );
   };
 
@@ -121,11 +125,11 @@ export default function SearchPage() {
             {isLoading ? (
               <Loading />
             ) : feeds.length === 0 ? (
-              <p className="mt-4 text-center text-gray-500">No challenges found.</p>
+              <p className="mt-4 text-center text-gray-500">
+                No challenges found.
+              </p>
             ) : (
-              feeds.map((feed) => (
-                <Feed feed={feed} key={feed.id} />
-              ))
+              feeds.map((feed) => <Feed feed={feed} key={feed.id} />)
             )}
           </TabsContent>
 
@@ -145,13 +149,15 @@ export default function SearchPage() {
                   isAccepted={user.requests[0]?.isAccepted || false}
                   acceptedAt={user.requests[0]?.acceptedAt || undefined}
                   requestId={user.requests[0]?.id || ''}
-                  followerId={user.requests[0]?.follower.id||''}
+                  followerId={user.requests[0]?.follower.id || ''}
                   userId={user.requests[0]?.user.id || user.user.id}
-                  width='w-[100%]'
+                  width="w-[100%]"
                   onAccept={(requestId) => handleAccept(requestId)}
                   onReject={(requestId) => handleReject(requestId)}
                   onUnfriend={(requestId) => handleUnfriend(requestId)}
-                  onAddFriend={(userId, followerId) => handleAddFriend(userId, followerId)}
+                  onAddFriend={(userId, followerId) =>
+                    handleAddFriend(userId, followerId)
+                  }
                 />
               ))
             )}
@@ -160,4 +166,4 @@ export default function SearchPage() {
       </div>
     </div>
   );
-} 
+}

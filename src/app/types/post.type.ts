@@ -1,4 +1,4 @@
-import { HashtagForDoChallengeResponse } from "@/app/types/reminder.type";
+import { HashtagForDoChallengeResponse } from '@/app/types/reminder.type';
 
 export interface Post {
   id: string;

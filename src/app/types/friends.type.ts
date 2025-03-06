@@ -34,7 +34,6 @@ export interface FriendList {
   acceptedAt?: string;
 }
 
-
 export interface FriendRequestCardProps {
   avatar: string;
   username: string;

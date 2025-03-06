@@ -32,3 +32,20 @@ export const postPost = async (
     },
   });
 };
+
+export const getPostByUserId = async (
+  userId: string,
+  page: number,
+  size: number,
+) => {
+  try {
+    const response = await request({
+      method: 'get',
+      url: `/feeds/${userId}?page=${page} &size=${size}&type=post`,
+    });
+    return response?.data;
+  } catch (error) {
+    console.error('Error in get posts by userid:', error);
+    throw error;
+  }
+};

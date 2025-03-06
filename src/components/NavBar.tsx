@@ -7,16 +7,18 @@ import Link from 'next/link';
 
 export default function NavBar() {
   const [username, setUsername] = useState('');
+  const [userId, setUserId] = useState('');
 
   useEffect(() => {
     setUsername(localStorage.getItem('username') || '');
+    setUserId(localStorage.getItem('userId') || '');
   }, []);
   return (
     <header className="sticky top-0 flex shrink-0 items-center gap-2 border-b bg-white p-2 dark:bg-zinc-950">
       <SidebarTrigger className="-ml-1" />
       <Separator orientation="vertical" className="mr-2 h-4" />
       <div className="ml-auto">
-        <Link href='/profile'>
+        <Link href={`/profile/${userId}`}>
           <Avatar className="h-10 w-10 rounded-lg">
             <AvatarImage src="/images/default-profile.png" alt={username} />
             <AvatarFallback className="rounded-lg">{username}</AvatarFallback>

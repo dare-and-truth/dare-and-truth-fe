@@ -1,0 +1,118 @@
+'use client';
+import { Grid, Heart, MessageCircle, Square, User, Video } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useCallback, useEffect, useState } from 'react';
+import { FeedType } from '@/app/types';
+import Feed from '@/components/Feed';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { ITEMS_PER_PAGE } from '@/app/constants';
+import { getFeeds } from '@/app/api/feed.api';
+import { useFeedContext } from '@/app/contexts';
+import Loading from '@/components/Loading';
+import EndOfFeed from '@/components/EndOfFeed';
+import { getChallengeByUserId } from '@/app/api/challenge.api';
+import { getPostByUserId } from '@/app/api/post.api';
+export default function ProfileChallengeDoing({ userId }: { userId: string }) {
+  const [activeTab, setActiveTab] = useState<'challenges' | 'posts'>(
+    'challenges',
+  );
+  const { feeds, setFeeds, page, setPage, hasMore, setHasMore } =
+    useFeedContext();
+  const [loading, setLoading] = useState(false);
+
+  const fetchChallenges = useCallback(async () => {
+    if (loading) return;
+
+    try {
+      setLoading(true);
+      if (activeTab === 'challenges') {
+        const fetchFunc = activeTab === 'challenges' ? getChallengeByUserId : getPostByUserId;
+        const response = await fetchFunc(userId, page, ITEMS_PER_PAGE);
+        if (response && response.length > 0) {
+          setFeeds((prev) => [...prev, ...response]);
+          if (response.length < ITEMS_PER_PAGE) {
+            setHasMore(false);
+          }
+          setPage(page + 1);
+        } else {
+          setHasMore(false);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching feeds:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [loading, page, setFeeds, setHasMore, setPage]);
+
+  useEffect(() => {
+    if (feeds.length === 0) {
+      fetchChallenges();
+    }
+  }, [feeds]);
+
+  const refreshFeed = () => {
+    setFeeds([]); // Clear existing feeds
+    setPage(0);
+    setHasMore(true);
+  };
+
+  return (
+    <div className="px-px md:px-3">
+      <ul className="flex items-center justify-around space-x-12 border-t text-xs font-semibold uppercase tracking-widest text-gray-600 md:justify-center">
+        <li
+          className={`md:-mt-px md:border-t ${
+            activeTab === 'challenges'
+              ? 'md:border-gray-700 md:text-gray-700'
+              : ''
+          }`}
+        >
+          <button
+            className="flex items-center p-3"
+            onClick={() => setActiveTab('challenges')}
+          >
+            <Grid className="mr-1 h-5 w-5 md:h-4 md:w-4" />
+            <span className="">Challenges</span>
+          </button>
+        </li>
+        <li
+          className={`md:-mt-px md:border-t ${
+            activeTab === 'posts' ? 'md:border-gray-700 md:text-gray-700' : ''
+          }`}
+        >
+          <button
+            className="flex items-center p-3"
+            onClick={() => setActiveTab('posts')}
+          >
+            <Square className="mr-1 h-5 w-5 md:h-4 md:w-4" />
+            <span className="">Posts</span>
+          </button>
+        </li>
+      </ul>
+
+      {/* Posts Grid */}
+
+      {activeTab === 'challenges' ? (
+        <>
+          <div className="mx-auto max-w-2xl p-4">
+            <InfiniteScroll
+              dataLength={feeds.length}
+              next={fetchChallenges}
+              hasMore={hasMore}
+              loader={<Loading />}
+              endMessage={<EndOfFeed refreshFeed={refreshFeed} />}
+              scrollableTarget="scrollableDiv"
+            >
+              {feeds.map((feed: FeedType) => (
+                <Feed feed={feed} key={feed.id} />
+              ))}
+            </InfiniteScroll>
+          </div>
+        </>
+      ) : (
+        <></>
+      )}
+    </div>
+  );
+}

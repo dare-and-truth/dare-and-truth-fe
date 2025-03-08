@@ -1,5 +1,13 @@
 'use client';
-import { Bolt, Grid, Heart, MessageCircle, Square, User, Video } from 'lucide-react';
+import {
+  Bolt,
+  Grid,
+  Heart,
+  MessageCircle,
+  Square,
+  User,
+  Video,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
@@ -26,26 +34,24 @@ export default function ProfileChallengeDoing({ userId }: { userId: string }) {
 
     try {
       setLoading(true);
-      if (activeTab === 'challenges') {
-        const fetchFunc =
-          activeTab === 'challenges' ? getChallengeByUserId : getPostByUserId;
-        const response = await fetchFunc(userId, page, ITEMS_PER_PAGE);
-        if (response && response.length > 0) {
-          setFeeds((prev) => [...prev, ...response]);
-          if (response.length < ITEMS_PER_PAGE) {
-            setHasMore(false);
-          }
-          setPage(page + 1);
-        } else {
+      const fetchFunc =
+        activeTab === 'challenges' ? getChallengeByUserId : getPostByUserId;
+      const response = await fetchFunc(userId, page, ITEMS_PER_PAGE);
+      if (response && response.length > 0) {
+        setFeeds((prev) => [...prev, ...response]);
+        if (response.length < ITEMS_PER_PAGE) {
           setHasMore(false);
         }
+        setPage(page + 1);
+      } else {
+        setHasMore(false);
       }
     } catch (error) {
       console.error('Error fetching feeds:', error);
     } finally {
       setLoading(false);
     }
-  }, [loading, page, setFeeds, setHasMore, setPage]);
+  }, [loading, page, setFeeds, setHasMore, setPage, activeTab]);
 
   useEffect(() => {
     if (feeds.length === 0) {
@@ -71,10 +77,15 @@ export default function ProfileChallengeDoing({ userId }: { userId: string }) {
         >
           <button
             className="flex items-center p-3"
-            onClick={() => setActiveTab('challenges')}
+            onClick={() => {
+              setActiveTab('challenges');
+              setFeeds([]);
+              setPage(0);
+              setHasMore(true);
+            }}
           >
             <Bolt className="mr-1 h-5 w-5 md:h-4 md:w-4" />
-            <span className="">Challenges</span>
+            <span className="text-black">Challenges</span>
           </button>
         </li>
         <li
@@ -84,15 +95,18 @@ export default function ProfileChallengeDoing({ userId }: { userId: string }) {
         >
           <button
             className="flex items-center p-3"
-            onClick={() => setActiveTab('posts')}
+            onClick={() => {
+              setActiveTab('posts');
+              setFeeds([]);
+              setPage(0);
+              setHasMore(true);
+            }}
           >
             <Grid className="mr-1 h-5 w-5 md:h-4 md:w-4" />
-            <span className="">Posts</span>
+            <span className="text-black">Posts</span>
           </button>
         </li>
       </ul>
-
-      {/* Posts Grid */}
 
       <div className="mx-auto max-w-2xl p-4">
         <InfiniteScroll

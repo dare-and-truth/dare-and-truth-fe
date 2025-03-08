@@ -4,6 +4,8 @@ import { useEffect, useState, useMemo } from 'react';
 import { acceptFriendRequest, rejectFriendRequest, unFriend, createFriendRequest } from '@/app/api/friends.api';
 import { toast } from 'react-toastify';
 import { FriendRequestCardProps } from '@/app/types';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function FriendRequestCard({ 
   avatar, 
@@ -171,22 +173,37 @@ export default function FriendRequestCard({
   };
 
   return (
-    <div className={`flex items-center p-4 bg-white rounded-lg shadow-sm mb-4 ${width} transition-all duration-300`}>
+    <div
+      className={`mb-4 flex items-center rounded-lg bg-white p-4 shadow-sm ${width} transition-all duration-300`}
+    >
       <div className="flex-shrink-0">
-        <img src={avatar || '/images/default-profile.png'} alt="User Avatar" className="w-12 h-12 rounded-full" />
+        <Link href={`/profile/${followerId}`}>
+          <Image
+            src={avatar || '/images/default-profile.png'}
+            alt="User Avatar"
+            className="h-12 w-12 rounded-full"
+            height={0}
+            width={0}
+          />
+        </Link>
       </div>
 
       <div className="ml-4 flex-grow">
-        <p className="font-semibold text-lg">{truncatedUsername}</p>
+        <Link href={`/profile/${followerId}`}>
+          <p className="text-lg font-semibold">{truncatedUsername}</p>
+        </Link>
         {mode === 'requests' ? (
           <p className="text-sm text-gray-500">
-            {isAccepted ? `Became friends ${timeAgo}` : `Sent friend request ${timeAgo}`}
+            {isAccepted
+              ? `Became friends ${timeAgo}`
+              : `Sent friend request ${timeAgo}`}
           </p>
         ) : mode === 'friends' ? (
           <p className="text-sm text-gray-500">
             {isAccepted ? `Became friends ${timeAgo}` : 'Friend'}
           </p>
-        ) : ( // Mode 'search'
+        ) : (
+          // Mode 'search'
           <p className="text-sm text-gray-500">
             {isAccepted ? `Became friends ${timeAgo}` : 'Not friends'}
           </p>
@@ -197,101 +214,101 @@ export default function FriendRequestCard({
         {mode === 'requests' ? (
           requestId ? (
             isAccepted ? (
-              <Button 
-                variant="outline" 
-                className="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg"
+              <Button
+                variant="outline"
+                className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white"
                 onClick={handleUnfriend}
                 disabled={loading}
               >
-                {loading ? "Unfriending..." : "Unfriend"}
+                {loading ? 'Unfriending...' : 'Unfriend'}
               </Button>
             ) : isCurrentUserReceiver ? (
               <>
-                <Button 
-                  variant="default" 
-                  className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg" 
+                <Button
+                  variant="default"
+                  className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white"
                   onClick={handleAccept}
                   disabled={loading}
                 >
-                  {loading ? "Accepting..." : "Accept"}
+                  {loading ? 'Accepting...' : 'Accept'}
                 </Button>
-                <Button 
-                  variant="outline" 
-                  className="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg"
+                <Button
+                  variant="outline"
+                  className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white"
                   onClick={handleReject}
                   disabled={loading}
                 >
-                  {loading ? "Rejecting..." : "Reject"}
+                  {loading ? 'Rejecting...' : 'Reject'}
                 </Button>
               </>
             ) : null // Không hiển thị gì nếu không phải người nhận
           ) : (
-            <Button 
-              variant="default" 
-              className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg" 
+            <Button
+              variant="default"
+              className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white"
               onClick={handleAddFriend}
               disabled={loading}
             >
-              {loading ? "Adding..." : "Add Friend"}
+              {loading ? 'Adding...' : 'Add Friend'}
             </Button>
           )
         ) : mode === 'friends' ? (
-          requestId && isAccepted && (
-            <Button 
-              variant="outline" 
-              className="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg"
+          requestId &&
+          isAccepted && (
+            <Button
+              variant="outline"
+              className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white"
               onClick={handleUnfriend}
               disabled={loading}
             >
-              {loading ? "Unfriending..." : "Unfriend"}
+              {loading ? 'Unfriending...' : 'Unfriend'}
             </Button>
           )
-        ) : ( // Mode 'search'
-          userId && currentUserId ? (
-            requestId ? (
-              isAccepted ? (
-                <Button 
-                  variant="outline" 
-                  className="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg"
-                  onClick={handleUnfriend}
-                  disabled={loading}
-                >
-                  {loading ? "Unfriending..." : "Unfriend"}
-                </Button>
-              ) : isCurrentUserSender ? (
-                <span className="text-gray-500 font-semibold">Request Sent</span>
-              ) : isCurrentUserReceiver ? (
-                <>
-                  <Button 
-                    variant="default" 
-                    className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg" 
-                    onClick={handleAccept}
-                    disabled={loading}
-                  >
-                    {loading ? "Accepting..." : "Accept"}
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="bg-red-600 text-white font-semibold px-4 py-2 rounded-lg"
-                    onClick={handleReject}
-                    disabled={loading}
-                  >
-                    {loading ? "Rejecting..." : "Reject"}
-                  </Button>
-                </>
-              ) : null
-            ) : (
-              <Button 
-                variant="default" 
-                className="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg" 
-                onClick={handleAddFriend}
+        ) : // Mode 'search'
+        userId && currentUserId ? (
+          requestId ? (
+            isAccepted ? (
+              <Button
+                variant="outline"
+                className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white"
+                onClick={handleUnfriend}
                 disabled={loading}
               >
-                {loading ? "Adding..." : "Add Friend"}
+                {loading ? 'Unfriending...' : 'Unfriend'}
               </Button>
-            )
-          ) : null
-        )}
+            ) : isCurrentUserSender ? (
+              <span className="font-semibold text-gray-500">Request Sent</span>
+            ) : isCurrentUserReceiver ? (
+              <>
+                <Button
+                  variant="default"
+                  className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white"
+                  onClick={handleAccept}
+                  disabled={loading}
+                >
+                  {loading ? 'Accepting...' : 'Accept'}
+                </Button>
+                <Button
+                  variant="outline"
+                  className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white"
+                  onClick={handleReject}
+                  disabled={loading}
+                >
+                  {loading ? 'Rejecting...' : 'Reject'}
+                </Button>
+              </>
+            ) : null
+          ) : (
+            <Button
+              variant="default"
+              className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white"
+              onClick={handleAddFriend}
+              disabled={loading}
+            >
+              {loading ? 'Adding...' : 'Add Friend'}
+            </Button>
+          )
+        ) : null}
       </div>
     </div>
   );

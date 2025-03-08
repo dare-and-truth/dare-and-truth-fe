@@ -1,14 +1,18 @@
 import { use } from 'react';
 import ProfileChallengeDoing from '@/components/ProfileChallengeDoing';
 import ProfileHeader from '@/components/ProfileHeader';
-export default function ProfilePage({ params }: { params: Promise<{ userId: string }> }) {
+export default function ProfilePage({
+  params,
+}: {
+  params: Promise<{ userId: string }>;
+}) {
   const { userId } = use(params);
   return (
-    <main className="bg-gray-100 bg-opacity-25">
+    <div className="h-[calc(100vh-4rem)] overflow-y-auto p-7 pb-20 md:pb-4">
       <div className="mb-8 lg:mx-auto lg:w-8/12">
         <ProfileHeader userId={userId} />
         <ProfileChallengeDoing userId={userId} />
       </div>
-    </main>
+    </div>
   );
 }

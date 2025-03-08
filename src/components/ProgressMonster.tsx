@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 export default function ProgressMonster({ userId }: { userId: string }) {
-  const [score, setScore] = useState<number | null>(null);
+  const [score, setScore] = useState<number>(0);
   const totalScore = 10000; // Mục tiêu cuối cùng
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export default function ProgressMonster({ userId }: { userId: string }) {
         const response = await getScoreByUserId(userId);
         console.log(response);
         if (response) {
-          setScore(response.totalScore); // Fix: "toalScore" -> "totalScore"
+          setScore(response.totalScore); 
         }
       } catch (error) {
         console.error('Error fetching user score:', error);
@@ -24,11 +24,10 @@ export default function ProgressMonster({ userId }: { userId: string }) {
     fetchScore();
   }, [userId]);
 
-  const completedScore = 1000; // Nếu score chưa có, mặc định là 0
+  const completedScore = 1000; 
   const remainingScore = totalScore - completedScore;
-  const progress = Math.min((completedScore / totalScore) * 100, 100); // Đảm bảo không vượt quá 100%
+  const progress = Math.min((completedScore / totalScore) * 100, 100);
 
-  // Xác định hình ảnh monster dựa trên số điểm
   const getMonsterImage = () => {
     if (completedScore >= 10000) return '/images/monster-levelfour.png';
     if (completedScore >= 1000) return '/images/monster-leveltwo.png';
@@ -37,16 +36,20 @@ export default function ProgressMonster({ userId }: { userId: string }) {
   };
 
   return (
-    <div className="flex max-w-md flex-col items-center rounded-lg border border-gray-200 bg-white p-4 shadow-md">
+    <div className="flex w-full flex-row items-center rounded-lg border border-gray-200 bg-white p-8 shadow-md">
       {/* Monster image and progress stats */}
-      <div className="flex w-full items-center gap-4">
+      <div className="float-left">
         <Image
           src={getMonsterImage()}
           alt="Monster"
-          width={50}
-          height={50}
-          className="rounded-full"
+          width={100}
+          height={140}
+          className="animate-bounce"
         />
+      </div>
+
+      {/* Progress Bar */}
+      <div className=" w-full ml-4">
         <div className="flex flex-col">
           <h2 className="text-lg font-semibold text-gray-800">
             {completedScore > 0
@@ -57,10 +60,6 @@ export default function ProgressMonster({ userId }: { userId: string }) {
             {completedScore} done / {remainingScore} left to defeat
           </p>
         </div>
-      </div>
-
-      {/* Progress Bar */}
-      <div className="mt-4 w-full">
         <Progress
           value={progress}
           className="h-4 w-full rounded-full bg-gray-200"

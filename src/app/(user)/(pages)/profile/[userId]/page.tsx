@@ -9,7 +9,7 @@ export default function ProfilePage({
   const { userId } = use(params);
   return (
     <div className="h-[calc(100vh-4rem)] overflow-y-auto p-7 pb-20 md:pb-4">
-      <div className="mb-8 lg:mx-auto lg:w-8/12">
+      <div className="mx-auto max-w-2xl p-4">
         <ProfileHeader userId={userId} />
         <ProfileChallengeDoing userId={userId} />
       </div>

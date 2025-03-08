@@ -10,3 +10,14 @@ export const getFeeds = async (page: number, size: number) => {
   });
   return response?.data;
 };
+
+export const getFeedById = async (feedId: string, type: string) => {
+  const response = await request({
+    method: 'get',
+    url: `/feeds/${type}/${feedId}`,
+    onError: () => {
+      console.log('error in get feed by id');
+    },
+  });
+  return response?.data;
+};

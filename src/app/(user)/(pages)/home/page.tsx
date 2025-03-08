@@ -66,8 +66,8 @@ export default function HomePage() {
           endMessage={<EndOfFeed refreshFeed={refreshFeed} />}
           scrollableTarget="scrollableDiv"
         >
-          {feeds.map((feed: FeedType) => (
-            <Feed feed={feed} key={feed.id} />
+          {feeds.map((feed: FeedType, index) => (
+            <Feed feed={feed} key={index} />
           ))}
         </InfiniteScroll>
       </div>

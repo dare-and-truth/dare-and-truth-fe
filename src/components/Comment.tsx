@@ -25,7 +25,7 @@ export default function CommentComponent({ comment }: any) {
       <div className="flex-1">
         <div className="bg-muted rounded-lg bg-slate-100 p-2">
           <p className="text-sm font-semibold">{comment.user.username}</p>
-          <p className="text-sm">{comment.content}</p>
+          <p className="whitespace-pre-wrap text-sm">{comment.content}</p>
           {comment.mediaUrl && (
             <div className="mt-2">
               {isVideo ? (

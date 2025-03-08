@@ -1,7 +1,7 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import type React from 'react';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,12 +11,30 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SidebarMenuButton } from '@/components/ui/sidebar';
-import { useState } from 'react';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import Image from 'next/image';
-import { Calendar } from 'lucide-react';
-import { NotificationItem } from '@/app/types';
+import { useEffect, useRef, useState } from 'react';
+import {
+  Bell,
+  Heart,
+  MessageSquare,
+  UserCheck,
+  UserPlus,
+  UserRoundX,
+} from 'lucide-react';
+import type { NotificationItem } from '@/app/types';
+import {
+  getUserNotifications,
+  markNotificationAsRead,
+} from '@/app/api/notification.api';
+import {
+  acceptFriendRequest,
+  rejectFriendRequest,
+} from '@/app/api/friends.api';
+import { toast } from 'react-toastify';
+import { Button } from '@/components/ui/button';
+import { formatTimeAgo } from '@/app/helpers/formatTimeAgo';
+import Loading from '@/components/Loading';
+import { useRouter } from 'next/navigation';
+import { useLoading } from '@/app/contexts';
 
 export function NotificationDropdown({
   icon,
@@ -27,130 +45,307 @@ export function NotificationDropdown({
   text: string;
   active?: boolean;
 }) {
-  const [showNotifications, setShowNotifications] = useState<boolean>(true);
-  const [showAll, setShowAll] = useState<boolean>(false);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [isNotificationLoading, setIsNotificationLoading] =
+    useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const router = useRouter();
+  const { setIsLoading } = useLoading();
 
-  const notifications: NotificationItem[] = [
-    {
-      id: '1',
-      type: 'calendar_event',
-      content: 'Team meeting at 2:00 PM',
-      time: 'Today',
-    },
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [hasMore, setHasMore] = useState<boolean>(true);
 
-    {
-      id: '3',
-      type: 'accept_friend',
-      user: {
-        username: 'venn.flynn',
-        avatar: '/images/default-profile.png',
-      },
-      time: 'Today',
-    },
-    {
-      id: '4',
-      type: 'like',
-      user: {
-        username: 'beyondzey',
-        avatar: '/images/default-profile.png',
-      },
-      content: 'your post',
-      time: 'This week',
-      image: '/images/default-profile.png',
-    },
-    {
-      id: '5',
-      type: 'comment',
-      user: {
-        username: 'beyondzey',
-        avatar: '/images/default-profile.png',
-      },
-      content:
-        'your post: "Great post!" your post: "Great post!"your post: "Great post!"your post: "Great post!"your post: "Great post!"',
-      time: 'Earlier',
-      image: '/images/default-profile.png',
-    },
-  ];
+  // Ref for scroll area
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-  const displayedNotifications = showAll
-    ? notifications
-    : notifications.slice(0, 3);
+  const fetchNotifications = async (page: number) => {
+    try {
+      setIsNotificationLoading(true);
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        throw new Error('User ID not found');
+      }
 
-  // Categorize notifications by time
-  const todayNotifications = displayedNotifications.filter(
-    (notification) => notification.time === 'Today',
-  );
-  const thisMonthNotifications = displayedNotifications.filter(
-    (notification) => notification.time === 'This week',
-  );
-  const previousNotifications = displayedNotifications.filter(
-    (notification) => notification.time === 'Earlier',
-  );
+      await getUserNotifications(
+        userId,
+        {
+          page,
+          size: 15,
+          sort: 'createdAt,desc',
+        },
+        (data) => {
+          // Append new notifications or replace based on page
+          const newNotifications =
+            page === 0 ? data.content : [...notifications, ...data.content];
 
-  const handleToggleShowAll = (e: Event) => {
-    e.preventDefault();
-    setShowAll((prev) => !prev);
+          setNotifications(newNotifications as NotificationItem[]);
+          setHasMore(data.number < data.totalPages - 1);
+        },
+      );
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      console.error(err);
+    } finally {
+      setIsNotificationLoading(false);
+    }
   };
 
-  const renderNotification = (notification: NotificationItem) => (
-    <div
-      key={notification.id}
-      className="hover:bg-accent flex items-center gap-4 rounded-md p-2"
-    >
-      {/* Avatar only if user exists */}
-      {notification.user ? (
-        <Avatar className="h-12 w-12">
-          <AvatarImage src={notification.user.avatar} />
-          <AvatarFallback>{notification.user.username[0]}</AvatarFallback>
-        </Avatar>
-      ) : (
-        <Calendar className="ml-1 h-10 w-10" />
-      )}
-      <div className="flex-1">
-        {notification.type === 'calendar_event' ? (
-          <div>
-            <p className="text-sm font-bold">Calendar Reminder</p>
-            <p className="text-muted-foreground text-blue-600">
-              {notification.content}
-            </p>
-          </div>
-        ) : notification.type === 'accept_friend' ? (
-          <div>
-            <p className="font-semibold">{notification.user!.username}</p>{' '}
-            <p className="text-blue-600">Friend request. </p>
-          </div>
-        ) : (
-          <p>
-            <span className="font-semibold">{notification.user!.username}</span>{' '}
-            <span className="line-clamp-1 overflow-hidden text-ellipsis whitespace-pre-line text-blue-600">
-              {notification.type === 'like' ? 'Liked ' : 'Commented on '}{' '}
-              {notification.content}.
-            </span>
-          </p>
-        )}
-      </div>
-      {notification.type === 'accept_friend' && (
-        <Button variant="join" size="sm">
-          Accept
-        </Button>
-      )}
-      {(notification.type === 'like' || notification.type === 'comment') &&
-        notification.image && (
-          <div className="h-10 w-10 flex-shrink-0">
-            <Image
-              src={notification.image}
-              alt="Content"
-              className="h-full w-full rounded-md object-cover"
-              width={0}
-              height={0}
+  useEffect(() => {
+    if (isDropdownOpen) {
+      // Reset to first page when dropdown opens
+      setCurrentPage(0);
+      fetchNotifications(0);
+    }
+  }, [isDropdownOpen]);
+
+  // Add scroll event listener for infinite scroll
+  useEffect(() => {
+    const scrollArea = scrollAreaRef.current;
+
+    const handleScroll = () => {
+      if (!scrollArea) return;
+
+      // Check if scrolled to bottom
+      const isBottom =
+        scrollArea.scrollHeight - scrollArea.scrollTop <=
+        scrollArea.clientHeight + 20; // 20px buffer
+
+      if (isBottom && hasMore && !isNotificationLoading) {
+        const nextPage = currentPage + 1;
+        setCurrentPage(nextPage);
+        fetchNotifications(nextPage);
+      }
+    };
+
+    if (scrollArea) {
+      scrollArea.addEventListener('scroll', handleScroll);
+      return () => {
+        scrollArea.removeEventListener('scroll', handleScroll);
+      };
+    }
+  }, [hasMore, isNotificationLoading, currentPage]);
+
+  function getNotificationIcon(type: string) {
+    switch (type) {
+      case 'friend-request':
+        return UserPlus;
+      case 'comment-post':
+        return MessageSquare;
+      case 'comment-challenge':
+        return MessageSquare;
+      case 'like-post':
+        return Heart;
+      case 'like-challenge':
+        return Heart;
+      default:
+        return Bell;
+    }
+  }
+  function getNotificationIconBg(type: string) {
+    switch (type) {
+      case 'friend-request':
+        return 'border-blue-500 bg-blue-500';
+      case 'comment-post':
+        return 'border-green-500 bg-green-500';
+      case 'comment-challenge':
+        return 'border-green-500 bg-green-500';
+      case 'like-post':
+        return 'border-red-500 bg-red-500';
+      case 'like-challenge':
+        return 'border-red-500 bg-red-500';
+      default:
+        return '';
+    }
+  }
+
+  const handleAccept = async (requestId: string) => {
+    acceptFriendRequest(
+      requestId,
+      () => {
+        toast.success('Friend request accepted!');
+        setNotifications((prevNotifications) =>
+          prevNotifications.filter(
+            (notification) =>
+              !(
+                notification.type === 'friend-request' &&
+                notification.relatedEntity.id === requestId
+              ),
+          ),
+        );
+      },
+      (error) => {
+        console.log(error);
+      },
+    );
+  };
+
+  const handleReject = async (requestId: string) => {
+    await rejectFriendRequest(
+      requestId,
+      () => {
+        toast.info('Friend request rejected.');
+        setNotifications((prevNotifications) =>
+          prevNotifications.filter(
+            (notification) =>
+              !(
+                notification.type === 'friend-request' &&
+                notification.relatedEntity.id === requestId
+              ),
+          ),
+        );
+      },
+      (error) => {
+        console.log(error);
+      },
+    );
+  };
+
+  const handleNotificationClick = async (notification: NotificationItem) => {
+    try {
+      setIsLoading(true);
+      if (!notification.isRead) {
+        await markNotificationAsRead(notification.id);
+      }
+      setIsDropdownOpen(false);
+      if (
+        notification.type === 'like-post' ||
+        notification.type === 'comment-post'
+      ) {
+        router.push(`/feed/post/${notification.relatedEntity.id}`);
+      } else if (
+        notification.type === 'like-challenge' ||
+        notification.type === 'comment-challenge'
+      ) {
+        router.push(`/feed/challenge/${notification.relatedEntity.id}`);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const renderNotification = (notification: NotificationItem) => {
+    let content = '';
+
+    if (notification.type === 'like-post') {
+      content = `Liked your post`;
+    } else if (notification.type === 'like-challenge') {
+      content = `Liked your challenge`;
+    } else if (notification.type === 'comment-post') {
+      content = `Commented on your challenge`;
+    } else if (notification.type === 'comment-challenge') {
+      content = `Commented on your challenge`;
+    } else if (notification.type === 'friend-request') {
+      content = `Sent you a friend request`;
+    }
+
+    const NotificationIcon = getNotificationIcon(notification.type);
+
+    return (
+      <div
+        key={notification.id}
+        className={`relative mb-1 flex items-center gap-4 rounded-md p-3 shadow transition-colors hover:cursor-pointer hover:bg-slate-300 ${!notification.isRead ? 'bg-slate-200' : ''}`}
+        onClick={() => handleNotificationClick(notification)}
+      >
+        <div className="relative">
+          <div className="flex-shrink-0">
+            <img
+              src={
+                notification.sender.avatarUrl || '/images/default-profile.png'
+              }
+              alt="User Avatar"
+              className="h-12 w-12 rounded-full"
             />
           </div>
+
+          {/* Unread indicator on avatar */}
+          {!notification.isRead && (
+            <span className="bg-primary absolute right-0 top-0 h-3 w-3 rounded-full"></span>
+          )}
+
+          {/* Notification type icon */}
+          <div
+            className={`absolute -bottom-2 -right-3 flex h-6 w-6 -translate-x-1/2 items-center justify-center rounded-full border shadow-sm ${getNotificationIconBg(notification.type)}`}
+          >
+            <NotificationIcon className="h-3.5 w-3.5 text-white" />
+          </div>
+        </div>
+
+        <div className="flex-1">
+          <p className={`${!notification.isRead ? 'font-medium' : ''}`}>
+            <span className="font-semibold">
+              {notification.sender.username}
+            </span>{' '}
+            <span
+              className={`line-clamp-2 overflow-hidden text-ellipsis whitespace-pre-line ${!notification.isRead ? 'text-blue-600' : ''}`}
+            >
+              {content}
+            </span>
+          </p>
+          <div className="flex items-center gap-2">
+            {notification.type === 'friend-request' && (
+              <div className="flex justify-start gap-2">
+                <Button
+                  variant="join"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent triggering the parent onClick
+                    handleAccept(notification.relatedEntity.id);
+                  }}
+                  className="px-2"
+                >
+                  <UserCheck className="mr-1 h-4 w-4" />
+                  Accept
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent triggering the parent onClick
+                    handleReject(notification.relatedEntity.id);
+                  }}
+                  className="px-2"
+                >
+                  <UserRoundX className="mr-1 h-4 w-4" />
+                  Reject
+                </Button>
+              </div>
+            )}
+            {(notification.type === 'comment-challenge' ||
+              notification.type === 'comment-post') && (
+              <div className="bg-muted/50 rounded-md p-2 text-sm italic">
+                "
+                {notification.content.length > 30
+                  ? `${notification.content.substring(0, 30)}...`
+                  : notification?.content}
+                "
+              </div>
+            )}
+          </div>
+          {notification.relatedEntity.hashtag && (
+            <div className="inline-flex items-center rounded-full bg-blue-300 px-2 py-0.5 text-xs font-medium text-blue-800">
+              #
+              {notification.relatedEntity.hashtag.length > 30
+                ? `${notification.relatedEntity.hashtag.substring(0, 30)}...`
+                : notification?.relatedEntity.hashtag}
+            </div>
+          )}
+          <p className="text-muted-foreground text-end text-xs">
+            {formatTimeAgo(notification.createdAt)}
+          </p>
+        </div>
+
+        {!notification.isRead && (
+          <span className="absolute right-3 top-1/2 h-3 w-3 -translate-y-1/2 rounded-full bg-blue-500"></span>
         )}
-    </div>
-  );
+      </div>
+    );
+  };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
       <DropdownMenuTrigger asChild>
         <SidebarMenuButton
           tooltip={text}
@@ -161,59 +356,39 @@ export function NotificationDropdown({
         </SidebarMenuButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="sm:w-60 md:h-screen md:w-80 md:rounded-none"
+        className="sm:w-60 md:h-screen md:w-96 md:rounded-none"
         side="right"
         align="start"
         sideOffset={10}
       >
         <DropdownMenuLabel className="text-xl">Notifications</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {showNotifications && displayedNotifications.length > 0 ? (
-          <ScrollArea className="h-[calc(100%-6rem)]">
-            {/* Today */}
-            {todayNotifications.length > 0 && (
-              <div className="p-4">
-                <h3 className="mb-2 font-semibold">Today</h3>
-                {todayNotifications.map(renderNotification)}
-              </div>
-            )}
-            {todayNotifications.length > 0 &&
-              (thisMonthNotifications.length > 0 ||
-                previousNotifications.length > 0) && <Separator />}
+        {isNotificationLoading && notifications.length === 0 ? (
+          <DropdownMenuItem>
+            <Loading />
+          </DropdownMenuItem>
+        ) : error ? (
+          <DropdownMenuItem className="text-red-500">{error}</DropdownMenuItem>
+        ) : notifications.length > 0 ? (
+          <div
+            ref={scrollAreaRef}
+            className="scrollbar h-[calc(100%-3rem)] overflow-y-auto"
+          >
+            <div>
+              {notifications.map((notification) =>
+                renderNotification(notification),
+              )}
+            </div>
 
-            {/* This month */}
-            {thisMonthNotifications.length > 0 && (
-              <div className="p-4">
-                <h3 className="mb-2 font-semibold">This week</h3>
-                {thisMonthNotifications.map(renderNotification)}
+            {/* Load More Indicator */}
+            {isNotificationLoading && (
+              <div className="flex items-center justify-center p-4">
+                <Loading />
               </div>
             )}
-            {thisMonthNotifications.length > 0 &&
-              previousNotifications.length > 0 && <Separator />}
-
-            {/* Earlier */}
-            {previousNotifications.length > 0 && (
-              <div className="p-4">
-                <h3 className="mb-2 font-semibold">Earlier</h3>
-                {previousNotifications.map(renderNotification)}
-              </div>
-            )}
-          </ScrollArea>
+          </div>
         ) : (
           <DropdownMenuItem>No new notifications</DropdownMenuItem>
-        )}
-        {notifications.length > 3 && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onSelect={handleToggleShowAll}
-              className="cursor-pointer"
-            >
-              {showAll
-                ? 'Collapse'
-                : `View all notifications (${notifications.length})`}
-            </DropdownMenuItem>
-          </>
         )}
       </DropdownMenuContent>
     </DropdownMenu>

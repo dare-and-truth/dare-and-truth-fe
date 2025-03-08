@@ -82,7 +82,7 @@ export default function LoginForm() {
       if (error.response?.status === 401) {
         setErrors({ email: '', password: 'Incorrect email or password' });
       } else {
-        toast.error('An error occurred during sign in.');
+        // toast.error('An error occurred during sign in.');
       }
     } finally {
       setIsLoading(false);

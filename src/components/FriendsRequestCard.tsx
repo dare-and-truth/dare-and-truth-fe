@@ -1,28 +1,33 @@
 // components/FriendRequestCard.tsx
 import { Button } from '@/components/ui/button';
 import { useEffect, useState, useMemo } from 'react';
-import { acceptFriendRequest, rejectFriendRequest, unFriend, createFriendRequest } from '@/app/api/friends.api';
+import {
+  acceptFriendRequest,
+  rejectFriendRequest,
+  unFriend,
+  createFriendRequest,
+} from '@/app/api/friends.api';
 import { toast } from 'react-toastify';
 import { FriendRequestCardProps } from '@/app/types';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default function FriendRequestCard({ 
-  avatar, 
-  username, 
-  followedAt, 
-  isAccepted: initialAccepted, 
-  acceptedAt, 
-  requestId, 
+export default function FriendRequestCard({
+  avatar,
+  username,
+  followedAt,
+  isAccepted: initialAccepted,
+  acceptedAt,
+  requestId,
   followerId,
   userId,
-  width = "w-[65%]",
-  onAccept,        
-  onReject,        
-  onUnfriend,   
-  onAddFriend,     
-  mode = 'requests' // Prop mới để kiểm soát chế độ: 'requests', 'friends', hoặc 'search'
-}: FriendRequestCardProps ) {
+  width = 'w-[65%]',
+  onAccept,
+  onReject,
+  onUnfriend,
+  onAddFriend,
+  mode = 'requests', // Prop mới để kiểm soát chế độ: 'requests', 'friends', hoặc 'search'
+}: FriendRequestCardProps) {
   const [isAccepted, setIsAccepted] = useState(initialAccepted || false);
   const [loading, setLoading] = useState(false);
   const [maxUsernameLength, setMaxUsernameLength] = useState(30);
@@ -34,7 +39,6 @@ export default function FriendRequestCard({
   if (mode === 'requests' && currentUserId && followerId === currentUserId) {
     return null;
   }
-
 
   useEffect(() => {
     const updateUI = () => {
@@ -48,20 +52,21 @@ export default function FriendRequestCard({
     };
 
     updateUI();
-    window.addEventListener("resize", updateUI);
-    return () => window.removeEventListener("resize", updateUI);
+    window.addEventListener('resize', updateUI);
+    return () => window.removeEventListener('resize', updateUI);
   }, []);
 
   const isCurrentUserReceiver = userId === currentUserId;
   const isCurrentUserSender = followerId === currentUserId;
 
-  const truncatedUsername = username?.length > maxUsernameLength 
-    ? `${username.slice(0, maxUsernameLength)}...` 
-    : username || "Unknown User";
+  const truncatedUsername =
+    username?.length > maxUsernameLength
+      ? `${username.slice(0, maxUsernameLength)}...`
+      : username || 'Unknown User';
 
   const timeAgo = useMemo(() => {
     const fromDate = new Date(
-      isAccepted && acceptedAt ? acceptedAt : followedAt || new Date()
+      isAccepted && acceptedAt ? acceptedAt : followedAt || new Date(),
     );
     const now = new Date();
     const diffMs = now.getTime() - fromDate.getTime();
@@ -70,30 +75,29 @@ export default function FriendRequestCard({
     const diffDays = Math.floor(diffHours / 24);
     const diffMonths = Math.floor(diffDays / 30);
 
-    if (diffMinutes < 1) return "Just now";
-    if (diffMinutes < 60) return `${diffMinutes} minute${diffMinutes > 1 ? "s" : ""} ago`;
-    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
-    if (diffDays < 30) return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
-    return `${diffMonths} month${diffMonths > 1 ? "s" : ""} ago`;
+    if (diffMinutes < 1) return 'Just now';
+    if (diffMinutes < 60)
+      return `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
+    if (diffHours < 24)
+      return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    if (diffDays < 30) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
   }, [followedAt, acceptedAt, isAccepted]);
-  
+
   const handleAddFriend = async () => {
     if (!userId || !currentUserId) {
-      toast.error("Invalid user ID.");
+      toast.error('Invalid user ID.');
       return;
     }
     setLoading(true);
     try {
-      await createFriendRequest(
-        { userId, followerId: currentUserId },
-        () => {
-          setIsAccepted(false); 
-          onAddFriend?.(userId, currentUserId);
-          toast.success("Friend request sent!");
-        }
-      );
+      await createFriendRequest({ userId, followerId: currentUserId }, () => {
+        setIsAccepted(false);
+        onAddFriend?.(userId, currentUserId);
+        toast.success('Friend request sent!');
+      });
     } catch (error) {
-      toast.error("Failed to send friend request.");
+      toast.error('Failed to send friend request.');
     } finally {
       setLoading(false);
     }
@@ -101,30 +105,30 @@ export default function FriendRequestCard({
 
   const handleAccept = async () => {
     if (!requestId || !currentUserId) {
-      toast.error("Invalid request or user ID.");
+      toast.error('Invalid request or user ID.');
       return;
     }
     setLoading(true);
     try {
       const response = await acceptFriendRequest(
-        requestId, 
+        requestId,
         (response) => {
           setIsAccepted(true);
           onAccept?.(requestId);
-          toast.success("Friend request accepted!");
+          toast.success('Friend request accepted!');
         },
         (error) => {
-          toast.error("Failed to accept friend request.");
-        }
+          toast.error('Failed to accept friend request.');
+        },
       );
     } finally {
       setLoading(false);
-    };
+    }
   };
-  
+
   const handleReject = async () => {
     if (!requestId || !currentUserId) {
-      toast.error("Invalid request or user ID.");
+      toast.error('Invalid request or user ID.');
       return;
     }
     setLoading(true);
@@ -133,43 +137,43 @@ export default function FriendRequestCard({
         requestId,
         (response) => {
           onReject?.(requestId);
-          toast.info("Friend request rejected.");
+          toast.info('Friend request rejected.');
         },
         (error) => {
-          toast.error("Failed to reject friend request.");
-        }
+          toast.error('Failed to reject friend request.');
+        },
       );
     } finally {
       setLoading(false);
-    };
+    }
   };
-  
+
   const handleUnfriend = async () => {
     if (!requestId || !currentUserId || !followerId || !userId) {
-      toast.error("Invalid request or user IDs.");
+      toast.error('Invalid request or user IDs.');
       return;
     }
     setLoading(true);
     try {
       const friendId = currentUserId === userId ? followerId : userId; // ID của người bạn cần xóa
       if (!friendId) {
-        throw new Error("Friend ID is undefined.");
+        throw new Error('Friend ID is undefined.');
       }
 
       const response = await unFriend(
         friendId,
         (response) => {
           onUnfriend?.(requestId);
-          setIsAccepted(false); 
-          toast.info("You have unfriended this user.");
+          setIsAccepted(false);
+          toast.info('You have unfriended this user.');
         },
         (error) => {
-          toast.error("Failed to unfriend.");
-        }
+          toast.error('Failed to unfriend.');
+        },
       );
     } finally {
       setLoading(false);
-    };
+    }
   };
 
   return (

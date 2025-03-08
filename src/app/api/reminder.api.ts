@@ -4,8 +4,8 @@ import {
   CreateReminderRequest,
   UpdateReminderRequest,
   ReminderSummaryProjection,
-  HashtagForDoChallengeResponse
-} from '@/app/types'; 
+  HashtagForDoChallengeResponse,
+} from '@/app/types';
 import request from '@/app/utils/Axiosconfig';
 import { AxiosError } from 'axios';
 
@@ -17,7 +17,7 @@ export const createReminder = async (
 ) => {
   await request({
     method: 'post',
-    url: '/reminders', 
+    url: '/reminders',
     data,
     onSuccess: handleSuccess,
     onError: (error: AxiosError) => {
@@ -29,16 +29,18 @@ export const createReminder = async (
 };
 
 // API để lấy tất cả reminders theo ngày
-export const getAllRemindersByDate = async (date: string): Promise<ReminderSummaryProjection[]> => {
+export const getAllRemindersByDate = async (
+  date: string,
+): Promise<ReminderSummaryProjection[]> => {
   const response = await request({
     method: 'get',
-    url: `/reminders?date=${date}`, 
+    url: `/reminders?date=${date}`,
     onError: (error: AxiosError) => {
       console.log('Error when fetching reminders:', error);
       throw error;
     },
   });
-  return response?.data || []; 
+  return response?.data || [];
 };
 
 // API để cập nhật một reminder
@@ -50,7 +52,7 @@ export const updateReminder = async (
 ) => {
   await request({
     method: 'patch',
-    url: `/reminders/${reminderId}`, 
+    url: `/reminders/${reminderId}`,
     data,
     onSuccess: handleSuccess,
     onError: (error: AxiosError) => {
@@ -69,7 +71,7 @@ export const deleteReminder = async (
 ) => {
   await request({
     method: 'delete',
-    url: `/reminders/${reminderId}`, 
+    url: `/reminders/${reminderId}`,
     onSuccess: handleSuccess,
     onError: (error: AxiosError) => {
       console.log('Error when deleting reminder:', error);
@@ -80,7 +82,9 @@ export const deleteReminder = async (
 };
 
 // API để lấy tất cả reminders theo ngày
-export const getHashtags = async (): Promise<HashtagForDoChallengeResponse[]> => {
+export const getHashtags = async (): Promise<
+  HashtagForDoChallengeResponse[]
+> => {
   const response = await request({
     method: 'get',
     url: `/reminders/hashtags`,

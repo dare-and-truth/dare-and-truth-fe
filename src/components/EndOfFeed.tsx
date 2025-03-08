@@ -1,6 +1,10 @@
 import { CheckCircle, Sparkles } from 'lucide-react';
 
-export default function EndOfFeed({ refreshFeed }: { refreshFeed: () => void }) {
+export default function EndOfFeed({
+  refreshFeed,
+}: {
+  refreshFeed: () => void;
+}) {
   return (
     <div className="my-8 flex flex-col items-center justify-center rounded-xl border border-blue-100 bg-gradient-to-b from-blue-50 to-white px-4 py-12">
       <div className="relative mb-4">

@@ -5,7 +5,12 @@ import { formatTimeAgo } from '@/app/helpers/formatTimeAgo';
 import { Button } from '@/components/ui/button';
 import { FeedType } from '@/app/types';
 import { JoinChallengeDialog } from '@/components/JoinChallengeDialog';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { useState } from 'react';
 import Link from 'next/link';
 
@@ -16,7 +21,7 @@ const isVideo = (mediaUrl: string) => {
 export default function FeedContent({ feed }: { feed: FeedType }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isJoined, setIsJoined] = useState(feed.joined);
-  
+
   return (
     <>
       <div className="mb-2 flex items-center justify-between gap-4">

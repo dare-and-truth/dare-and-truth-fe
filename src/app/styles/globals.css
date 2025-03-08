@@ -42,16 +42,15 @@ body {
   }
 
   .scrollbar::-webkit-scrollbar-thumb {
-    background: #e0cbcb;
+    background: #bdc5cf;
     border-radius: 100vh;
     border: 3px solid #f6f7ed;
   }
 
   .scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #c0a0b9;
+    background: #7f8c9c;
   }
 }
-
 
 @keyframes custom-spin {
   to {
@@ -78,4 +77,3 @@ body {
 .animate-pulse {
   animation: custom-pulse 1.5s ease-in-out infinite;
 }
-

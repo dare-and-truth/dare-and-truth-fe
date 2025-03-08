@@ -1,17 +1,17 @@
-import request from "@/app/utils/Axiosconfig";
+import request from '@/app/utils/Axiosconfig';
 
-export const getChallengeBySearchChallenge = async (searchChallenge: string) => {
+export const getChallengeBySearchChallenge = async (
+  searchChallenge: string,
+) => {
   const response = await request({
     method: 'get',
     url: `/search/challenge?keyword=${searchChallenge}`,
   });
-  console.log("search challenge", response?.data)
+  console.log('search challenge', response?.data);
   return response?.data;
 };
 
-export const getUserBySearchUser = async (
-  searchUser: string,
-) => {
+export const getUserBySearchUser = async (searchUser: string) => {
   const response = await request({
     method: 'get',
     url: `/search/user?keyword=${searchUser}`,

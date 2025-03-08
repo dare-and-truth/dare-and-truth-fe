@@ -50,7 +50,11 @@ export default function ListFriendPage() {
               mode="friends" // Sử dụng chế độ 'friends'
               avatar={'/images/default-profile.png'}
               // Kiểm tra followerId so với currentUserId để chọn username
-              username={currentUserId && friend.follower.id === currentUserId ? friend.user.username : friend.follower.username}
+              username={
+                currentUserId && friend.follower.id === currentUserId
+                  ? friend.user.username
+                  : friend.follower.username
+              }
               isAccepted={friend.isAccepted}
               acceptedAt={friend.acceptedAt}
               followedAt={friend.followedAt}

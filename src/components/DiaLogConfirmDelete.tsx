@@ -23,21 +23,23 @@ export function DialogConfirm({
   const handleConfirm = async () => {
     await onConfirm();
     setOpen(false);
-    if (onClose) onClose(); 
+    if (onClose) onClose();
   };
 
-
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => {
-      setOpen(isOpen);
-      if (!isOpen && onClose) onClose(); 
-    }}>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        setOpen(isOpen);
+        if (!isOpen && onClose) onClose();
+      }}
+    >
       <DialogTrigger asChild>{button}</DialogTrigger>
       <DialogContent>
         <DialogHeader className="flex items-center">
           <DialogTitle>{title} </DialogTitle>
         </DialogHeader>
-        <DialogFooter className="flex sm:justify-center gap-2">
+        <DialogFooter className="flex gap-2 sm:justify-center">
           <Button
             type="button"
             className="flex items-center"

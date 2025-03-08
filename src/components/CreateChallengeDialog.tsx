@@ -271,6 +271,7 @@ export default function CreateChallengeDialog(props: any) {
               value={formData.content || ''}
               onChange={handleChange}
               disabled={isUploading}
+              rows={6}
             />
             {errors.content && (
               <p className="text-sm text-red-500">{errors.content}</p>

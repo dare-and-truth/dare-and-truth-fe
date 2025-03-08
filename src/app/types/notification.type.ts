@@ -1,11 +1,19 @@
 export interface NotificationItem {
   id: string;
-  type: 'calendar_event' | 'accept_friend' | 'like' | 'comment';
-  user?: {
+  type:
+    | 'calendar-event'
+    | 'friend-request'
+    | 'like-post'
+    | 'comment-post'
+    | 'comment-challenge'
+    | 'like-post'
+    | 'like-challenge';
+  content: string;
+  sender: {
     username: string;
-    avatar: string;
+    avatarUrl: string;
   };
-  content?: string;
-  time: string;
-  image?: string;
+  isRead: boolean;
+  relatedEntity: any;
+  createdAt: string;
 }

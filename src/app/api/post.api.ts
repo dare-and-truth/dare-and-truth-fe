@@ -15,6 +15,19 @@ export const getPost = async () => {
   }
 };
 
+export const getPosById = async (postId: string) => {
+  try {
+    const response = await request({
+      method: 'get',
+      url: `/posts/${postId}`,
+    });
+    return response?.data;
+  } catch (error) {
+    console.error('Error in get posts:', error);
+    throw error;
+  }
+};
+
 export const postPost = async (
   data: CreatePostPayload,
   handleSuccess: () => void,

@@ -1,4 +1,4 @@
-import { FeedProvider } from '@/app/contexts';
+import { FeedProvider, WebSocketProvider } from '@/app/contexts';
 import NavBar from '@/components/NavBar';
 import SidebarLayout from '@/components/SideBarLayout';
 
@@ -11,7 +11,9 @@ export default function UserLayout({
     <div>
       <SidebarLayout>
         <NavBar />
-        <FeedProvider>{children}</FeedProvider>
+        <WebSocketProvider>
+          <FeedProvider>{children}</FeedProvider>
+        </WebSocketProvider>
       </SidebarLayout>
     </div>
   );

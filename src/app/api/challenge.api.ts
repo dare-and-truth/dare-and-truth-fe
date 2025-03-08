@@ -15,6 +15,19 @@ export const getChallenges = async () => {
   }
 };
 
+export const getChallengeById = async (challengeId: string) => {
+  try {
+    const response = await request({
+      method: 'get',
+      url: `/challenges/${challengeId}`,
+    });
+    return response?.data;
+  } catch (error) {
+    console.error('Error in get challenges:', error);
+    throw error;
+  }
+};
+
 export const postChallenge = async (
   data: CreateChallengePayload,
   handleSuccess: () => void,

@@ -1,26 +1,26 @@
 'use client';
+import {
+  acceptFriendRequest,
+  createFriendRequest,
+  getStatusFriendRequests,
+  rejectFriendRequest,
+  unFriend,
+} from '@/app/api/friends.api';
 import { getUserByUserId } from '@/app/api/user.api';
+import { StatusFriend, UserProfile } from '@/app/types';
+import FriendActionButton from '@/components/FriendActionButton';
 import ProgressMonster from '@/components/ProgressMonster';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-
-interface User {
-  id: string;
-  isActive?: string;
-  username: string;
-  email?: string;
-  avatarUrl: null | string;
-  createdAt?: string;
-  updatedAt?: string;
-  password?: string;
-}
+import { toast } from 'react-toastify';
 
 export default function ProfileHeader({ userId }: { userId: string }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [statusFriend, setStatusFriend] = useState<StatusFriend>();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -28,9 +28,15 @@ export default function ProfileHeader({ userId }: { userId: string }) {
         setIsLoading(true);
         const currentUser = localStorage.getItem('userId');
         const response = await getUserByUserId(userId);
+
         if (response) {
           setUser(response);
           setIsOwnProfile(response.id === currentUser);
+        }
+
+        if (userId !== currentUser) {
+          const status = await getStatusFriendRequests(userId);
+          setStatusFriend(status);
         }
       } catch (error) {
         console.error('Error fetching user:', error);
@@ -41,16 +47,75 @@ export default function ProfileHeader({ userId }: { userId: string }) {
     fetchUser();
   }, [userId]);
 
-  // Skeleton component
+  const handleAddFriend = async () => {
+    try {
+      const followerId = localStorage.getItem('userId');
+
+      if (!followerId) {
+        console.error('User not logged in');
+        return;
+      }
+
+      await createFriendRequest({ userId, followerId }, () => {
+        setStatusFriend({ typeOfRequest: 'WaitingForAccept', requestId: '' });
+        toast('Add friend successfully!');
+      });
+    } catch (error) {
+      console.error('Error adding friend:', error);
+    }
+  };
+
+  const handleUnfriend = async () => {
+    try {
+      await unFriend(userId, () => {
+        setStatusFriend({ typeOfRequest: 'Stranger', requestId: '' });
+        toast('Unfriended successfully!');
+      });
+    } catch (error) {
+      console.error('Error unfriending:', error);
+    }
+  };
+
+  const handleAccept = async () => {
+    try {
+      if (!statusFriend?.requestId) {
+        console.error('No request ID found');
+        return;
+      }
+
+      await acceptFriendRequest(statusFriend.requestId, () => {
+        setStatusFriend({ typeOfRequest: 'Friend', requestId: '' });
+        toast('Friend request accepted!');
+      });
+    } catch (error) {
+      console.error('Error accepting friend request:', error);
+    }
+  };
+
+  const handleReject = async () => {
+    try {
+      if (!statusFriend?.requestId) {
+        console.error('No request ID found');
+        return;
+      }
+
+      await rejectFriendRequest(statusFriend.requestId, () => {
+        setStatusFriend({ typeOfRequest: 'Stranger', requestId: '' });
+        toast('Friend request rejected!');
+      });
+    } catch (error) {
+      console.error('Error rejecting friend request:', error);
+    }
+  };
+
   const Skeleton = () => (
-    <header className="flex animate-pulse flex-wrap items-center p-4 md:py-8">
-      <div className="md:ml-16 md:w-3/12">
-        <div className="h-20 w-20 rounded-full bg-gray-300 md:h-40 md:w-40" />
-      </div>
-      <div className="ml-4 w-8/12 md:w-7/12">
-        <div className="mb-4 md:flex md:flex-wrap md:items-center">
-          <div className="mb-2 h-8 w-40 rounded bg-gray-300 sm:mb-0 md:mr-2" />
-          <div className="h-8 w-24 rounded bg-gray-300" />
+    <header className="flex flex-col items-center gap-4 p-4">
+      <div className="h-16 w-16 animate-pulse rounded-full bg-gray-300 sm:h-20 sm:w-20" />
+      <div className="flex w-full flex-col items-center gap-2 text-center">
+        <div className="h-6 w-32 animate-pulse rounded bg-gray-300" />
+        <div className="mt-2 flex w-1/2 flex-col gap-2">
+          <div className="h-8 w-full animate-pulse rounded bg-gray-300" />
+          <div className="h-8 w-full animate-pulse rounded bg-gray-300" />
         </div>
       </div>
     </header>
@@ -59,39 +124,39 @@ export default function ProfileHeader({ userId }: { userId: string }) {
   if (isLoading) return <Skeleton />;
 
   return (
-    <header className="flex w-full items-center p-4 md:py-8">
-      
-      <div className="ml-4 w-8/12 md:w-full">
-        <div className="md:flex md:flex-wrap md:items-center">
-          <Image
-            alt="profile"
-            className="h-20 w-20 rounded-full object-cover p-1 md:h-20 md:w-20"
-            src={user?.avatarUrl || '/images/default-profile.png'}
-            width={160}
-            height={160}
-          />
-          <h2 className="inline-block text-xl font-light sm:mb-0 md:mr-2">
-            {user?.username}
-          </h2>
+    <header className="flex flex-col items-center">
+      <Image
+        alt="profile"
+        className="h-16 w-16 rounded-full object-cover sm:h-28 sm:w-28"
+        src={user?.avatarUrl || '/images/default-profile.png'}
+        width={160}
+        height={160}
+      />
+      <div className="flex w-full flex-col items-center text-center">
+        <h2 className="text-lg font-semibold sm:text-xl">{user?.username}</h2>
+        <div className="my-2 flex items-center gap-2">
           {isOwnProfile ? (
             <Link
               href="/update-profile"
-              className="block rounded bg-blue-500 px-2 py-1 text-center text-sm font-semibold text-white sm:inline-block"
+              className="rounded-md bg-blue-500 px-3 py-2 text-sm font-semibold text-white transition hover:bg-blue-600"
             >
               Edit Profile
             </Link>
           ) : (
-            <Button
-              variant="join"
-              className="block px-2 py-1 text-center text-sm font-semibold text-white sm:inline-block"
-            >
-              Add Friend
-            </Button>
+            <>
+              <FriendActionButton
+                type={statusFriend?.typeOfRequest || 'Stranger'}
+                handleAddFriend={handleAddFriend}
+                handleAccept={handleAccept}
+                handleReject={handleReject}
+                handleUnfriend={handleUnfriend}
+              />
+              <Button variant="join">Chat</Button>
+            </>
           )}
         </div>
-        <div className="mb-4 md:flex md:flex-wrap md:items-center"></div>
-        <ProgressMonster userId={userId} />
       </div>
+      <ProgressMonster userId={userId} />
     </header>
   );
 }

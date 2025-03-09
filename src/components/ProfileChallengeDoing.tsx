@@ -1,21 +1,10 @@
 'use client';
-import {
-  Bolt,
-  Grid,
-  Heart,
-  MessageCircle,
-  Square,
-  User,
-  Video,
-} from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { Bolt, Grid } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { FeedType } from '@/app/types';
 import Feed from '@/components/Feed';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { ITEMS_PER_PAGE } from '@/app/constants';
-import { getFeeds } from '@/app/api/feed.api';
 import { useFeedContext } from '@/app/contexts';
 import Loading from '@/components/Loading';
 import EndOfFeed from '@/components/EndOfFeed';
@@ -66,7 +55,7 @@ export default function ProfileChallengeDoing({ userId }: { userId: string }) {
   };
 
   return (
-    <div className="px-px md:px-3">
+    <div className="mt-4 md:px-3">
       <ul className="flex items-center justify-around space-x-12 border-t text-xs font-semibold uppercase tracking-widest text-gray-600 md:justify-center">
         <li
           className={`md:-mt-px md:border-t ${
@@ -117,8 +106,8 @@ export default function ProfileChallengeDoing({ userId }: { userId: string }) {
           endMessage={<EndOfFeed refreshFeed={refreshFeed} />}
           scrollableTarget="scrollableDiv"
         >
-          {feeds.map((feed: FeedType) => (
-            <Feed feed={feed} key={feed.id} />
+          {feeds.map((feed: FeedType, index) => (
+            <Feed feed={feed} key={index} />
           ))}
         </InfiniteScroll>
       </div>

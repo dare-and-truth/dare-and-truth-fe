@@ -9,6 +9,8 @@ import {
 } from '@/app/api/friends.api';
 import { toast } from 'react-toastify';
 import { FriendRequestCardProps } from '@/app/types';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function FriendRequestCard({
   avatar,
@@ -179,11 +181,15 @@ export default function FriendRequestCard({
       className={`mb-4 flex items-center rounded-lg bg-white p-4 shadow-sm ${width} transition-all duration-300`}
     >
       <div className="flex-shrink-0">
-        <img
-          src={avatar || '/images/default-profile.png'}
-          alt="User Avatar"
-          className="h-12 w-12 rounded-full"
-        />
+        <Link href={`/profile/${followerId}`}>
+          <Image
+            src={avatar || '/images/default-profile.png'}
+            alt="User Avatar"
+            className="h-12 w-12 rounded-full"
+            height={0}
+            width={0}
+          />
+        </Link>
       </div>
 
       <div className="ml-4 flex-grow">
@@ -211,8 +217,7 @@ export default function FriendRequestCard({
           requestId ? (
             isAccepted ? (
               <Button
-                variant="outline"
-                className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white"
+                variant="secondary"
                 onClick={handleUnfriend}
                 disabled={loading}
               >
@@ -221,16 +226,14 @@ export default function FriendRequestCard({
             ) : isCurrentUserReceiver ? (
               <>
                 <Button
-                  variant="default"
-                  className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white"
+                  variant="join"
                   onClick={handleAccept}
                   disabled={loading}
                 >
                   {loading ? 'Accepting...' : 'Accept'}
                 </Button>
                 <Button
-                  variant="outline"
-                  className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white"
+                  variant="secondary"
                   onClick={handleReject}
                   disabled={loading}
                 >
@@ -239,12 +242,7 @@ export default function FriendRequestCard({
               </>
             ) : null // Không hiển thị gì nếu không phải người nhận
           ) : (
-            <Button
-              variant="default"
-              className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white"
-              onClick={handleAddFriend}
-              disabled={loading}
-            >
+            <Button variant="join" onClick={handleAddFriend} disabled={loading}>
               {loading ? 'Adding...' : 'Add Friend'}
             </Button>
           )
@@ -252,8 +250,7 @@ export default function FriendRequestCard({
           requestId &&
           isAccepted && (
             <Button
-              variant="outline"
-              className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white"
+              variant="secondary"
               onClick={handleUnfriend}
               disabled={loading}
             >
@@ -265,8 +262,7 @@ export default function FriendRequestCard({
           requestId ? (
             isAccepted ? (
               <Button
-                variant="outline"
-                className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white"
+                variant="secondary"
                 onClick={handleUnfriend}
                 disabled={loading}
               >
@@ -285,8 +281,7 @@ export default function FriendRequestCard({
                   {loading ? 'Accepting...' : 'Accept'}
                 </Button>
                 <Button
-                  variant="outline"
-                  className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white"
+                  variant="secondary"
                   onClick={handleReject}
                   disabled={loading}
                 >

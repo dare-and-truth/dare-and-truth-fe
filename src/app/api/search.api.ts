@@ -7,7 +7,6 @@ export const getChallengeBySearchChallenge = async (
     method: 'get',
     url: `/search/challenge?keyword=${searchChallenge}`,
   });
-  console.log('search challenge', response?.data);
   return response?.data;
 };
 

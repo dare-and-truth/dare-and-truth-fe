@@ -22,6 +22,10 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isJoined, setIsJoined] = useState(feed.joined);
 
+  const today = new Date();
+  const endDate = new Date(feed.endDate);
+  const isExpired = endDate < today;
+
   return (
     <>
       <div className="mb-2 flex items-center justify-between gap-4">
@@ -41,12 +45,13 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
           </div>
         </div>
 
-        {feed.type == 'challenge' && !isJoined && (
+        {feed.type === 'challenge' && !isJoined && (
           <JoinChallengeDialog
             button={
               <Button
                 variant="default"
-                className="rounded-full bg-blue-600 px-6 py-2 font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md"
+                className="rounded-full bg-blue-600 px-6 py-2 font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md disabled:bg-gray-400"
+                disabled={isExpired}
               >
                 Join Challenge
               </Button>

@@ -7,6 +7,7 @@ import { likeFeed, unlikeFeed } from '@/app/api/like.api';
 import { Button } from '@/components/ui/button';
 import FeedContent from '@/components/FeedContent';
 import CommentDialog from '@/components/CommentDialog';
+import { toast } from 'react-toastify';
 
 export default function Feed({ feed }: { feed: FeedType }) {
   const [liked, setLiked] = useState(feed.liked);
@@ -28,6 +29,13 @@ export default function Feed({ feed }: { feed: FeedType }) {
         },
       );
     }
+  };
+
+  const handleShare = () => {
+    if (!feed) return;
+    const url = `${window.location.origin}/feed/${feed.type}/${feed.id}`;
+    navigator.clipboard.writeText(url);
+    toast.success('Link copied to clipboard!');
   };
 
   return (
@@ -63,7 +71,7 @@ export default function Feed({ feed }: { feed: FeedType }) {
               {commentCount} {commentCount === 1 ? 'Comment' : 'Comments'}
             </span>
           </Button>
-          <Button variant="ghost" size="lg" className="gap-2 hover:bg-sky-300">
+          <Button variant="ghost" size="lg" className="gap-2 hover:bg-sky-300" onClick={handleShare}>
             <Share2 className="h-4 w-4" />
             <span>Shares</span>
           </Button>

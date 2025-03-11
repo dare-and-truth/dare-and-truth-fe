@@ -11,7 +11,7 @@ export interface NotificationItem {
   content: string;
   sender: {
     username: string;
-    avatarUrl: string;
+    senderAvatarUrl: string;
   };
   isRead: boolean;
   relatedEntity: any;

@@ -39,6 +39,7 @@ export default function CommentForm({
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const currentUserAvatarUrl = localStorage.getItem('avatarUrl');
 
   const handleContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
@@ -139,8 +140,12 @@ export default function CommentForm({
   return (
     <div>
       <div className="flex items-center gap-2">
-        <Avatar className="h-10 w-10 flex-shrink-0">
-          <AvatarImage src="/placeholder.svg" />
+        <Avatar>
+          {currentUserAvatarUrl ? (
+            <AvatarImage src={currentUserAvatarUrl} className='object-cover' />
+          ) : (
+            <AvatarImage src="/public/images/default-profile.png" />
+          )}
           <AvatarFallback>ME</AvatarFallback>
         </Avatar>
         <form className="item-center flex w-full" onSubmit={onSubmit}>

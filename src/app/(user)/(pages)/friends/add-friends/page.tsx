@@ -58,7 +58,7 @@ export default function AddFriendRequestsPage() {
             <FriendRequestCard
               key={request.id}
               mode="requests" // Sử dụng chế độ 'requests'
-              avatar={'/images/default-profile.png'}
+              avatar={request.follower.avatarUrl||'/images/default-profile.png'}
               username={request.follower.username}
               followedAt={request.followedAt}
               isAccepted={request.isAccepted}

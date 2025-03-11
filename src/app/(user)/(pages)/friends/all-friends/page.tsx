@@ -48,7 +48,9 @@ export default function ListFriendPage() {
             <FriendRequestCard
               key={friend.id}
               mode="friends" // Sử dụng chế độ 'friends'
-              avatar={'/images/default-profile.png'}
+              avatar={(currentUserId && friend.follower.id === currentUserId
+                ? friend.user.avatarUrl
+                : friend.follower.avatarUrl)||'/images/default-profile.png'}
               // Kiểm tra followerId so với currentUserId để chọn username
               username={
                 currentUserId && friend.follower.id === currentUserId

@@ -8,10 +8,12 @@ import Link from 'next/link';
 export default function NavBar() {
   const [username, setUsername] = useState('');
   const [userId, setUserId] = useState('');
+  const [userAvatarUrl, setUserAvatarUrl] = useState('/public/images/default-profile.png');
 
   useEffect(() => {
     setUsername(localStorage.getItem('username') || '');
     setUserId(localStorage.getItem('userId') || '');
+    setUserAvatarUrl(localStorage.getItem('avatarUrl') || '/public/images/default-profile.png');
   }, []);
   return (
     <header className="sticky top-0 flex shrink-0 items-center gap-2 border-b bg-white p-2 dark:bg-zinc-950">
@@ -22,9 +24,9 @@ export default function NavBar() {
           {username}
         </span>
         <Link href={`/profile/${userId}`} className="flex items-center">
-          <Avatar className="h-10 w-10 rounded-lg">
-            <AvatarImage src="/images/default-profile.png" alt={username} />
-            <AvatarFallback className="rounded-lg bg-gray-200 text-xs text-gray-600 dark:bg-gray-700 dark:text-gray-300">
+          <Avatar className="h-10 w-10 rounded-full object-cover">
+            <AvatarImage src={userAvatarUrl} alt={username}/>
+            <AvatarFallback className="rounded-full object-cover bg-gray-200 text-xs text-gray-600 dark:bg-gray-700 dark:text-gray-300">
               {username?.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>

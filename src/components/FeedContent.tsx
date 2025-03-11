@@ -32,8 +32,8 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
         <div className="flex items-center gap-4 align-middle">
           <Link href={`/profile/${feed.userId}`}>
             <Avatar className="h-14 w-14">
-              <AvatarImage src="/images/default-profile.png" />
-              <AvatarFallback>Linh</AvatarFallback>
+              <AvatarImage src={feed.avatarUrl} className='object-cover'/>
+              <AvatarFallback>{feed.username}</AvatarFallback>
             </Avatar>
           </Link>
 

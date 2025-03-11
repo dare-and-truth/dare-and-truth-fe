@@ -63,6 +63,7 @@ export default function LoginForm() {
 
       localStorage.setItem('username', response?.data.user.username);
       localStorage.setItem('userId', response?.data.user.id);
+      localStorage.setItem('avatarUrl', response?.data.user.avatar_url);
 
       const decoded: JwtPayload = jwtDecode(accessToken);
 

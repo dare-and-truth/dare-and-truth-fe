@@ -255,10 +255,10 @@ export function NotificationDropdown({
           <div className="flex-shrink-0">
             <img
               src={
-                notification.sender.avatarUrl || '/images/default-profile.png'
+                notification.sender.senderAvatarUrl || '/images/default-profile.png'
               }
               alt="User Avatar"
-              className="h-12 w-12 rounded-full"
+              className="h-12 w-12 rounded-full object-cover"
             />
           </div>
 

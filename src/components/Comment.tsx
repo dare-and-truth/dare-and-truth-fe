@@ -19,7 +19,7 @@ export default function CommentComponent({ comment }: any) {
   return (
     <div className="flex items-start gap-2">
       <Avatar className="h-10 w-10">
-        <AvatarImage src={comment.user?.avatar} alt={comment.user.username} />
+        <AvatarImage src={comment.user?.avatarUrl} alt={comment.user.username}className='object-cover'/>
         <AvatarFallback>{comment.user.username[0]}</AvatarFallback>
       </Avatar>
       <div className="flex-1">

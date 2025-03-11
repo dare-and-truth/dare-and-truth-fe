@@ -6,8 +6,8 @@ import {
   rejectFriendRequest,
   unFriend,
 } from '@/app/api/friends.api';
-import { getUserByUserId } from '@/app/api/user.api';
-import { StatusFriend, UserProfile } from '@/app/types';
+import { getUserByUserId, updateUser } from '@/app/api/user.api';
+import { StatusFriend, User, UserProfile } from '@/app/types';
 import FriendActionButton from '@/components/FriendActionButton';
 import ProgressMonster from '@/components/ProgressMonster';
 import { Button } from '@/components/ui/button';
@@ -15,12 +15,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { UpdateUserPopup } from './UpdateUserPopup';
 
 export default function ProfileHeader({ userId }: { userId: string }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [statusFriend, setStatusFriend] = useState<StatusFriend>();
+  const [isEditPopupOpen, setIsEditPopupOpen] = useState(false); 
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -47,6 +49,31 @@ export default function ProfileHeader({ userId }: { userId: string }) {
     fetchUser();
   }, [userId]);
 
+  const handleUpdateUser = async (updatedUser: { avatarUrl: string; username: string; email?: string }) => {
+    if (!user) return;
+  
+    try {
+      console.log("avatar url  in hearder update",updatedUser.avatarUrl);
+      const updatedData: Partial<UserProfile> = {
+        username: updatedUser.username || user.username,
+        email: updatedUser.email ?? user.email ?? '',
+        avatarUrl: updatedUser.avatarUrl ?? user.avatarUrl ?? '',
+      };
+  
+      await updateUser(updatedData as User, user.id);
+  
+      setUser((prev) => {
+        if (!prev) return null;
+        return { ...prev, ...updatedData }; 
+      });
+  
+      toast.success('Profile updated successfully!');
+    } catch (error) {
+      console.error('Error updating user:', error);
+      toast.error('Failed to update profile.');
+    }
+  };
+  
   const handleAddFriend = async () => {
     try {
       const followerId = localStorage.getItem('userId');
@@ -135,13 +162,10 @@ export default function ProfileHeader({ userId }: { userId: string }) {
       <div className="flex w-full flex-col items-center text-center">
         <h2 className="text-lg font-semibold sm:text-xl">{user?.username}</h2>
         <div className="my-2 flex items-center gap-2">
-          {isOwnProfile ? (
-            <Link
-              href="/update-profile"
-              className="rounded-md bg-blue-500 px-3 py-2 text-sm font-semibold text-white transition hover:bg-blue-600"
-            >
+        {isOwnProfile ? (
+            <Button onClick={() => setIsEditPopupOpen(true)} className="bg-blue-500 text-white">
               Edit Profile
-            </Link>
+            </Button>
           ) : (
             <>
               <FriendActionButton
@@ -156,6 +180,18 @@ export default function ProfileHeader({ userId }: { userId: string }) {
           )}
         </div>
       </div>
+      {user && (
+        <UpdateUserPopup
+        isOpen={isEditPopupOpen}
+        onClose={() => setIsEditPopupOpen(false)}
+        user={{
+          avatarUrl: user.avatarUrl || '/images/default-profile.png',
+          username: user.username,
+          email: user.email || '',
+        }}
+        onUpdate={handleUpdateUser}
+      />
+      )}
       <ProgressMonster userId={userId} />
     </header>
   );

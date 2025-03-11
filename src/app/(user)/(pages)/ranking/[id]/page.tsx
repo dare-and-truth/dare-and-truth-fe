@@ -1,15 +1,25 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getAllRanking } from '@/app/api/ranking.api';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Card } from '@/components/ui/card';
+import { Crown } from 'lucide-react';
+import { geChallengeRanking, getAllRanking } from '@/app/api/ranking.api';
+import Loading from '@/components/Loading';
 import { Ranking } from '@/app/types';
-import RankingDisplay from '@/components/Ranking';
+import LeaderboardDisplay from '@/components/Ranking';
+import { useParams } from 'next/navigation';
+
 
 export default function RankingPage() {
+  // In a client component, we should use useEffect to access localStorage
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [topUsers, setTopUsers] = useState<Ranking[]>([]);
   const [nearbyUsers, setNearbyUsers] = useState<Ranking[]>([]);
   const [loading, setLoading] = useState(false);
+  const params = useParams();
+  const challengeId = params.id as string;
+  console.log('Ranking ID:', challengeId);
   useEffect(() => {
     const storedUserId = localStorage.getItem('userId');
     if (storedUserId) {
@@ -22,7 +32,7 @@ export default function RankingPage() {
     const fetchRanking = async () => {
       setLoading(true);
       try {
-        const response = await getAllRanking();
+        const response = await geChallengeRanking(challengeId);
         if (response) {
           // Sort the ranking list by rank
           const sortedRanking = [...response].sort((a, b) => a.rank - b.rank);
@@ -62,17 +72,17 @@ export default function RankingPage() {
     };
 
     fetchRanking();
-  }, [currentUserId]);
+  }, [currentUserId,challengeId]);
+  console.log('Ranking ID:', challengeId);
+  console.log('top  ID:', topUsers);
+
+  console.log('Ranking ID:', nearbyUsers);
+
 
   return (
     <div className="h-[calc(100vh-4rem)] overflow-hidden p-2 pb-20 sm:p-4 md:p-7 md:pb-4">
       <div className="mx-auto max-w-2xl p-2 sm:p-4">
-        <RankingDisplay
-          topUsers={topUsers}
-          nearbyUsers={nearbyUsers}
-          loading={loading}
-          currentUserId={currentUserId}
-        />
+        <LeaderboardDisplay topUsers={topUsers} nearbyUsers={nearbyUsers} loading={loading} currentUserId={currentUserId} />
       </div>
     </div>
   );

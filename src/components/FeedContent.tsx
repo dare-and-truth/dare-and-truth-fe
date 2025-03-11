@@ -12,6 +12,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useState } from 'react';
+import Link from 'next/link';
+import { Trophy } from 'lucide-react';
 
 const isVideo = (mediaUrl: string) => {
   return mediaUrl?.match(/\.(mp4|webm|ogg)$/i);
@@ -37,44 +39,63 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
           </div>
         </div>
 
-        {feed.type == 'challenge' && !isJoined && (
-          <JoinChallengeDialog
-            button={
-              <Button
-                variant="default"
-                className="rounded-full bg-blue-600 px-6 py-2 font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md"
-              >
-                Join Challenge
-              </Button>
-            }
-            challenge={feed}
-            setIsJoined={setIsJoined}
-          />
-        )}
+        <div className="flex items-center gap-x-2">
+          {feed.type == 'challenge' && !isJoined && (
+            <JoinChallengeDialog
+              button={
+                <Button
+                  variant="default"
+                  className="rounded-full bg-blue-600 px-6 py-2 font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md"
+                >
+                  Join Challenge
+                </Button>
+              }
+              challenge={feed}
+              setIsJoined={setIsJoined}
+            />
+          )}
 
-        {feed.type == 'challenge' && isJoined && (
-          <Button
-            variant="outline"
-            className="flex items-center gap-2 rounded-full border-blue-200 bg-blue-50 px-6 py-2 font-medium text-blue-600"
-            disabled
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-blue-600"
+          {feed.type == 'challenge' && isJoined && (
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 rounded-full border-blue-200 bg-blue-50 px-6 py-2 font-medium text-blue-600"
+              disabled
             >
-              <path d="M20 6 9 17l-5-5" />
-            </svg>
-            Joined
-          </Button>
-        )}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-blue-600"
+              >
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+              Joined
+            </Button>
+          )}
+
+          {feed?.id ? (
+            <Link
+              href={`/ranking/${feed.id}`}
+              className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-yellow-400 transition-all hover:bg-blue-700"
+            >
+              <Image
+                src="/images/award.png"
+                alt="Award image"
+                height={28}
+                width={28}
+                className="object-cover"
+              />
+            </Link>
+          ) : (
+            <p>Loading...</p>
+          )}
+        </div>
       </div>
 
       <div className="mb-4">

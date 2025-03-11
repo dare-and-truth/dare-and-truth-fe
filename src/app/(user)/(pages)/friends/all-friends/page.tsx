@@ -11,7 +11,12 @@ import Loading from '@/components/Loading';
 export default function ListFriendPage() {
   const [friends, setFriends] = useState<FriendList[]>([]);
   const [loading, setLoading] = useState(false);
-  const currentUserId = localStorage.getItem('userId'); // Lấy userId từ localStorage
+   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+   useEffect(() => {
+     const currentUserId = localStorage.getItem('userId');
+     setCurrentUserId(currentUserId);
+   }, []);
 
   useEffect(() => {
     const fetchFriends = async () => {

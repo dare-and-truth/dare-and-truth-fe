@@ -28,9 +28,14 @@ export const WebSocketProvider: React.FC<{
 }> = ({ children }) => {
   const [client, setClient] = useState<Client | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-
-  const userId = localStorage.getItem('userId');
-  const token = localStorage.getItem('accessToken');
+  const [userId, setUserId] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  useEffect(() => {
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('accessToken');
+    setUserId(userId);
+    setToken(token);
+  }, []);
 
   useEffect(() => {
     const socket = new SockJS(`${process.env.NEXT_PUBLIC_BASE_SERVER_URL}/ws`);

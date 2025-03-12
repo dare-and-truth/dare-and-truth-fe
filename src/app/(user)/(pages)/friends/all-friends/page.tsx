@@ -36,6 +36,7 @@ export default function ListFriendPage() {
     );
   };
 
+  
   return (
     <div className="h-[calc(100vh-4rem)] overflow-y-auto p-4 pb-20 md:pb-4">
       {loading ? (
@@ -44,28 +45,38 @@ export default function ListFriendPage() {
         <p className="mt-4 text-center text-gray-500">Currently no friends.</p>
       ) : (
         <div className="flex flex-col items-center">
-          {friends.map((friend) => (
-            <FriendRequestCard
-              key={friend.id}
-              mode="friends" // Sử dụng chế độ 'friends'
-              avatar={(currentUserId && friend.follower.id === currentUserId
+          {friends.map((friend) => {
+            // Lấy avatar từ user hoặc follower dựa theo currentUserId
+            const rawAvatar =
+              currentUserId && friend.follower.id === currentUserId
                 ? friend.user.avatarUrl
-                : friend.follower.avatarUrl)||'/images/default-profile.png'}
-              // Kiểm tra followerId so với currentUserId để chọn username
-              username={
-                currentUserId && friend.follower.id === currentUserId
-                  ? friend.user.username
-                  : friend.follower.username
-              }
-              isAccepted={friend.isAccepted}
-              acceptedAt={friend.acceptedAt}
-              followedAt={friend.followedAt}
-              requestId={friend.id}
-              followerId={friend.follower.id}
-              userId={friend.user.id}
-              onUnfriend={handleUnfriend}
-            />
-          ))}
+                : friend.follower.avatarUrl;
+
+            // Loại bỏ khoảng trắng đầu cuối và kiểm tra nếu rỗng thì sử dụng default
+            const finalAvatar = rawAvatar && rawAvatar.trim() !== ''
+              ? rawAvatar
+              : '/images/default-profile.png';
+
+            return (
+              <FriendRequestCard
+                key={friend.id}
+                mode="friends"
+                avatar={finalAvatar}
+                username={
+                  currentUserId && friend.follower.id === currentUserId
+                    ? friend.user.username
+                    : friend.follower.username
+                }
+                isAccepted={friend.isAccepted}
+                acceptedAt={friend.acceptedAt}
+                followedAt={friend.followedAt}
+                requestId={friend.id}
+                followerId={friend.follower.id}
+                userId={friend.user.id}
+                onUnfriend={handleUnfriend}
+              />
+            );
+          })}
         </div>
       )}
     </div>

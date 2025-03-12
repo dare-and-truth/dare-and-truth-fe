@@ -278,13 +278,17 @@ export function NotificationDropdown({
         <div className="flex-1">
           <p className={`${!notification.isRead ? 'font-medium' : ''}`}>
             <span className="font-semibold">
-              {notification.sender.username}
-            </span>{' '}
-            <span
-              className={`line-clamp-2 overflow-hidden text-ellipsis whitespace-pre-line ${!notification.isRead ? 'text-blue-600' : ''}`}
-            >
-              {content}
-            </span>
+            {notification.sender.username.length > 24
+              ? `${notification.sender.username.slice(0, 24)}...`
+              : notification.sender.username}
+          </span>{' '}
+          <span
+            className={`line-clamp-2 overflow-hidden text-ellipsis whitespace-pre-line ${
+              !notification.isRead ? 'text-blue-600' : ''
+            }`}
+          >
+            {content}
+          </span>
           </p>
           <div className="flex items-center gap-2">
             {notification.type === 'friend-request' && (

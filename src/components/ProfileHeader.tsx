@@ -16,18 +16,19 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { UpdateUserPopup } from './UpdateUserPopup';
+import { useLoading } from '@/app/contexts';
 
 export default function ProfileHeader({ userId }: { userId: string }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const {isLoading, setIsLoading} = useLoading();
   const [statusFriend, setStatusFriend] = useState<StatusFriend>();
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false); 
-
+  // const { loading, setLoading } = useLoading();
   useEffect(() => {
     const fetchUser = async () => {
+      setIsLoading(true);
       try {
-        setIsLoading(true);
         const currentUser = localStorage.getItem('userId');
         const response = await getUserByUserId(userId);
 
@@ -50,6 +51,7 @@ export default function ProfileHeader({ userId }: { userId: string }) {
   }, [userId]);
 
   const handleUpdateUser = async (updatedUser: { avatarUrl: string; username: string; email?: string }) => {
+    setIsLoading(true);
     if (!user) return;
   
     try {
@@ -71,6 +73,8 @@ export default function ProfileHeader({ userId }: { userId: string }) {
     } catch (error) {
       console.error('Error updating user:', error);
       toast.error('Failed to update profile.');
+    }finally{
+      setIsLoading(false);
     }
   };
   
@@ -85,7 +89,7 @@ export default function ProfileHeader({ userId }: { userId: string }) {
 
       await createFriendRequest({ userId, followerId }, () => {
         setStatusFriend({ typeOfRequest: 'WaitingForAccept', requestId: '' });
-        toast('Add friend successfully!');
+        toast.success('Add friend successfully!');
       });
     } catch (error) {
       console.error('Error adding friend:', error);
@@ -96,7 +100,7 @@ export default function ProfileHeader({ userId }: { userId: string }) {
     try {
       await unFriend(userId, () => {
         setStatusFriend({ typeOfRequest: 'Stranger', requestId: '' });
-        toast('Unfriended successfully!');
+        toast.success('Unfriended successfully!');
       });
     } catch (error) {
       console.error('Error unfriending:', error);
@@ -112,7 +116,7 @@ export default function ProfileHeader({ userId }: { userId: string }) {
 
       await acceptFriendRequest(statusFriend.requestId, () => {
         setStatusFriend({ typeOfRequest: 'Friend', requestId: '' });
-        toast('Friend request accepted!');
+        toast.success('Friend request accepted!');
       });
     } catch (error) {
       console.error('Error accepting friend request:', error);
@@ -128,7 +132,7 @@ export default function ProfileHeader({ userId }: { userId: string }) {
 
       await rejectFriendRequest(statusFriend.requestId, () => {
         setStatusFriend({ typeOfRequest: 'Stranger', requestId: '' });
-        toast('Friend request rejected!');
+        toast.success('Friend request rejected!');
       });
     } catch (error) {
       console.error('Error rejecting friend request:', error);
@@ -155,7 +159,7 @@ export default function ProfileHeader({ userId }: { userId: string }) {
       <Image
         alt="profile"
         className="h-16 w-16 rounded-full object-cover sm:h-28 sm:w-28"
-        src={user?.avatarUrl || '/images/default-profile.png'}
+        src={user?.avatarUrl?.trim() ? user.avatarUrl.trim() : '/images/default-profile.png'}
         width={160}
         height={160}
       />
@@ -163,7 +167,7 @@ export default function ProfileHeader({ userId }: { userId: string }) {
         <h2 className="text-lg font-semibold sm:text-xl">{user?.username}</h2>
         <div className="my-2 flex items-center gap-2">
         {isOwnProfile ? (
-            <Button onClick={() => setIsEditPopupOpen(true)} className="bg-blue-500 text-white">
+            <Button onClick={() => setIsEditPopupOpen(true)} variant='join' >
               Edit Profile
             </Button>
           ) : (
@@ -185,7 +189,7 @@ export default function ProfileHeader({ userId }: { userId: string }) {
         isOpen={isEditPopupOpen}
         onClose={() => setIsEditPopupOpen(false)}
         user={{
-          avatarUrl: user.avatarUrl || '/images/default-profile.png',
+          avatarUrl: user.avatarUrl || '',
           username: user.username,
           email: user.email || '',
         }}

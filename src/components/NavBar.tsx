@@ -4,17 +4,26 @@ import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useLoading } from '@/app/contexts';
 
 export default function NavBar() {
   const [username, setUsername] = useState('');
   const [userId, setUserId] = useState('');
-  const [userAvatarUrl, setUserAvatarUrl] = useState('/public/images/default-profile.png');
+  const [userAvatarUrl, setUserAvatarUrl] = useState('/images/default-profile.png');
+  const { isLoading } = useLoading();
 
   useEffect(() => {
     setUsername(localStorage.getItem('username') || '');
     setUserId(localStorage.getItem('userId') || '');
-    setUserAvatarUrl(localStorage.getItem('avatarUrl') || '/public/images/default-profile.png');
-  }, []);
+
+    const avatarUrl = localStorage.getItem('avatarUrl');
+    if (avatarUrl && avatarUrl.trim() !== 'null' && avatarUrl.trim() !== '') {
+      setUserAvatarUrl(avatarUrl);
+    } else {
+      setUserAvatarUrl('/images/default-profile.png');
+    }
+  }, [isLoading]);
+
   return (
     <header className="sticky top-0 flex shrink-0 items-center gap-2 border-b bg-white p-2 dark:bg-zinc-950">
       <SidebarTrigger className="-ml-1" />
@@ -23,12 +32,14 @@ export default function NavBar() {
         <span className="max-w-[120px] truncate text-md font-bold text-gray-700 dark:text-gray-200">
           {username}
         </span>
-        <Link href={`/profile/${userId}`} className="flex items-center">
-          <Avatar className="h-10 w-10 rounded-full object-cover">
-            <AvatarImage src={userAvatarUrl} alt={username}/>
-            <AvatarFallback className="rounded-full object-cover bg-gray-200 text-xs text-gray-600 dark:bg-gray-700 dark:text-gray-300">
-              {username?.charAt(0).toUpperCase()}
-            </AvatarFallback>
+        <Link href={`/profile/${userId}`} className="flex items-center rounded-full">
+          <Avatar className="h-10 w-10 object-cover">
+            <AvatarImage 
+              src={userAvatarUrl} 
+              alt={username} 
+              onError={(e) => e.currentTarget.src = '/images/default-profile.png'
+              }
+            />
           </Avatar>
         </Link>
       </div>

@@ -58,3 +58,20 @@ export const getChallengesWithLikeCount = async () => {
     throw error;
   }
 };
+
+export const getChallengeByUserId = async (
+  userId: string,
+  page: number,
+  size: number,
+) => {
+  try {
+    const response = await request({
+      method: 'get',
+      url: `/feeds/${userId}?page=${page} &size=${size}&type=challenge`,
+    });
+    return response?.data;
+  } catch (error) {
+    console.error('Error in get challenges by userid:', error);
+    throw error;
+  }
+};

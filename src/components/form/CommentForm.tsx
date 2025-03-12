@@ -7,15 +7,16 @@ import {
   type FormEvent,
   Dispatch,
   SetStateAction,
+  useEffect,
 } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Image, Loader2, SendHorizontal, X } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Image as ImageIcon, Loader2, SendHorizontal, X } from 'lucide-react';
 import { MAX_FILE_SIZE, VALID_FILE_TYPES } from '@/app/constants';
 import { uploadFileToSupabase } from '@/app/helpers/uploadFileToSupabase';
 import { postComment } from '@/app/api/comment.api';
 import type { CreateCommentPayload } from '@/app/types';
+import Image from 'next/image';
 
 type FormErrors = {
   content?: string;
@@ -39,6 +40,19 @@ export default function CommentForm({
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [avatarUrl, setUserAvatarUrl] = useState('/images/default-profile.png');
+
+  useEffect(() => {
+    const userAvatarUrl = localStorage.getItem('avatarUrl');
+    if (
+      userAvatarUrl &&
+      userAvatarUrl.trim() !== 'null' &&
+      userAvatarUrl.trim() !== ''
+    ) {
+      setUserAvatarUrl(userAvatarUrl);
+    }
+  }, []);
 
   const handleContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
@@ -139,10 +153,13 @@ export default function CommentForm({
   return (
     <div>
       <div className="flex items-center gap-2">
-        <Avatar className="h-10 w-10 flex-shrink-0">
-          <AvatarImage src="/placeholder.svg" />
-          <AvatarFallback>ME</AvatarFallback>
-        </Avatar>
+        <Image
+          alt={avatarUrl + ' avatar'}
+          className="rounded-full object-cover sm:h-14 sm:w-14"
+          src={avatarUrl ? avatarUrl.trim() : '/images/default-profile.png'}
+          width={100}
+          height={100}
+        />
         <form className="item-center flex w-full" onSubmit={onSubmit}>
           <Textarea
             placeholder="Type your comment..."
@@ -168,7 +185,7 @@ export default function CommentForm({
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isLoading} // Vô hiệu hóa nút upload khi loading
               >
-                <Image className="h-7 w-7" />
+                <ImageIcon className="h-7 w-7" />
               </Button>
             </div>
             <Button

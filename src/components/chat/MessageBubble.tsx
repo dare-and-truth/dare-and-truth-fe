@@ -1,27 +1,15 @@
 import { formatMessageTime } from '@/app/helpers/formatTimeAgo';
 import { MessageBubbleProps } from '@/app/types';
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
 
 export function MessageBubble({
   message,
   isCurrentUser,
-  avatarURL,
-  showAvatar,
   showTimestamp,
 }: MessageBubbleProps) {
   return (
     <div
       className={`my-1 flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}
     >
-      {/* {!isCurrentUser && showAvatar ? (
-        <div className="mr-2 mt-auto">
-          <Avatar className="h-12 w-12">
-            <AvatarImage src={avatarURL} alt="image/profile" />
-          </Avatar>
-        </div>
-      ) : (
-        !isCurrentUser && <div className="w-14" />
-      )} */}
       <div className="flex max-w-[60%] flex-col md:max-w-[50%]">
         {message.mediaUrl && (
           <img

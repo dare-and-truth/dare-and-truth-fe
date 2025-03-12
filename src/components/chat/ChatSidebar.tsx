@@ -47,20 +47,19 @@ export function ChatSidebar() {
     if (!otherUser) return;
 
     if (conversation.unreadMessages > 0) {
-        markReadConversation(conversation.id)
-        // Cập nhật danh sách conversation sau khi đánh dấu đã đọc
-        setConversations((prevConversations) =>
-          prevConversations.map((c) =>
-            c.id === conversation.id ? { ...c, unreadMessages: 0 } : c,
-          ),
-        );
+      markReadConversation(conversation.id);
+      // Cập nhật danh sách conversation sau khi đánh dấu đã đọc
+      setConversations((prevConversations) =>
+        prevConversations.map((c) =>
+          c.id === conversation.id ? { ...c, unreadMessages: 0 } : c,
+        ),
+      );
     }
 
     setActiveChat(conversation);
     setCurrentFriend(otherUser);
 
     router.push(`${pathname}?userId=${otherUser.id}`, { scroll: false });
-
   };
 
   // Handle going back to conversation list
@@ -100,7 +99,6 @@ export function ChatSidebar() {
           <ChatRoomSkeleton />
         ) : (
           conversations.map((conversation) => {
-            console.log(conversation);
             const otherUser = conversation.participants.find(
               (p) => p.id !== userId,
             );

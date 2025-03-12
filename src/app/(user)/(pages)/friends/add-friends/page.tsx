@@ -10,7 +10,7 @@ import Loading from '@/components/Loading';
 export default function AddFriendRequestsPage() {
   const [friendRequests, setFriendRequests] = useState<FriendRequest[]>([]);
   const [loading, setLoading] = useState(false);
-  
+
   useEffect(() => {
     const currentUserId = localStorage.getItem('userId');
     const fetchFriendRequests = async () => {
@@ -58,7 +58,9 @@ export default function AddFriendRequestsPage() {
             <FriendRequestCard
               key={request.id}
               mode="requests" // Sử dụng chế độ 'requests'
-              avatar={'/images/default-profile.png'}
+              avatar={
+                request.follower.avatarUrl || '/images/default-profile.png'
+              }
               username={request.follower.username}
               followedAt={request.followedAt}
               isAccepted={request.isAccepted}

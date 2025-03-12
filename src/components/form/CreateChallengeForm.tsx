@@ -189,6 +189,7 @@ export default function CreateChallengeForm() {
           value={formData.content || ''}
           onChange={handleChange}
           disabled={isUploading}
+          rows={4}
         />
         {errors.content && (
           <p className="text-sm text-red-500">{errors.content}</p>
@@ -264,7 +265,12 @@ export default function CreateChallengeForm() {
       </div>
 
       <div className="text-right">
-        <Button type="submit" disabled={isUploading} className="">
+        <Button
+          type="submit"
+          disabled={isUploading}
+          className=""
+          variant="join"
+        >
           {isUploading ? 'Uploading...' : 'Submit'}
         </Button>
       </div>

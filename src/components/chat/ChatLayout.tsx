@@ -14,7 +14,7 @@ export default function ChatLayout() {
     setActiveChat(null);
   };
   return (
-    <div className="h-[calc(100vh-4rem)] overflow-y-auto p-4">
+    <div className="h-[calc(100vh-5rem)] overflow-y-auto p-4">
       <div className="relative mx-auto h-full max-w-[935px] rounded-lg border shadow-md">
         {/* Mobile header - only shown when a chat is active */}
         {isMobile && activeChat && (

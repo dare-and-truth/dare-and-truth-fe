@@ -9,10 +9,12 @@ export interface FriendRequest {
   follower: {
     id: string;
     username: string;
+    avatarUrl: string;
   };
   user: {
     id: string;
     username: string;
+    avatarUrl: string;
   };
   followedAt: string;
   isAccepted: boolean;
@@ -24,10 +26,12 @@ export interface FriendList {
   follower: {
     id: string;
     username: string;
+    avatarUrl: string;
   };
   user: {
     id: string;
     username: string;
+    avatarUrl: string;
   };
   isAccepted: boolean;
   followedAt: string;

@@ -1,5 +1,4 @@
 'use client';
-
 import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Image from 'next/image';
@@ -16,12 +15,21 @@ export default function CommentComponent({ comment }: any) {
   const isVideo =
     comment.mediaUrl?.endsWith('.mp4') || comment.mediaUrl?.endsWith('.webm');
 
+  // Kiểm tra avatar: nếu avatar tồn tại và không phải chuỗi rỗng (sau khi trim), dùng nó, nếu không thì dùng ảnh default
+  const userAvatar =
+    comment.user?.avatarUrl && comment.user.avatarUrl.trim() !== ''
+      ? comment.user.avatarUrl
+      : '/images/default-profile.png';
+
   return (
     <div className="flex items-start gap-2">
-      <Avatar className="h-10 w-10">
-        <AvatarImage src={comment.user?.avatar} alt={comment.user.username} />
-        <AvatarFallback>{comment.user.username[0]}</AvatarFallback>
-      </Avatar>
+      <Image
+        alt="User avatar"
+        className="rounded-full object-cover sm:h-14 sm:w-14"
+        src={userAvatar ? userAvatar.trim() : '/images/default-profile.png'}
+        width={100}
+        height={100}
+      />
       <div className="flex-1">
         <div className="bg-muted rounded-lg bg-slate-100 p-2">
           <p className="text-sm font-semibold">{comment.user.username}</p>
@@ -38,10 +46,7 @@ export default function CommentComponent({ comment }: any) {
                 <Dialog>
                   <DialogTrigger>
                     <Image
-                      src={
-                        comment.mediaUrl ||
-                        '/public/images/placeholder-image.png'
-                      }
+                      src={comment.mediaUrl || '/images/placeholder-image.png'}
                       alt="Comment media"
                       width={96}
                       height={96}
@@ -51,7 +56,7 @@ export default function CommentComponent({ comment }: any) {
                   <DialogContent className="max-w-3xl">
                     <DialogTitle />
                     <Image
-                      src={comment.mediaUrl || '/placeholder.svg'}
+                      src={comment.mediaUrl || '/images/placeholder.svg'}
                       alt="Comment media"
                       width={800}
                       height={600}

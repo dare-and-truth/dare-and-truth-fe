@@ -255,10 +255,11 @@ export function NotificationDropdown({
           <div className="flex-shrink-0">
             <img
               src={
-                notification.sender.avatarUrl || '/images/default-profile.png'
+                notification.sender.senderAvatarUrl ||
+                '/images/default-profile.png'
               }
               alt="User Avatar"
-              className="h-12 w-12 rounded-full"
+              className="h-12 w-12 rounded-full object-cover"
             />
           </div>
 
@@ -278,10 +279,14 @@ export function NotificationDropdown({
         <div className="flex-1">
           <p className={`${!notification.isRead ? 'font-medium' : ''}`}>
             <span className="font-semibold">
-              {notification.sender.username}
+              {notification.sender.username.length > 24
+                ? `${notification.sender.username.slice(0, 24)}...`
+                : notification.sender.username}
             </span>{' '}
             <span
-              className={`line-clamp-2 overflow-hidden text-ellipsis whitespace-pre-line ${!notification.isRead ? 'text-blue-600' : ''}`}
+              className={`line-clamp-2 overflow-hidden text-ellipsis whitespace-pre-line ${
+                !notification.isRead ? 'text-blue-600' : ''
+              }`}
             >
               {content}
             </span>

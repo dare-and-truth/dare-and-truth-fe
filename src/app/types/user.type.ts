@@ -4,15 +4,17 @@ export interface User {
   email: string;
   phone?: string;
   dateOfBirth?: string;
-  isActive: boolean;
-  avatar?: string;
+  isActive?: boolean;
+  avatarUrl?: string;
   isAdmin?: string;
 }
 
 export interface UserWithRequestsResponse {
   user: {
+    [x: string]: string;
     id: string;
     username: string;
+    avatarUrl: string;
   };
   requests: Array<{
     id: string;
@@ -21,11 +23,13 @@ export interface UserWithRequestsResponse {
     user: {
       id: string;
       username: string;
+      avatarUrl: string;
     };
     isAccepted: boolean;
     follower: {
       id: string;
       username: string;
+      avatarUrl: string;
     };
   }>;
 }
@@ -34,4 +38,4 @@ export type UserInfo = {
   id: string;
   username: string;
   avatarUrl: string;
-}
+};

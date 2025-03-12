@@ -8,16 +8,17 @@ import {
   useLayoutEffect,
 } from 'react';
 import Link from 'next/link';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import TextareaAutosize from 'react-textarea-autosize';
-import { Image, Send, Smile, X } from 'lucide-react';
+import { Image as ImageIcon, Send, Smile, X } from 'lucide-react';
 import { EmojiPicker } from '@/components/chat/EmojiPicker';
-import { Conversation, MessageResponse, SendMessagePayload } from '@/app/types/chat.type';
-import { MessageBubble } from '@/components/chat/MessageBubble';
 import {
-  shouldShowAvatar,
-  shouldShowTimestamp,
-} from '@/app/helpers/formatMessage';
+  Conversation,
+  MessageResponse,
+  SendMessagePayload,
+} from '@/app/types/chat.type';
+import { MessageBubble } from '@/components/chat/MessageBubble';
+import Image from 'next/image';
+import { shouldShowTimestamp } from '@/app/helpers/formatMessage';
 import { useUserId } from '@/app/hooks';
 import { useSearchParams } from 'next/navigation';
 import { getChat } from '@/app/api/conversation.api';
@@ -39,8 +40,13 @@ export function ChatRoom() {
   const [chatLoading, setChatLoading] = useState(false);
   const [currentChatUser, setCurrentChatUser] = useState<UserInfo | null>(null);
 
-  const { messages, setMessages, conversationId, setConversationId, setConversations } =
-    useWebSocket();
+  const {
+    messages,
+    setMessages,
+    conversationId,
+    setConversationId,
+    setConversations,
+  } = useWebSocket();
 
   const searchParams = useSearchParams();
   const otherUserId = searchParams.get('userId');
@@ -54,7 +60,7 @@ export function ChatRoom() {
         if (data.conversationId) {
           setConversationId(data.conversationId);
         }
-        if(data.messages){
+        if (data.messages) {
           setMessages(data.messages.reverse() || []);
         }
         if (data.otherUser) {
@@ -146,7 +152,7 @@ export function ChatRoom() {
           return [newConversation, ...prevConversations];
         }
       });
-      
+
       // reset input
       setInputText('');
       setSelectedImage(null);
@@ -213,28 +219,39 @@ export function ChatRoom() {
   return (
     <div className="absolute inset-0 flex flex-col bg-white dark:bg-[#1c1c1c] md:left-[350px]">
       <div className="flex h-[60px] items-center gap-2 border-b border-stone-300 pl-6 dark:border-stone-700 md:gap-4 md:pl-6">
-        <Link href="/profile">
-          <Avatar className="h-10 w-10 cursor-pointer">
-            {currentChatUser?.avatarUrl && (
-              <AvatarImage
-                src={currentChatUser.avatarUrl}
-                alt={`${currentChatUser.username}'s profile`}
-              />
-            )}
-            <AvatarFallback>
-              {currentChatUser.username?.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+        <Link href={`/profile/${currentChatUser.id}`}>
+          <Image
+            alt={currentChatUser.avatarUrl + ' avatar'}
+            className="rounded-full object-cover sm:h-14 sm:w-14"
+            src={
+              currentChatUser.avatarUrl
+                ? currentChatUser.avatarUrl.trim()
+                : '/images/default-profile.png'
+            }
+            width={100}
+            height={100}
+          />
         </Link>
-        <span className="font-medium">{currentChatUser.username}</span>
+        <span className="font-semibold">{currentChatUser.username}</span>
       </div>
 
       <div className="scrollbar flex flex-1 flex-col overflow-y-auto border-t border-stone-300 px-1 py-2 dark:border-stone-700 dark:[color-scheme:dark] md:px-5">
         <div className="m-4 flex h-[100px] flex-col items-center justify-center gap-2 px-4">
-          <Link href="/profile" className="flex flex-col items-center gap-2">
-            <Avatar className="h-12 w-12 cursor-pointer">
-              <AvatarImage src={currentChatUser.avatarUrl} alt="image profile" />
-            </Avatar>
+          <Link
+            href={`/profile/${currentChatUser.id}`}
+            className="flex flex-col items-center gap-2"
+          >
+            <Image
+              alt={currentChatUser.avatarUrl + ' avatar'}
+              className="rounded-full object-cover sm:h-14 sm:w-14"
+              src={
+                currentChatUser.avatarUrl
+                  ? currentChatUser.avatarUrl.trim()
+                  : '/images/default-profile.png'
+              }
+              width={100}
+              height={100}
+            />
             <span className="text-md font-semibold">
               {currentChatUser.username}
             </span>
@@ -246,8 +263,6 @@ export function ChatRoom() {
             key={message.id}
             message={message}
             isCurrentUser={message.senderId === currentUserId}
-            avatarURL={currentChatUser.avatarUrl}
-            showAvatar={shouldShowAvatar(messages, index)}
             showTimestamp={shouldShowTimestamp(messages, index)}
           />
         ))}
@@ -256,23 +271,6 @@ export function ChatRoom() {
       </div>
 
       <div className="sticky bottom-0 bg-white px-4 py-3 dark:bg-[#1c1c1c]">
-        {/* {selectedImage && (
-          <div className="relative mb-2 flex items-center justify-start">
-            <img
-              src={URL.createObjectURL(selectedImage)}
-              alt="Preview"
-              className="h-20 w-20 rounded-lg"
-            />
-            <button
-              className="absolute right-0 top-0 rounded-full bg-black bg-opacity-50 p-1"
-              onClick={removeImage}
-              aria-label="Remove image"
-            >
-              <X className="h-5 w-5 text-white" />
-            </button>
-          </div>
-        )} */}
-
         <div className="relative flex items-center rounded-full border border-stone-200 bg-white px-3 py-1 dark:border-stone-700 dark:bg-[#262626]">
           <button
             ref={emojiButtonRef}
@@ -308,7 +306,7 @@ export function ChatRoom() {
             type="button"
             onClick={() => fileInputRef.current?.click()}
           >
-            <Image className="h-5 w-5" />
+            <ImageIcon className="h-5 w-5" />
           </button> */}
 
           <button

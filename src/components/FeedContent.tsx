@@ -12,6 +12,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useState } from 'react';
+import Link from 'next/link';
 
 const isVideo = (mediaUrl: string) => {
   return mediaUrl?.match(/\.(mp4|webm|ogg)$/i);
@@ -21,14 +22,30 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isJoined, setIsJoined] = useState(feed.joined);
 
+  const today = new Date();
+  const endDate = new Date(feed.endDate);
+  const isExpired = endDate < today;
+
+  // Create a helper variable to decide the avatar URL
+  const avatarUrl =
+    feed.avatarUrl && feed.avatarUrl.trim() !== ''
+      ? feed.avatarUrl
+      : '/images/default-profile.png';
+
   return (
     <>
       <div className="mb-2 flex items-center justify-between gap-4">
         <div className="flex items-center gap-4 align-middle">
-          <Avatar className="h-14 w-14">
-            <AvatarImage src="/images/default-profile.png" />
-            <AvatarFallback>Linh</AvatarFallback>
-          </Avatar>
+          <Link href={`/profile/${feed.userId}`}>
+            <Image
+              alt="User avatar"
+              className="h-10 w-10 rounded-full object-cover sm:h-14 sm:w-14"
+              src={avatarUrl ? avatarUrl.trim() : '/images/default-profile.png'}
+              width={100}
+              height={100}
+            />
+          </Link>
+
           <div>
             <h4 className="font-bold">{feed.username}</h4>
             <p className="text-muted-foreground text-sm">
@@ -37,49 +54,80 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
           </div>
         </div>
 
-        {feed.type == 'challenge' && !isJoined && (
-          <JoinChallengeDialog
-            button={
-              <Button
-                variant="default"
-                className="rounded-full bg-blue-600 px-6 py-2 font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md"
+        <div className="flex items-center gap-x-2">
+          {feed.type === 'challenge' && !isJoined && (
+            <>
+              <JoinChallengeDialog
+                button={
+                  <Button
+                    variant="default"
+                    className="rounded-full bg-blue-600 px-6 py-2 font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md disabled:bg-gray-400"
+                    disabled={isExpired}
+                  >
+                    Join Challenge
+                  </Button>
+                }
+                challenge={feed}
+                setIsJoined={setIsJoined}
+              />
+              <Link
+                href={`/ranking/${feed.id}`}
+                className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-yellow-400 transition-all hover:bg-blue-700"
               >
-                Join Challenge
-              </Button>
-            }
-            challenge={feed}
-            setIsJoined={setIsJoined}
-          />
-        )}
+                <Image
+                  src="/images/award.png"
+                  alt="Award image"
+                  height={28}
+                  width={28}
+                  className="object-cover"
+                />
+              </Link>
+            </>
+          )}
 
-        {feed.type == 'challenge' && isJoined && (
-          <Button
-            variant="outline"
-            className="flex items-center gap-2 rounded-full border-blue-200 bg-blue-50 px-6 py-2 font-medium text-blue-600"
-            disabled
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-blue-600"
-            >
-              <path d="M20 6 9 17l-5-5" />
-            </svg>
-            Joined
-          </Button>
-        )}
+          {feed.type === 'challenge' && isJoined && (
+            <>
+              <Button
+                variant="outline"
+                className="flex items-center gap-2 rounded-full border-blue-200 bg-blue-50 px-6 py-2 font-medium text-blue-600"
+                disabled
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-blue-600"
+                >
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+                Joined
+              </Button>
+              <Link
+                href={`/ranking/${feed.id}`}
+                className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-yellow-400 transition-all hover:bg-blue-700"
+              >
+                <Image
+                  src="/images/award.png"
+                  alt="Award image"
+                  height={28}
+                  width={28}
+                  className="object-cover"
+                />
+              </Link>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="mb-4">
         <p className="font-bold text-blue-500">#{feed.hashtag}</p>
-        {feed.type == 'challenge' && (
+        {feed.type === 'challenge' && (
           <div>
             <p>
               <span className="font-bold">Start Date: </span>
@@ -95,17 +143,16 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
       </div>
 
       <div className="mb-4 overflow-hidden rounded-lg">
-        {/* Dialog để hiển thị ảnh/video phóng to */}
+        {/* Dialog to show enlarged image/video */}
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            {/* Nội dung gốc với giới hạn chiều cao */}
             {isVideo(feed.mediaUrl) ? (
               <video
                 src={feed.mediaUrl}
                 controls
                 className="w-full cursor-pointer"
-                style={{ maxHeight: '400px', objectFit: 'cover' }} // Giới hạn chiều cao
-                onClick={() => setIsOpen(true)} // Mở dialog khi nhấp
+                style={{ maxHeight: '400px', objectFit: 'cover' }}
+                onClick={() => setIsOpen(true)}
               />
             ) : (
               <Image
@@ -119,13 +166,11 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
                   maxHeight: '400px',
                   height: 'auto',
                   objectFit: 'cover',
-                }} // Giới hạn chiều cao
-                onClick={() => setIsOpen(true)} // Mở dialog khi nhấp
+                }}
+                onClick={() => setIsOpen(true)}
               />
             )}
           </DialogTrigger>
-
-          {/* Nội dung trong dialog khi phóng to */}
           <DialogContent className="max-w-3xl p-0">
             <DialogTitle />
             {isVideo(feed.mediaUrl) ? (
@@ -134,7 +179,7 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
                 controls
                 autoPlay
                 className="w-full"
-                style={{ maxHeight: '95vh', objectFit: 'contain' }} // Giới hạn trong dialog
+                style={{ maxHeight: '95vh', objectFit: 'contain' }}
               />
             ) : (
               <Image
@@ -148,7 +193,7 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
                   maxHeight: '80vh',
                   height: 'auto',
                   objectFit: 'contain',
-                }} // Giới hạn trong dialog
+                }}
               />
             )}
           </DialogContent>

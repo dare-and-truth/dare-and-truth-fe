@@ -11,12 +11,21 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { postSignUp } from '@/app/api/auth.api';
+import { useState } from 'react';
 
+const strictEmailRegex =
+  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|net|org|info|biz|edu|gov|mil|vn|com\.vn|net\.vn)$/;
 // Validation Schema
 const registerSchema = z
   .object({
-    email: z.string().email('Invalid email address'),
-    username: z.string().min(2, 'Full Name is required'),
+    email: z
+      .string()
+      .nonempty('Email is required')
+      .regex(strictEmailRegex, 'Invalid email address'),
+    username: z
+      .string()
+      .nonempty('Username is required')
+      .max(30, 'Username cannot exceed 30 characters'),
     password: z.string().min(8, 'Password must be at least 8 characters'),
     confirmPassword: z.string(),
   })
@@ -28,6 +37,9 @@ const registerSchema = z
 type SignUpFormData = z.infer<typeof registerSchema>;
 
 export default function SignUpForm() {
+  const [usernameError, setUsernameError] = useState('');
+  const [username, setUsername] = useState('');
+
   const router = useRouter();
   const {
     register,
@@ -51,6 +63,16 @@ export default function SignUpForm() {
     console.log('Google sign in');
   };
 
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value.length > 30) return; // Nếu vượt quá 30 ký tự thì không cập nhật
+    setUsername(value);
+    if (value.trim() === '') {
+      setUsernameError('Username cannot be empty');
+    } else {
+      setUsernameError('');
+    }
+  };
   return (
     <div className="flex h-screen w-full flex-col-reverse md:flex-row">
       <div className="flex w-full flex-col p-6 md:w-1/2">
@@ -65,7 +87,7 @@ export default function SignUpForm() {
               Sign in to start enjoying the DoDo app
             </p>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-7">
               <div className="space-y-1">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -88,6 +110,7 @@ export default function SignUpForm() {
                   type="text"
                   placeholder="Nguyen Van A"
                   className={errors.username ? 'border-red-500' : ''}
+                  onChange={handleUsernameChange}
                 />
                 {errors.username && (
                   <p className="text-sm text-red-500">
@@ -135,29 +158,6 @@ export default function SignUpForm() {
                 Sign up
               </Button>
             </form>
-
-            <div className="mt-2">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300"></div>
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="bg-white px-2 text-gray-500">Or</span>
-                </div>
-              </div>
-
-              <div className="md: mt-2 space-y-4">
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={handleGoogleSignIn}
-                >
-                  <FcGoogle className="mr-2 h-4 w-4" />
-                  Sign in with Google
-                </Button>
-              </div>
-            </div>
-
             <p className="mt-6 text-center text-sm text-gray-600">
               Already have an account?{' '}
               <Link

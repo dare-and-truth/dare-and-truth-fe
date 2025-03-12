@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ChatRoomPreviewProps } from '@/app/types/chat.type';
 import { formatMessageTime } from '@/app/helpers/formatTimeAgo';
+import Image from 'next/image';
 
 export function ChatRoomPreview({
   chat,
@@ -16,12 +17,17 @@ export function ChatRoomPreview({
       } flex w-full items-center px-3 py-3 md:px-5 ${chat.unreadMessages > 0 ? 'bg-slate-200' : ''}`}
     >
       <div className="relative mr-3 flex-shrink-0">
-        <Avatar className="h-12 w-12">
-          <AvatarImage
-            src={otherUser.avatarUrl}
-            alt={`${otherUser.username}'s profile`}
-          />
-        </Avatar>
+        <Image
+          alt={otherUser.avatarUrl + ' avatar'}
+          className="rounded-full object-cover sm:h-14 sm:w-14"
+          src={
+            otherUser.avatarUrl
+              ? otherUser.avatarUrl.trim()
+              : '/images/default-profile.png'
+          }
+          width={100}
+          height={100}
+        />
 
         {chat.unreadMessages > 0 && (
           <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">

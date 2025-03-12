@@ -1,4 +1,4 @@
-import { UserInfo } from "@/app/types/user.type";
+import { UserInfo } from '@/app/types/user.type';
 
 export interface Chat {
   conversationId: string;
@@ -32,7 +32,7 @@ export type MessageResponse = {
   content?: string;
   mediaUrl?: string;
   sentAt: string;
-}
+};
 
 export interface MessageList {
   messages: Message[];
@@ -58,8 +58,6 @@ export interface ChatContextType {
 export interface MessageBubbleProps {
   message: MessageResponse;
   isCurrentUser: boolean;
-  avatarURL: string;
-  showAvatar: boolean;
   showTimestamp: boolean;
 }
 

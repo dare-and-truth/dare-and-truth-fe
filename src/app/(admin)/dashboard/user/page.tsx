@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { getUser, updateUser } from '@/app/api/user.api';
 import NotFound from '@/components/NotFound';
 import { DialogConfirm } from '@/components/DiaLogConfirmDelete';
+import Image from 'next/image';
 
 export default function UserPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -97,15 +98,17 @@ export default function UserPage() {
                     <tr key={user.id} className="hover:bg-gray-200">
                       <td className="p-4">
                         <div className="flex items-center gap-3">
-                          <Avatar>
-                            <AvatarImage
-                              src={user?.avatar}
-                              alt={user.username}
-                            />
-                            <AvatarFallback>
-                              {user.username.charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
+                          <Image
+                            alt={user.username + "'s avatar"}
+                            className="rounded-full object-cover sm:h-14 sm:w-14"
+                            src={
+                              user?.avatarUrl
+                                ? user.avatarUrl.trim()
+                                : '/images/default-profile.png'
+                            }
+                            width={100}
+                            height={100}
+                          />
                           <span className="font-medium">{user.username}</span>
                         </div>
                       </td>

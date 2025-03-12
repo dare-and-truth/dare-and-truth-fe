@@ -22,7 +22,7 @@ export default function SearchPage() {
   const [feeds, setFeeds] = useState<FeedType[]>([]);
   const [users, setUsers] = useState<UserWithRequestsResponse[]>([]);
   const { setIsLoading, isLoading } = useLoading();
-  let currentUserId : string | null;
+  let currentUserId: string | null;
 
   useEffect(() => {
     if (!query) return;
@@ -66,11 +66,16 @@ export default function SearchPage() {
                   id: crypto.randomUUID(), // Tạo tạm ID cho request mới
                   followedAt: new Date().toISOString(),
                   acceptedAt: undefined,
-                  user: { id: userId, username: user.user.username },
+                  user: {
+                    id: userId,
+                    username: user.user.username,
+                    avatarUrl: user.user.avatarUrl, // Thêm avatarUrl vào đây
+                  },
                   isAccepted: false,
                   follower: {
                     id: followerId,
                     username: localStorage.getItem('username') || '',
+                    avatarUrl: localStorage.getItem('avatarUrl') || '', // Đảm bảo follower cũng có avatarUrl
                   },
                 },
               ],
@@ -143,7 +148,7 @@ export default function SearchPage() {
                 <FriendRequestCard
                   key={user.user.id}
                   mode="search"
-                  avatar={'/images/default-profile.png'}
+                  avatar={user.user.avatarUrl}
                   username={user.user.username}
                   followedAt={user.requests[0]?.followedAt || ''}
                   isAccepted={user.requests[0]?.isAccepted || false}

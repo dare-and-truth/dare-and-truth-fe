@@ -33,4 +33,3 @@ export const getChat = async ({
 
   return response?.data;
 };
-

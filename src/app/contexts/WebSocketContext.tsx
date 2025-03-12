@@ -15,7 +15,8 @@ import { FriendRequestNotificationToast } from '@/components/notificationToast/F
 import { CommentNotificationToast } from '@/components/notificationToast/CommentNotificationToast';
 import { LikeNotificationToast } from '@/components/notificationToast/LikeNotificationToast';
 import { Conversation, MessageResponse } from '@/app/types';
-var SockJS = require('sockjs-client');
+import { getUnreadNotificationsCount } from '@/app/api/notification.api';
+const SockJS = require('sockjs-client');
 
 interface WebSocketContextType {
   client: Client | null;
@@ -40,12 +41,9 @@ export const WebSocketProvider: React.FC<{
   const [messages, setMessages] = useState<MessageResponse[]>([]);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [conversationId, setConversationId] = useState('');
-  const [unreadMessageCount, setUnreadMessageCount] = useState(0);
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
+  const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
   const conversationIdRef = useRef(conversationId);
-
-  // useEffect(()=> {
-  //   fetch
-  // })
 
   useEffect(() => {
     conversationIdRef.current = conversationId;
@@ -54,6 +52,11 @@ export const WebSocketProvider: React.FC<{
   useEffect(() => {
     const userId = localStorage.getItem('userId');
     const token = localStorage.getItem('accessToken');
+
+    const fetchUnreadNotification = async () => {
+      const notificationCountRes =  await getUnreadNotificationsCount(userId as string);
+    };
+
     const socket = new SockJS(`${process.env.NEXT_PUBLIC_BASE_SERVER_URL}/ws`);
     const stompClient = new Client({
       webSocketFactory: () => socket,

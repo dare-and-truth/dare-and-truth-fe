@@ -89,3 +89,11 @@ export const unFriend = async (
     },
   });
 };
+
+export const getStatusFriendRequests = async (targetUserId:string) => {
+  const response = await request({
+    method: 'get',
+    url: `/users/request/user/${targetUserId}`,
+  });
+  return response?.data;
+};

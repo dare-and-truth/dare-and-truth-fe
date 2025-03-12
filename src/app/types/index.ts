@@ -15,3 +15,4 @@ export * from '@/app/types/feed.type';
 export * from '@/app/types/notification.type';
 export * from '@/app/types/chat.type';
 export *from '@/app/types/ranking.type'
+export * from '@/app/types/profile.type';

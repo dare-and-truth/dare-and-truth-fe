@@ -21,10 +21,22 @@ export const updateUser = async (data: User, id: string) => {
     url: `/users/${id}`,
     data,
     onSuccess: () => {
-      toast.success('User status has been updated successfully');
     },
     onError: (error) => {
       console.log('error in sign up', error);
     },
   });
+};
+
+export const getUserByUserId = async (userId:string) => {
+  try {
+    const response = await request({
+      method: 'get',
+      url: `/users/${userId}`,
+    });
+    return response?.data;
+  } catch (error) {
+    console.error('Error in get user detail :', error);
+    throw error;
+  }
 };

@@ -38,10 +38,7 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
         <div className="flex items-center gap-4 align-middle">
           <Link href={`/profile/${feed.userId}`}>
             <Avatar className="h-14 w-14">
-              <AvatarImage 
-                src={avatarUrl}
-                className="object-cover"
-              />
+              <AvatarImage src={avatarUrl} className="object-cover" />
               <AvatarFallback>{feed.username.charAt(0)}</AvatarFallback>
             </Avatar>
           </Link>
@@ -55,62 +52,72 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
         </div>
 
         <div className="flex items-center gap-x-2">
-
-        {feed.type === 'challenge' && !isJoined && (
-          <JoinChallengeDialog
-            button={
-              <Button
-                variant="default"
-                className="rounded-full bg-blue-600 px-6 py-2 font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md disabled:bg-gray-400"
-                disabled={isExpired}
+          {feed.type === 'challenge' && !isJoined && (
+            <>
+              <JoinChallengeDialog
+                button={
+                  <Button
+                    variant="default"
+                    className="rounded-full bg-blue-600 px-6 py-2 font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md disabled:bg-gray-400"
+                    disabled={isExpired}
+                  >
+                    Join Challenge
+                  </Button>
+                }
+                challenge={feed}
+                setIsJoined={setIsJoined}
+              />
+              <Link
+                href={`/ranking/${feed.id}`}
+                className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-yellow-400 transition-all hover:bg-blue-700"
               >
-                Join Challenge
-              </Button>
-            }
-            challenge={feed}
-            setIsJoined={setIsJoined}
-          />
-        )}
-
-        {feed.type === 'challenge' && isJoined && (
-          <Button
-            variant="outline"
-            className="flex items-center gap-2 rounded-full border-blue-200 bg-blue-50 px-6 py-2 font-medium text-blue-600"
-            disabled
-          >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-blue-600"
-              >
-                <path d="M20 6 9 17l-5-5" />
-              </svg>
-              Joined
-            </Button>
+                <Image
+                  src="/images/award.png"
+                  alt="Award image"
+                  height={28}
+                  width={28}
+                  className="object-cover"
+                />
+              </Link>
+            </>
           )}
 
-          {feed?.id ? (
-            <Link
-              href={`/ranking/${feed.id}`}
-              className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-yellow-400 transition-all hover:bg-blue-700"
-            >
-              <Image
-                src="/images/award.png"
-                alt="Award image"
-                height={28}
-                width={28}
-                className="object-cover"
-              />
-            </Link>
-          ) : (
-            <p>Loading...</p>
+          {feed.type === 'challenge' && isJoined && (
+            <>
+              <Button
+                variant="outline"
+                className="flex items-center gap-2 rounded-full border-blue-200 bg-blue-50 px-6 py-2 font-medium text-blue-600"
+                disabled
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-blue-600"
+                >
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+                Joined
+              </Button>
+              <Link
+                href={`/ranking/${feed.id}`}
+                className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-yellow-400 transition-all hover:bg-blue-700"
+              >
+                <Image
+                  src="/images/award.png"
+                  alt="Award image"
+                  height={28}
+                  width={28}
+                  className="object-cover"
+                />
+              </Link>
+            </>
           )}
         </div>
       </div>

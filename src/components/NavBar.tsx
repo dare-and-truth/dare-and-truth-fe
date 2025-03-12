@@ -29,16 +29,21 @@ export default function NavBar() {
       <SidebarTrigger className="-ml-1" />
       <Separator orientation="vertical" className="mr-2 h-4" />
       <div className="ml-auto flex items-center gap-2">
-        <span className="max-w-[120px] truncate text-md font-bold text-gray-700 dark:text-gray-200">
+        <span className="text-md max-w-[120px] truncate font-bold text-gray-700 dark:text-gray-200">
           {username}
         </span>
-        <Link href={`/profile/${userId}`} className="flex items-center rounded-full">
+        <Link
+          href={`/profile/${userId}`}
+          className="flex items-center rounded-full"
+        >
           <Avatar className="h-10 w-10 object-cover">
-            <AvatarImage 
-              src={userAvatarUrl} 
-              alt={username} 
-              onError={(e) => e.currentTarget.src = '/images/default-profile.png'
+            <AvatarImage
+              src={userAvatarUrl}
+              alt={username}
+              onError={(e) =>
+                (e.currentTarget.src = '/images/default-profile.png')
               }
+              className="object-cover"
             />
           </Avatar>
         </Link>

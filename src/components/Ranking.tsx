@@ -86,6 +86,7 @@ export default function RankingDisplay({
                   <AvatarImage
                     src={topUsers[1]?.avatarURL}
                     alt={topUsers[1]?.username || 'User'}
+                    className="object-cover"
                   />
 
                   <AvatarFallback>
@@ -93,7 +94,9 @@ export default function RankingDisplay({
                   </AvatarFallback>
                 </Avatar>
               </div>
-              <span className="mt-10 text-orange-400 sm:text-lg">🥈</span>
+              <span className="mt-10 text-3xl text-orange-400 sm:text-4xl">
+                🥈
+              </span>
               <p className="mt-1 max-w-full truncate text-sm font-medium text-white sm:text-base">
                 {topUsers[1]?.username || 'Coming soon'}
               </p>
@@ -121,7 +124,11 @@ export default function RankingDisplay({
 
                 <Crown className="absolute -top-6 left-1/2 h-8 w-8 -translate-x-1/2 text-yellow-400 sm:-top-8 sm:h-10 sm:w-10" />
               </div>
-              <span className="mt-3 text-yellow-400 sm:text-lg"> 🥇</span>
+              <span className="mt-3 text-3xl text-yellow-400 sm:text-4xl">
+                {' '}
+                🥇
+              </span>
+
               <p className="mt-3 max-w-full truncate text-base text-white sm:text-lg">
                 {topUsers[0]?.username || 'Updating ...'}
               </p>
@@ -137,13 +144,16 @@ export default function RankingDisplay({
                   <AvatarImage
                     src={topUsers[2]?.avatarURL}
                     alt={topUsers[2]?.username || 'User'}
+                    className="object-cover"
                   />
                   <AvatarFallback>
                     {topUsers[2]?.username?.[0] || '?'}
                   </AvatarFallback>
                 </Avatar>
               </div>
-              <span className="mt-10 text-purple-500 sm:text-lg">🥉</span>
+              <span className="mt-10 text-3xl text-purple-500 sm:text-4xl">
+                🥉
+              </span>
               <p className="mt-2 max-w-full truncate text-sm font-medium text-white sm:text-base">
                 {topUsers[2]?.username || 'Coming soon'}
               </p>

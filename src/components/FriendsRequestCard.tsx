@@ -176,16 +176,18 @@ export default function FriendRequestCard({
     }
   };
 
+  const profileId = followerId !== currentUserId ? followerId : userId;
+
   return (
     <div
       className={`mb-4 flex items-center rounded-lg bg-white p-4 shadow-sm ${width} transition-all duration-300`}
     >
       <div className="flex-shrink-0">
-        <Link href={`/profile/${followerId}`}>
+        <Link href={`/profile/${profileId}`}>
           <Image
             src={avatar || '/images/default-profile.png'}
             alt="User Avatar"
-            className="h-12 w-12 rounded-full"
+            className="h-12 w-12 rounded-full object-cover"
             height={0}
             width={0}
           />

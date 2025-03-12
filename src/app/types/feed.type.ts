@@ -9,6 +9,7 @@ export interface FeedType {
   createdAt: string;
   userId: string;
   username: string;
+  avatarUrl: string;
   likeCount: number;
   commentCount: number;
   liked: boolean;
@@ -27,6 +28,7 @@ export interface GetFeedResponse {
   createdAt: string;
   userId: string;
   username: string;
+  avatarUrl:String;
   likeCount: number;
   commentCount: number;
   liked: boolean;

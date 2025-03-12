@@ -7,6 +7,7 @@ import {
   type FormEvent,
   Dispatch,
   SetStateAction,
+  useEffect,
 } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -40,6 +41,16 @@ export default function CommentForm({
   const [isLoading, setIsLoading] = useState(false); // Thêm trạng thái isLoading
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const username = localStorage.getItem('username');
+  const [avatarUrl,setUserAvatarUrl] = useState('/images/default-profile.png');
+
+  useEffect(() => {
+    const userAvatarUrl = localStorage.getItem('avatarUrl');
+    if (userAvatarUrl && userAvatarUrl.trim() !== 'null' && userAvatarUrl.trim() !== '') {
+      setUserAvatarUrl(userAvatarUrl);
+    }
+  }, []);
+  
   const handleContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);
     setErrors((prev) => ({ ...prev, content: undefined }));
@@ -139,10 +150,13 @@ export default function CommentForm({
   return (
     <div>
       <div className="flex items-center gap-2">
-        <Avatar className="h-10 w-10 flex-shrink-0">
-          <AvatarImage src="/placeholder.svg" />
-          <AvatarFallback>ME</AvatarFallback>
-        </Avatar>
+      <Avatar>
+        <AvatarImage 
+          src={avatarUrl} 
+          alt={username ?? undefined}  // Chuyển null thành undefined
+          onError={(e) => e.currentTarget.src = '/images/default-profile.png'}
+        />
+      </Avatar>
         <form className="item-center flex w-full" onSubmit={onSubmit}>
           <Textarea
             placeholder="Type your comment..."

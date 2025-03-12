@@ -99,8 +99,9 @@ export default function UserPage() {
                         <div className="flex items-center gap-3">
                           <Avatar>
                             <AvatarImage
-                              src={user?.avatar}
+                              src={user?.avatarUrl}
                               alt={user.username}
+                              className='object-cover'
                             />
                             <AvatarFallback>
                               {user.username.charAt(0)}

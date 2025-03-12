@@ -22,14 +22,27 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isJoined, setIsJoined] = useState(feed.joined);
 
+  const today = new Date();
+  const endDate = new Date(feed.endDate);
+  const isExpired = endDate < today;
+
+  // Create a helper variable to decide the avatar URL
+  const avatarUrl =
+    feed.avatarUrl && feed.avatarUrl.trim() !== ''
+      ? feed.avatarUrl
+      : '/images/default-profile.png';
+
   return (
     <>
       <div className="mb-2 flex items-center justify-between gap-4">
         <div className="flex items-center gap-4 align-middle">
           <Link href={`/profile/${feed.userId}`}>
             <Avatar className="h-14 w-14">
-              <AvatarImage src="/images/default-profile.png" />
-              <AvatarFallback>Linh</AvatarFallback>
+              <AvatarImage 
+                src={avatarUrl}
+                className="object-cover"
+              />
+              <AvatarFallback>{feed.username.charAt(0)}</AvatarFallback>
             </Avatar>
           </Link>
 
@@ -41,12 +54,13 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
           </div>
         </div>
 
-        {feed.type == 'challenge' && !isJoined && (
+        {feed.type === 'challenge' && !isJoined && (
           <JoinChallengeDialog
             button={
               <Button
                 variant="default"
-                className="rounded-full bg-blue-600 px-6 py-2 font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md"
+                className="rounded-full bg-blue-600 px-6 py-2 font-medium text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md disabled:bg-gray-400"
+                disabled={isExpired}
               >
                 Join Challenge
               </Button>
@@ -56,7 +70,7 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
           />
         )}
 
-        {feed.type == 'challenge' && isJoined && (
+        {feed.type === 'challenge' && isJoined && (
           <Button
             variant="outline"
             className="flex items-center gap-2 rounded-full border-blue-200 bg-blue-50 px-6 py-2 font-medium text-blue-600"
@@ -83,7 +97,7 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
 
       <div className="mb-4">
         <p className="font-bold text-blue-500">#{feed.hashtag}</p>
-        {feed.type == 'challenge' && (
+        {feed.type === 'challenge' && (
           <div>
             <p>
               <span className="font-bold">Start Date: </span>
@@ -99,17 +113,16 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
       </div>
 
       <div className="mb-4 overflow-hidden rounded-lg">
-        {/* Dialog để hiển thị ảnh/video phóng to */}
+        {/* Dialog to show enlarged image/video */}
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            {/* Nội dung gốc với giới hạn chiều cao */}
             {isVideo(feed.mediaUrl) ? (
               <video
                 src={feed.mediaUrl}
                 controls
                 className="w-full cursor-pointer"
-                style={{ maxHeight: '400px', objectFit: 'cover' }} // Giới hạn chiều cao
-                onClick={() => setIsOpen(true)} // Mở dialog khi nhấp
+                style={{ maxHeight: '400px', objectFit: 'cover' }}
+                onClick={() => setIsOpen(true)}
               />
             ) : (
               <Image
@@ -123,13 +136,11 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
                   maxHeight: '400px',
                   height: 'auto',
                   objectFit: 'cover',
-                }} // Giới hạn chiều cao
-                onClick={() => setIsOpen(true)} // Mở dialog khi nhấp
+                }}
+                onClick={() => setIsOpen(true)}
               />
             )}
           </DialogTrigger>
-
-          {/* Nội dung trong dialog khi phóng to */}
           <DialogContent className="max-w-3xl p-0">
             <DialogTitle />
             {isVideo(feed.mediaUrl) ? (
@@ -138,7 +149,7 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
                 controls
                 autoPlay
                 className="w-full"
-                style={{ maxHeight: '95vh', objectFit: 'contain' }} // Giới hạn trong dialog
+                style={{ maxHeight: '95vh', objectFit: 'contain' }}
               />
             ) : (
               <Image
@@ -152,7 +163,7 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
                   maxHeight: '80vh',
                   height: 'auto',
                   objectFit: 'contain',
-                }} // Giới hạn trong dialog
+                }}
               />
             )}
           </DialogContent>

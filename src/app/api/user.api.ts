@@ -21,7 +21,6 @@ export const updateUser = async (data: User, id: string) => {
     url: `/users/${id}`,
     data,
     onSuccess: () => {
-      toast.success('User status has been updated successfully');
     },
     onError: (error) => {
       console.log('error in sign up', error);

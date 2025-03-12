@@ -1,6 +1,6 @@
 'use client';
 import { Bolt, Grid } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { act, useCallback, useEffect, useState } from 'react';
 import { FeedType } from '@/app/types';
 import Feed from '@/components/Feed';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -11,18 +11,25 @@ import EndOfFeed from '@/components/EndOfFeed';
 import { getChallengeByUserId } from '@/app/api/challenge.api';
 import { getPostByUserId } from '@/app/api/post.api';
 export default function ProfileChallengeDoing({ userId }: { userId: string }) {
-  const [activeTab, setActiveTab] = useState<'challenges' | 'posts'>(
-    'challenges',
+  const [activeTab, setActiveTab] = useState(
+    'challenges'
   );
   const { feeds, setFeeds, page, setPage, hasMore, setHasMore } =
     useFeedContext();
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    // Reset feeds khi vào Profile lần đầu tiên
+    setFeeds([]);
+    setPage(0);
+    setHasMore(true);
+  }, []);
+
   const fetchChallenges = useCallback(async () => {
     if (loading) return;
 
+    setLoading(true);
     try {
-      setLoading(true);
       const fetchFunc =
         activeTab === 'challenges' ? getChallengeByUserId : getPostByUserId;
       const response = await fetchFunc(userId, page, ITEMS_PER_PAGE);
@@ -46,7 +53,7 @@ export default function ProfileChallengeDoing({ userId }: { userId: string }) {
     if (feeds.length === 0) {
       fetchChallenges();
     }
-  }, [feeds]);
+  }, [feeds]);  
 
   const refreshFeed = () => {
     setFeeds([]); // Clear existing feeds
@@ -97,7 +104,7 @@ export default function ProfileChallengeDoing({ userId }: { userId: string }) {
         </li>
       </ul>
 
-      <div className="mx-auto max-w-2xl p-4">
+      <div className="mx-auto max-w-2xl p-4" id="scrollableDiv" >
         <InfiniteScroll
           dataLength={feeds.length}
           next={fetchChallenges}

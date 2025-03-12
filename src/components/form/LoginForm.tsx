@@ -63,6 +63,7 @@ export default function LoginForm() {
 
       localStorage.setItem('username', response?.data.user.username);
       localStorage.setItem('userId', response?.data.user.id);
+      localStorage.setItem('avatarUrl', response?.data.user.avatar_url);
 
       const decoded: JwtPayload = jwtDecode(accessToken);
 
@@ -103,8 +104,8 @@ export default function LoginForm() {
               Sign in to start enjoying the DoDo app
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="space-y-1">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
@@ -119,7 +120,7 @@ export default function LoginForm() {
                 )}
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
@@ -132,14 +133,6 @@ export default function LoginForm() {
                 {errors.password && (
                   <p className="text-sm text-red-500">{errors.password}</p>
                 )}
-                <div className="text-right">
-                  <Link
-                    href="/forgot-password"
-                    className="text-sm text-blue-600 hover:underline"
-                  >
-                    Forgot Password?
-                  </Link>
-                </div>
               </div>
 
               <Button
@@ -149,28 +142,6 @@ export default function LoginForm() {
                 Sign in
               </Button>
             </form>
-
-            <div className="mt-6">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300"></div>
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="bg-white px-2 text-gray-500">Or</span>
-                </div>
-              </div>
-
-              <div className="mt-6 space-y-4 md:space-y-2">
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => console.log('Google sign in')}
-                >
-                  <FcGoogle className="mr-2 h-4 w-4" />
-                  Sign in with Google
-                </Button>
-              </div>
-            </div>
 
             <p className="mt-8 text-center text-sm text-gray-600">
               Don't you have an account?{' '}

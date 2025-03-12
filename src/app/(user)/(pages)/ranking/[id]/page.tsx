@@ -1,15 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card } from '@/components/ui/card';
-import { Crown } from 'lucide-react';
-import { geChallengeRanking, getAllRanking } from '@/app/api/ranking.api';
-import Loading from '@/components/Loading';
+import { geChallengeRanking } from '@/app/api/ranking.api';
 import { Ranking } from '@/app/types';
 import LeaderboardDisplay from '@/components/Ranking';
 import { useParams } from 'next/navigation';
-
 
 export default function RankingPage() {
   // In a client component, we should use useEffect to access localStorage
@@ -19,7 +14,6 @@ export default function RankingPage() {
   const [loading, setLoading] = useState(false);
   const params = useParams();
   const challengeId = params.id as string;
-  console.log('Ranking ID:', challengeId);
   useEffect(() => {
     const storedUserId = localStorage.getItem('userId');
     if (storedUserId) {
@@ -72,17 +66,17 @@ export default function RankingPage() {
     };
 
     fetchRanking();
-  }, [currentUserId,challengeId]);
-  console.log('Ranking ID:', challengeId);
-  console.log('top  ID:', topUsers);
-
-  console.log('Ranking ID:', nearbyUsers);
-
+  }, [currentUserId, challengeId]);
 
   return (
     <div className="h-[calc(100vh-4rem)] overflow-hidden p-2 pb-20 sm:p-4 md:p-7 md:pb-4">
       <div className="mx-auto max-w-2xl p-2 sm:p-4">
-        <LeaderboardDisplay topUsers={topUsers} nearbyUsers={nearbyUsers} loading={loading} currentUserId={currentUserId} />
+        <LeaderboardDisplay
+          topUsers={topUsers}
+          nearbyUsers={nearbyUsers}
+          loading={loading}
+          currentUserId={currentUserId}
+        />
       </div>
     </div>
   );

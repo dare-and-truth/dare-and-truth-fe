@@ -1,16 +1,16 @@
-import { Message } from '@/app/types';
+import { MessageResponse } from '@/app/types';
 
 export function shouldShowAvatar(
-  messages: Message[] | undefined,
+  messages: MessageResponse[] | undefined,
   index: number,
 ) {
   if (!messages) return true;
   if (index === 0) return true;
-  return messages[index].senderId !== messages[index - 1].senderId;
+  return messages[index].senderId === messages[index - 1].senderId;
 }
 
 export function shouldShowTimestamp(
-  messages: Message[] | undefined,
+  messages: MessageResponse[] | undefined,
   index: number,
 ) {
   if (!messages) return true;

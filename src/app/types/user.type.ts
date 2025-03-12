@@ -29,3 +29,9 @@ export interface UserWithRequestsResponse {
     };
   }>;
 }
+
+export type UserInfo = {
+  id: string;
+  username: string;
+  avatarUrl: string;
+}

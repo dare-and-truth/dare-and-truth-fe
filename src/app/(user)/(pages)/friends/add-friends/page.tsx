@@ -10,9 +10,9 @@ import Loading from '@/components/Loading';
 export default function AddFriendRequestsPage() {
   const [friendRequests, setFriendRequests] = useState<FriendRequest[]>([]);
   const [loading, setLoading] = useState(false);
-  const currentUserId = localStorage.getItem('userId');
-
+  
   useEffect(() => {
+    const currentUserId = localStorage.getItem('userId');
     const fetchFriendRequests = async () => {
       setLoading(true);
       try {

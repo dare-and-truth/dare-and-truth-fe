@@ -7,17 +7,25 @@ import React, {
   useState,
   useEffect,
   ReactNode,
+  useRef,
 } from 'react';
 import { Client } from '@stomp/stompjs';
 import { toast, type ToastContentProps } from 'react-toastify';
 import { FriendRequestNotificationToast } from '@/components/notificationToast/FriendRequestNotificationToast';
 import { CommentNotificationToast } from '@/components/notificationToast/CommentNotificationToast';
 import { LikeNotificationToast } from '@/components/notificationToast/LikeNotificationToast';
+import { Conversation, MessageResponse } from '@/app/types';
 var SockJS = require('sockjs-client');
 
 interface WebSocketContextType {
   client: Client | null;
   isConnected: boolean;
+  messages: MessageResponse[];
+  setMessages: React.Dispatch<React.SetStateAction<MessageResponse[]>>;
+  conversations: Conversation[];
+  setConversations: React.Dispatch<React.SetStateAction<Conversation[]>>;
+  conversationId: string;
+  setConversationId: React.Dispatch<React.SetStateAction<string>>;
   subscribeToChannel: (channel: string, callback: (data: any) => void) => any;
 }
 
@@ -29,10 +37,23 @@ export const WebSocketProvider: React.FC<{
   const [client, setClient] = useState<Client | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
-  const userId = localStorage.getItem('userId');
-  const token = localStorage.getItem('accessToken');
+  const [messages, setMessages] = useState<MessageResponse[]>([]);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [conversationId, setConversationId] = useState('');
+  const [unreadMessageCount, setUnreadMessageCount] = useState(0);
+  const conversationIdRef = useRef(conversationId);
+
+  // useEffect(()=> {
+  //   fetch
+  // })
 
   useEffect(() => {
+    conversationIdRef.current = conversationId;
+  }, [conversationId]);
+
+  useEffect(() => {
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('accessToken');
     const socket = new SockJS(`${process.env.NEXT_PUBLIC_BASE_SERVER_URL}/ws`);
     const stompClient = new Client({
       webSocketFactory: () => socket,
@@ -40,13 +61,69 @@ export const WebSocketProvider: React.FC<{
         Authorization: ` Bearer ${token}`,
       },
       onConnect: () => {
-        console.log('WebSocket Connected successfully');
         setIsConnected(true);
 
         // Đăng ký nhận thông báo chung
         stompClient.subscribe(`/topic/notifications/${userId}`, (message) => {
           const notification = JSON.parse(message.body);
           handleNotification(notification);
+        });
+
+        // Đăng ký nhận tin nhắn
+        stompClient.subscribe(`/topic/messages/${userId}`, (message) => {
+          const data = JSON.parse(message.body);
+
+          setConversations((prevConversations) => {
+            const existingIndex = prevConversations.findIndex(
+              (conversation) => conversation.id === data.conversationId,
+            );
+
+            if (existingIndex !== -1) {
+              // Nếu conversation đã tồn tại, cập nhật thông tin mới nhất
+              const updatedConversations = [...prevConversations];
+              const existingConversation = {
+                ...updatedConversations[existingIndex],
+              };
+
+              // Cập nhật thông tin tin nhắn mới nhất
+              existingConversation.lastMessage = {
+                content: data.content,
+                senderId: data.senderId,
+              };
+              existingConversation.unreadMessages += 1;
+              existingConversation.updatedAt = new Date().toISOString();
+
+              // Đưa conversation lên đầu danh sách
+              updatedConversations.splice(existingIndex, 1);
+              updatedConversations.unshift(existingConversation);
+
+              return updatedConversations;
+            } else {
+              // Nếu không tìm thấy, thêm conversation mới
+              const newConversation: Conversation = {
+                id: data.conversationId,
+                participants: [
+                  {
+                    id: data.senderId,
+                    username: data.senderUsername,
+                    avatarUrl: data.senderAvatarUrl,
+                  },
+                ], // Danh sách người tham gia
+                lastMessage: {
+                  content: data.content,
+                  senderId: data.senderId,
+                },
+                unreadMessages: 1,
+                updatedAt: new Date().toISOString(),
+              };
+
+              return [newConversation, ...prevConversations];
+            }
+          });
+
+          if (data.conversationId === conversationIdRef.current) {
+            setMessages((prevMessages) => [...prevMessages, data]);
+          }
         });
       },
     });
@@ -58,7 +135,7 @@ export const WebSocketProvider: React.FC<{
       setIsConnected(false);
       stompClient.deactivate();
     };
-  }, [userId, token]);
+  }, []);
 
   // Hàm xử lý các thông báo
   const handleNotification = (notification: any) => {
@@ -160,7 +237,17 @@ export const WebSocketProvider: React.FC<{
 
   return (
     <WebSocketContext.Provider
-      value={{ client, isConnected, subscribeToChannel }}
+      value={{
+        client,
+        isConnected,
+        subscribeToChannel,
+        messages,
+        setMessages,
+        conversations,
+        setConversations,
+        conversationId,
+        setConversationId,
+      }}
     >
       {children}
     </WebSocketContext.Provider>

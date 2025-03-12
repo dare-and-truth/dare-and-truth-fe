@@ -2,38 +2,57 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ChatRoomPreviewProps } from '@/app/types/chat.type';
 import { formatMessageTime } from '@/app/helpers/formatTimeAgo';
 
-export function ChatRoomPreview({ chat, isActive }: ChatRoomPreviewProps) {
+export function ChatRoomPreview({
+  chat,
+  isActive,
+  otherUser,
+}: ChatRoomPreviewProps) {
   return (
     <div
       className={`${
         isActive
           ? 'bg-[#efefef] dark:bg-[#070707]'
           : 'hover:bg-[#f8f8f8] dark:hover:bg-[#131313]'
-      } flex w-full items-center px-3 py-3 md:px-5`}
+      } flex w-full items-center px-3 py-3 md:px-5 ${chat.unreadMessages > 0 ? 'bg-slate-200' : ''}`}
     >
-      <div className="mr-3 flex-shrink-0">
+      <div className="relative mr-3 flex-shrink-0">
         <Avatar className="h-12 w-12">
           <AvatarImage
-            src={chat.avatarURL || ''}
-            alt={`${chat.username}'s profile`}
+            src={otherUser.avatarUrl}
+            alt={`${otherUser.username}'s profile`}
           />
-          <AvatarFallback className="bg-[#ebebeb] dark:bg-[#313131]">
-            {chat.username.charAt(0).toUpperCase()}
-          </AvatarFallback>
         </Avatar>
+
+        {chat.unreadMessages > 0 && (
+          <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
+            {chat.unreadMessages}
+          </div>
+        )}
       </div>
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between">
-          <h2 className="truncate font-medium">{chat.username}</h2>
-          <span className="ml-1 flex-shrink-0 text-xs text-gray-500">
-            {chat.updated_at ? formatMessageTime(chat.updated_at) : ''}
-          </span>
+          <h2
+            className={`truncate ${chat.unreadMessages > 0 ? 'font-bold' : 'font-medium'}`}
+          >
+            {otherUser.username}
+          </h2>
         </div>
 
-        <p className="truncate text-xs text-gray-500">
-          {chat.lastMessage || 'No messages yet'}
+        <p
+          className={`truncate text-sm ${chat.unreadMessages > 0 ? 'font-medium text-foreground' : 'text-gray-500'}`}
+        >
+          {chat.lastMessage.senderId === otherUser.id ? '' : 'You: '}{' '}
+          {chat.lastMessage.content}
         </p>
+
+        <div className="mt-1 flex items-center justify-between">
+          <span
+            className={`flex-shrink-0 text-xs ${chat.unreadMessages > 0 ? 'text-foreground' : 'text-gray-500'}`}
+          >
+            {chat.updatedAt ? formatMessageTime(chat.updatedAt) : ''}
+          </span>
+        </div>
       </div>
     </div>
   );

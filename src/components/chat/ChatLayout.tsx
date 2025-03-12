@@ -1,28 +1,15 @@
 'use client';
 
-import { useState } from 'react';
 import { ChatRoom } from '@/components/chat/ChatRoom';
 import { ChatSidebar } from '@/components/chat/ChatSidebar';
-import { EmptyChat } from '@/components/chat/EmptyChat';
 import { ChevronLeft } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useChat } from '@/app/contexts/ChatContext';
 
 export default function ChatLayout() {
-  const [loading, setLoading] = useState(false);
   const isMobile = useIsMobile();
   const { activeChat, setActiveChat } = useChat();
 
-  if (loading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="animate-pulse text-center">
-          <h1 className="text-2xl font-bold">Loading...</h1>
-          <p className="text-gray-500">Please wait while we load your chats</p>
-        </div>
-      </div>
-    );
-  }
   const handleBackToList = () => {
     setActiveChat(null);
   };
@@ -54,7 +41,7 @@ export default function ChatLayout() {
           <div
             className={`${isMobile && !activeChat ? 'hidden' : 'block'} flex-1`}
           >
-            {activeChat ? <ChatRoom activeChat={activeChat} /> : <EmptyChat />}
+            <ChatRoom />
           </div>
         </div>
       </div>

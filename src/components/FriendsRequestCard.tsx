@@ -9,6 +9,7 @@ import {
 } from '@/app/api/friends.api';
 import { toast } from 'react-toastify';
 import { FriendRequestCardProps } from '@/app/types';
+import { useRouter } from 'next/navigation';
 
 export default function FriendRequestCard({
   avatar,
@@ -19,7 +20,7 @@ export default function FriendRequestCard({
   requestId,
   followerId,
   userId,
-  width = 'w-[65%]',
+  width = 'w-[55%]',
   onAccept,
   onReject,
   onUnfriend,
@@ -29,6 +30,7 @@ export default function FriendRequestCard({
   const [isAccepted, setIsAccepted] = useState(initialAccepted || false);
   const [loading, setLoading] = useState(false);
   const [maxUsernameLength, setMaxUsernameLength] = useState(30);
+  const router = useRouter();
 
   // Lấy userId từ localStorage
   const currentUserId = localStorage.getItem('userId');
@@ -207,12 +209,19 @@ export default function FriendRequestCard({
       </div>
 
       <div className="ml-auto flex items-center gap-2">
+        <Button
+          variant="join"
+          className="rounded-lg px-4 py-2 font-semibold text-white w-24"
+          onClick={() => router.push(`/message?userId=${userId}`, { scroll: false })}
+        >
+          Chat
+        </Button>
         {mode === 'requests' ? (
           requestId ? (
             isAccepted ? (
               <Button
                 variant="outline"
-                className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white"
+                className="rounded-lg bg-red-600 px-4 py-2 font-semibold w-24 text-white"
                 onClick={handleUnfriend}
                 disabled={loading}
               >
@@ -222,7 +231,7 @@ export default function FriendRequestCard({
               <>
                 <Button
                   variant="default"
-                  className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white"
+                  className="rounded-lg bg-blue-600 px-4 py-2 font-semibold w-24 text-white"
                   onClick={handleAccept}
                   disabled={loading}
                 >
@@ -230,7 +239,7 @@ export default function FriendRequestCard({
                 </Button>
                 <Button
                   variant="outline"
-                  className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white"
+                  className="rounded-lg bg-red-600 px-4 py-2 font-semibold w-24 text-white"
                   onClick={handleReject}
                   disabled={loading}
                 >
@@ -241,7 +250,7 @@ export default function FriendRequestCard({
           ) : (
             <Button
               variant="default"
-              className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white"
+              className="rounded-lg bg-blue-600 px-4 py-2 font-semibold w-24 text-white"
               onClick={handleAddFriend}
               disabled={loading}
             >
@@ -278,7 +287,7 @@ export default function FriendRequestCard({
               <>
                 <Button
                   variant="default"
-                  className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white"
+                  className="rounded-lg bg-blue-600 px-4 py-2 font-semibold w-24 text-white"
                   onClick={handleAccept}
                   disabled={loading}
                 >
@@ -286,7 +295,7 @@ export default function FriendRequestCard({
                 </Button>
                 <Button
                   variant="outline"
-                  className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white"
+                  className="rounded-lg bg-red-600 px-4 py-2 font-semibold w-24 text-white"
                   onClick={handleReject}
                   disabled={loading}
                 >
@@ -297,7 +306,7 @@ export default function FriendRequestCard({
           ) : (
             <Button
               variant="default"
-              className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white"
+              className="rounded-lg bg-blue-600 px-4 py-2 font-semibold w-24 text-white"
               onClick={handleAddFriend}
               disabled={loading}
             >

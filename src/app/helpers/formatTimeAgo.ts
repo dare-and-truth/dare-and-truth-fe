@@ -26,7 +26,7 @@ export function formatTimeAgo(createdAt: string): string {
 
   const diffInDays = Math.floor(diffInHours / 24);
   if (diffInDays === 1) {
-    return 'Yesterday';
+    return 'yesterday';
   } else if (diffInDays < 7) {
     return `${diffInDays} days ago`;
   }
@@ -56,6 +56,6 @@ export const formatMessageTime = (dateString: string) => {
 
     return distance.includes('hour') ? distance : format(date, 'HH:mm');
   }
-  if (isYesterday(date)) return 'Yesterday';
+  if (isYesterday(date)) return 'yesterday';
   return format(date, 'dd/MM/yyyy');
 };

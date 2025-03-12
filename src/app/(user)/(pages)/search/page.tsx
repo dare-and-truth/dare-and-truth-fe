@@ -22,11 +22,11 @@ export default function SearchPage() {
   const [feeds, setFeeds] = useState<FeedType[]>([]);
   const [users, setUsers] = useState<UserWithRequestsResponse[]>([]);
   const { setIsLoading, isLoading } = useLoading();
-  const currentUserId = localStorage.getItem('userId');
+  let currentUserId : string | null;
 
   useEffect(() => {
     if (!query) return;
-
+    currentUserId = localStorage.getItem('userId');
     const fetchData = async () => {
       try {
         if (activeTab === 'challenges') {

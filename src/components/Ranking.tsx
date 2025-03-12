@@ -8,11 +8,13 @@ import { RankingProps } from '@/app/types';
 import Confetti from 'react-confetti';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { formatScores } from '@/app/helpers/formatScore';
 export default function RankingDisplay({
   topUsers,
   nearbyUsers,
   loading,
   currentUserId,
+  type,
 }: RankingProps) {
   const [windowDimesion, setDimesion] = useState({
     width: window.innerWidth,
@@ -33,12 +35,7 @@ export default function RankingDisplay({
   if (loading) {
     return <Loading />;
   }
-  const formatPoints = (scores: number) => {
-    if (scores < 10_000) return scores.toString();
 
-    const kScores = (scores / 1000).toFixed(2); // Chia cho 1000 và giữ 2 số thập phân
-    return kScores.endsWith('.00') ? `${parseInt(kScores)} K` : `${kScores} K`;
-  };
   return (
     <>
       <motion.div
@@ -100,7 +97,8 @@ export default function RankingDisplay({
                 {topUsers[1]?.username || 'Coming soon'}
               </p>
               <p className="text-xs text-orange-500 sm:text-sm">
-                {formatPoints(topUsers[1]?.totalScore || 0)} score
+                {formatScores(topUsers[1]?.totalScore || 0)}{' '}
+                {type === 'score' ? 'score' : 'Like'}
               </p>
             </div>
 
@@ -130,7 +128,8 @@ export default function RankingDisplay({
                 {topUsers[0]?.username || 'Coming soon'}
               </p>
               <p className="text-sm text-orange-400 sm:text-base md:text-lg">
-                {formatPoints(topUsers[0]?.totalScore || 0)} score
+                {formatScores(topUsers[0]?.totalScore || 0)}{' '}
+                {type === 'score' ? 'score' : 'Like'}
               </p>
             </div>
 
@@ -155,7 +154,8 @@ export default function RankingDisplay({
                 {topUsers[2]?.username || 'Coming soon'}
               </p>
               <p className="text-xs text-purple-500 sm:text-sm">
-                {formatPoints(topUsers[2]?.totalScore || 0)} score
+                {formatScores(topUsers[2]?.totalScore || 0)}{' '}
+                {type === 'score' ? 'score' : 'Like'}
               </p>
             </div>
           </div>
@@ -193,7 +193,7 @@ export default function RankingDisplay({
                       {user.username}
                     </p>
                     <p className="text-xs text-gray-200 sm:text-sm">
-                      {user.totalScore} points
+                      {user.totalScore} {type === 'score' ? 'score' : 'like'}
                     </p>
                   </div>
                   <div className="ml-2 flex items-center rounded-full border border-white">

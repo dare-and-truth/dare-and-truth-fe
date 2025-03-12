@@ -76,6 +76,7 @@ export default function RankingPage() {
           nearbyUsers={nearbyUsers}
           loading={loading}
           currentUserId={currentUserId}
+          type="Like"
         />
       </div>
     </div>

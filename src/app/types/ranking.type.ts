@@ -11,4 +11,5 @@ export interface RankingProps {
   nearbyUsers: Ranking[];
   loading: boolean;
   currentUserId: string | null;
+  type:string;
 }

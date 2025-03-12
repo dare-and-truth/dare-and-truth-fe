@@ -72,6 +72,7 @@ export default function RankingPage() {
           nearbyUsers={nearbyUsers}
           loading={loading}
           currentUserId={currentUserId}
+          type="score"
         />
       </div>
     </div>

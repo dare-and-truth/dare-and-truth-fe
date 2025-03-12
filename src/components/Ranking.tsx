@@ -39,7 +39,6 @@ export default function RankingDisplay({
     const kScores = (scores / 1000).toFixed(2); // Chia cho 1000 và giữ 2 số thập phân
     return kScores.endsWith('.00') ? `${parseInt(kScores)} K` : `${kScores} K`;
   };
-
   return (
     <>
       <motion.div
@@ -111,14 +110,12 @@ export default function RankingDisplay({
               <div className="absolute -top-8 flex w-full justify-center md:-top-12">
                 <Avatar className="h-16 w-16 rounded-full border-4 border-yellow-500 sm:h-24 sm:w-24 md:h-20 md:w-20">
                   <AvatarImage
-                    src={
-                      topUsers[0]?.avatarURL || '/images/default-profile.png'
-                    }
+                    src={topUsers[0]?.avatarURL}
                     alt={topUsers[0]?.username || 'User'}
                     className="object-cover"
                   />
                   <AvatarFallback>
-                    {topUsers[0]?.username?.[0] || '1'}
+                    {topUsers[0]?.username?.[0] || '?'}
                   </AvatarFallback>
                 </Avatar>
 
@@ -130,7 +127,7 @@ export default function RankingDisplay({
               </span>
 
               <p className="mt-3 max-w-full truncate text-base text-white sm:text-lg">
-                {topUsers[0]?.username || 'Updating ...'}
+                {topUsers[0]?.username || 'Coming soon'}
               </p>
               <p className="text-sm text-orange-400 sm:text-base md:text-lg">
                 {formatPoints(topUsers[0]?.totalScore || 0)} score

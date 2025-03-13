@@ -57,6 +57,7 @@ export default function AddFriendRequestsPage() {
           {friendRequests.map((request) => (
             <FriendRequestCard
               key={request.id}
+              thisUserId={request.follower.id}
               mode="requests" // Sử dụng chế độ 'requests'
               avatar={
                 request.follower.avatarUrl || '/images/default-profile.png'

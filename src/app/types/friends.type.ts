@@ -39,6 +39,7 @@ export interface FriendList {
 }
 
 export interface FriendRequestCardProps {
+  thisUserId: string;
   avatar: string;
   username: string;
   followedAt: string;

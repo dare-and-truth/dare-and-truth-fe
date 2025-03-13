@@ -9,11 +9,12 @@ import {
 } from '@/app/api/friends.api';
 import { toast } from 'react-toastify';
 import { FriendRequestCardProps } from '@/app/types';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function FriendRequestCard({
+  thisUserId,
   avatar,
   username,
   followedAt,
@@ -185,7 +186,7 @@ export default function FriendRequestCard({
       className={`mb-4 flex items-center rounded-lg bg-white p-4 shadow-sm ${width} transition-all duration-300`}
     >
       <div className="flex-shrink-0">
-        <Link href={`/profile/${profileId}`}>
+        <Link href={`/profile/${thisUserId}`}>
           <Image
             src={avatar || '/images/default-profile.png'}
             alt="User Avatar"
@@ -221,7 +222,7 @@ export default function FriendRequestCard({
           variant="join"
           className="w-24 rounded-lg px-4 py-2 font-semibold text-white"
           onClick={() =>
-            router.push(`/message?userId=${userId}`, { scroll: false })
+            router.push(`/message?userId=${thisUserId}`, { scroll: false })
           }
         >
           Chat
@@ -287,7 +288,7 @@ export default function FriendRequestCard({
               <>
                 <Button
                   variant="default"
-                  className="w-24 rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white"
+                  className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white"
                   onClick={handleAccept}
                   disabled={loading}
                 >
@@ -305,7 +306,7 @@ export default function FriendRequestCard({
           ) : (
             <Button
               variant="default"
-              className="w-24 rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white"
+              className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white"
               onClick={handleAddFriend}
               disabled={loading}
             >

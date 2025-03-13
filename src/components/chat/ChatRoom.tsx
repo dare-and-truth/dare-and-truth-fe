@@ -27,18 +27,28 @@ import Loading from '@/components/Loading';
 import { EmptyChat } from '@/components/chat/EmptyChat';
 import { sendMessage } from '@/app/api/message.api';
 import { useWebSocket } from '@/app/contexts';
+import { uploadFileToSupabase } from '@/app/helpers/uploadFileToSupabase';
+import { FilePreview } from '@/components/FilePreview';
 
 export function ChatRoom() {
   const [inputText, setInputText] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const emojiButtonRef = useRef<HTMLButtonElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const currentUserId = useUserId();
   const [chatLoading, setChatLoading] = useState(false);
+  const [loadingMoreMessages, setLoadingMoreMessages] = useState(false);
   const [currentChatUser, setCurrentChatUser] = useState<UserInfo | null>(null);
+  const [nextMessageId, setNextMessageId] = useState<string | null>(null);
+  const [hasMoreMessages, setHasMoreMessages] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const {
     messages,
@@ -66,10 +76,14 @@ export function ChatRoom() {
         if (data.otherUser) {
           setCurrentChatUser(data.otherUser);
         }
+        // Store the nextMessageId for loading more messages
+        setNextMessageId(data.nextMessageId || null);
+        setHasMoreMessages(!!data.nextMessageId);
       } catch (error) {
         console.log(error);
       } finally {
         setChatLoading(false);
+        setIsInitialLoad(false);
       }
     };
     fetchChat();
@@ -80,20 +94,114 @@ export function ChatRoom() {
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    // Only scroll to bottom on initial load or when sending a new message
+    if (isInitialLoad || messages.length > 0) {
+      scrollToBottom();
+    }
+  }, [messages, isInitialLoad, currentUserId]);
 
-  const handleSendMessage = async () => {
-    if (!inputText.trim() && !selectedImage) return;
-
-    const newMessage: SendMessagePayload = {
-      conversationId: conversationId != '' ? conversationId : null,
-      content: inputText,
-      receiverId: currentChatUser?.id as string,
-      // mediaUrl: selectedImage ? URL.createObjectURL(selectedImage) : '',
-    };
+  // Function to load older messages
+  const loadOlderMessages = async () => {
+    if (
+      !hasMoreMessages ||
+      loadingMoreMessages ||
+      !conversationId ||
+      !nextMessageId
+    )
+      return;
 
     try {
+      setLoadingMoreMessages(true);
+
+      // Store current scroll position before loading more messages
+      const container = messagesContainerRef.current;
+      if (!container) return;
+
+      const oldScrollHeight = container.scrollHeight;
+      const oldScrollTop = container.scrollTop;
+
+      // Get the first message element as a reference point
+      const firstMessageElement = container.querySelector('.message-bubble');
+      const firstMessageOffsetTop =
+        firstMessageElement?.getBoundingClientRect().top;
+
+      const data = await getChat({
+        otherUserId: otherUserId as string,
+        conversationId,
+        nextMessageId,
+        limit: 20, // You can adjust the limit as needed
+      });
+
+      if (data.messages && data.messages.length > 0) {
+        // Update the messages state by adding older messages at the beginning
+        setMessages((prevMessages) => [
+          ...data.messages.reverse(),
+          ...prevMessages,
+        ]);
+
+        // Update the nextMessageId for the next fetch
+        setNextMessageId(data.nextMessageId || null);
+        setHasMoreMessages(!!data.nextMessageId);
+
+        // After rendering, restore scroll position
+        requestAnimationFrame(() => {
+          if (container) {
+            const newScrollHeight = container.scrollHeight;
+            const heightDifference = newScrollHeight - oldScrollHeight;
+            container.scrollTop = oldScrollTop + heightDifference;
+          }
+        });
+      } else {
+        setHasMoreMessages(false);
+      }
+    } catch (error) {
+      console.error('Error loading older messages:', error);
+    } finally {
+      setLoadingMoreMessages(false);
+    }
+  };
+
+  // Handle scroll to detect when user reaches the top
+  const handleScroll = () => {
+    const container = messagesContainerRef.current;
+    if (
+      container &&
+      container.scrollTop <= 100 &&
+      hasMoreMessages &&
+      !loadingMoreMessages
+    ) {
+      loadOlderMessages();
+    }
+  };
+
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScroll);
+      return () => container.removeEventListener('scroll', handleScroll);
+    }
+  }, [hasMoreMessages, loadingMoreMessages, nextMessageId]);
+
+  const handleSendMessage = async () => {
+    if ((!inputText.trim() && !selectedFile) || isUploading) return;
+
+    let mediaUrl;
+
+    try {
+      setIsUploading(selectedFile !== null);
+
+      // Upload file if selected
+      if (selectedFile) {
+        mediaUrl = await uploadFileToSupabase(selectedFile);
+      }
+
+      const newMessage: SendMessagePayload = {
+        conversationId: conversationId != '' ? conversationId : null,
+        content: inputText.trim() ? inputText.trim() : null,
+        receiverId: currentChatUser?.id as string,
+        mediaUrl: mediaUrl || null,
+      };
+
       await sendMessage(newMessage);
 
       setMessages((prevMessages) => [
@@ -106,7 +214,7 @@ export function ChatRoom() {
         } as MessageResponse,
       ]);
 
-      // Cập nhật danh sách đoạn hội thoại
+      // Update conversations list
       setConversations((prevConversations) => {
         const existingIndex = prevConversations.findIndex(
           (conversation) => conversation.id === conversationId,
@@ -125,13 +233,13 @@ export function ChatRoom() {
           existingConversation.unreadMessages = 0;
           existingConversation.updatedAt = new Date().toISOString();
 
-          // Đưa cuộc trò chuyện lên đầu danh sách
+          // Move conversation to top of list
           updatedConversations.splice(existingIndex, 1);
           updatedConversations.unshift(existingConversation);
 
           return updatedConversations;
         } else {
-          // Nếu không tìm thấy, tạo cuộc trò chuyện mới
+          // Create new conversation if not found
           const newConversation: Conversation = {
             id: conversationId,
             participants: [
@@ -153,12 +261,14 @@ export function ChatRoom() {
         }
       });
 
-      // reset input
+      // Reset input
       setInputText('');
-      setSelectedImage(null);
+      setSelectedFile(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
     } catch (error) {
-      console.log(sendMessage);
+      console.log(error);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -178,17 +288,28 @@ export function ChatRoom() {
     setShowEmojiPicker(!showEmojiPicker);
   };
 
-  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = event.target.files?.[0];
-  //   if (file) {
-  //     setSelectedImage(file);
-  //   }
-  // };
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
 
-  // const removeImage = () => {
-  //   setSelectedImage(null);
-  //   if (fileInputRef.current) fileInputRef.current.value = '';
-  // };
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreviewUrl(null);
+      return;
+    }
+
+    // Create preview URL
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreviewUrl(objectUrl);
+
+    // Clean up the URL when component unmounts or file changes
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    };
+  }, [selectedFile]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -235,7 +356,10 @@ export function ChatRoom() {
         <span className="font-semibold">{currentChatUser.username}</span>
       </div>
 
-      <div className="scrollbar flex flex-1 flex-col overflow-y-auto border-t border-stone-300 px-1 py-2 dark:border-stone-700 dark:[color-scheme:dark] md:px-5">
+      <div
+        ref={messagesContainerRef}
+        className="scrollbar flex flex-1 flex-col overflow-y-auto border-t border-stone-300 px-1 py-2 dark:border-stone-700 dark:[color-scheme:dark] md:px-5"
+      >
         <div className="m-4 flex h-[100px] flex-col items-center justify-center gap-2 px-4">
           <Link
             href={`/profile/${currentChatUser.id}`}
@@ -264,6 +388,7 @@ export function ChatRoom() {
             message={message}
             isCurrentUser={message.senderId === currentUserId}
             showTimestamp={shouldShowTimestamp(messages, index)}
+            className="message-bubble" // Added a class for reference
           />
         ))}
 
@@ -271,7 +396,15 @@ export function ChatRoom() {
       </div>
 
       <div className="sticky bottom-0 bg-white px-4 py-3 dark:bg-[#1c1c1c]">
-        <div className="relative flex items-center rounded-full border border-stone-200 bg-white px-3 py-1 dark:border-stone-700 dark:bg-[#262626]">
+        {selectedFile && previewUrl && (
+          <FilePreview
+            fileType={'image'}
+            previewUrl={previewUrl}
+            onDelete={() => setSelectedFile(null)}
+          />
+        )}
+
+        <div className="flex items-center rounded-full border border-stone-200 bg-white px-3 py-1 dark:border-stone-700 dark:bg-[#262626]">
           <button
             ref={emojiButtonRef}
             className="flex-shrink-0 p-1"
@@ -293,7 +426,7 @@ export function ChatRoom() {
             onKeyDown={handleKeyPress}
           />
 
-          {/* <input
+          <input
             type="file"
             ref={fileInputRef}
             className="hidden"
@@ -305,14 +438,18 @@ export function ChatRoom() {
             className="pr-2"
             type="button"
             onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading}
           >
-            <ImageIcon className="h-5 w-5" />
-          </button> */}
+            <ImageIcon
+              className={`h-5 w-5 ${isUploading ? 'text-gray-400' : ''}`}
+            />
+          </button>
 
           <button
             type="button"
             onClick={handleSendMessage}
-            disabled={inputText.trim() === '' && !selectedImage}
+            disabled={(inputText.trim() === '' && !selectedFile) || isUploading}
+            className={isUploading ? 'text-gray-400' : ''}
           >
             <Send className="h-5 w-5" />
           </button>

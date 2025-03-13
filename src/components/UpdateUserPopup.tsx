@@ -156,6 +156,8 @@ export function UpdateUserPopup({
             src={avatarUrl ? avatarUrl : '/images/default-profile.png'}
             alt="Avatar"
             className="h-24 w-24 rounded-full object-cover"
+            width={96}
+            height={96}
           />
           <input
             ref={fileInputRef}

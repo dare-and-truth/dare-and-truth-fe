@@ -100,9 +100,7 @@ export default function CommentForm({
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
-    if (!content.trim()) {
-      newErrors.content = 'Content is required';
-    }
+
     if (media) {
       const fileError = validateFile(media);
       if (fileError) {
@@ -166,8 +164,19 @@ export default function CommentForm({
             className={`w-full ${errors.content ? 'border-red-500' : ''}`}
             value={content}
             onChange={handleContentChange}
+            onKeyDown={(e) => {
+              // Khi nhấn Ctrl+Enter để submit form
+              if (e.key === 'Enter' && e.ctrlKey) {
+                e.preventDefault();
+                if (!isLoading && (content || media)) {
+                  const form = e.currentTarget.closest('form');
+                  if (form) form.requestSubmit();
+                }
+              }
+            }}
             disabled={isLoading} // Vô hiệu hóa textarea khi loading
           />
+
           <div className="ml-2 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <input

@@ -1,11 +1,10 @@
 'use client';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useLoading } from '@/app/contexts';
-import Image from 'next/image';
 
 export default function NavBar() {
   const [username, setUsername] = useState('');
@@ -39,17 +38,16 @@ export default function NavBar() {
           href={`/profile/${userId}`}
           className="flex items-center rounded-full"
         >
-          <Image
-            alt="profile"
-            className="rounded-full object-cover sm:h-14 sm:w-14"
-            src={
-              userAvatarUrl
-                ? userAvatarUrl.trim()
-                : '/images/default-profile.png'
-            }
-            width={100}
-            height={100}
-          />
+          <Avatar className="h-10 w-10 object-cover">
+            <AvatarImage
+              src={userAvatarUrl}
+              alt={username}
+              onError={(e) =>
+                (e.currentTarget.src = '/images/default-profile.png')
+              }
+              className="object-cover"
+            />
+          </Avatar>
         </Link>
       </div>
     </header>

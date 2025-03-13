@@ -12,19 +12,19 @@ export const getChat = async ({
   otherUserId,
   limit = 20,
   conversationId,
-  lastMessageId,
+  nextMessageId,
 }: {
   otherUserId: string;
   limit?: number;
   conversationId?: string;
-  lastMessageId?: string;
+  nextMessageId?: string;
 }) => {
   const params = new URLSearchParams();
   params.append('otherUserId', otherUserId);
   params.append('limit', limit.toString());
 
   if (conversationId) params.append('conversationId', conversationId);
-  if (lastMessageId) params.append('lastMessageId', lastMessageId);
+  if (nextMessageId) params.append('nextMessageId', nextMessageId);
 
   const response = await request({
     method: 'get',

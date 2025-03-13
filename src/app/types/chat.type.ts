@@ -22,7 +22,7 @@ export type SendMessagePayload = {
   receiverId: string;
   conversationId: string | null;
   content: string | null;
-  // mediaUrl: string | null;
+  mediaUrl: string | null;
 };
 
 export type MessageResponse = {
@@ -59,6 +59,7 @@ export interface MessageBubbleProps {
   message: MessageResponse;
   isCurrentUser: boolean;
   showTimestamp: boolean;
+  className?: string;
 }
 
 export type Conversation = {

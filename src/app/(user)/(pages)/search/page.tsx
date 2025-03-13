@@ -22,11 +22,16 @@ export default function SearchPage() {
   const [feeds, setFeeds] = useState<FeedType[]>([]);
   const [users, setUsers] = useState<UserWithRequestsResponse[]>([]);
   const { setIsLoading, isLoading } = useLoading();
-  let currentUserId: string | null;
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const currentUserId = localStorage.getItem('userId');
+    setCurrentUserId(currentUserId);
+  }, []);
 
   useEffect(() => {
     if (!query) return;
-    currentUserId = localStorage.getItem('userId');
+
     const fetchData = async () => {
       try {
         if (activeTab === 'challenges') {
@@ -147,6 +152,7 @@ export default function SearchPage() {
               users.map((user) => (
                 <FriendRequestCard
                   key={user.user.id}
+                  thisUserId={user.user.id}
                   mode="search"
                   avatar={user.user.avatarUrl}
                   username={user.user.username}

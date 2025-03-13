@@ -11,10 +11,14 @@ import Loading from '@/components/Loading';
 export default function ListFriendPage() {
   const [friends, setFriends] = useState<FriendList[]>([]);
   const [loading, setLoading] = useState(false);
-  let currentUserId: string | null;
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    currentUserId = localStorage.getItem('userId'); // Lấy userId từ localStorage
+    const currentUserId = localStorage.getItem('userId');
+    setCurrentUserId(currentUserId);
+  }, []);
+
+  useEffect(() => {
     const fetchFriends = async () => {
       setLoading(true);
       try {
@@ -61,6 +65,11 @@ export default function ListFriendPage() {
             return (
               <FriendRequestCard
                 key={friend.id}
+                thisUserId={
+                  currentUserId && friend.follower.id === currentUserId
+                    ? friend.user.id
+                    : friend.follower.id
+                }
                 mode="friends"
                 avatar={finalAvatar}
                 username={

@@ -123,7 +123,12 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
       </div>
 
       <div className="mb-4">
-        <p className="font-bold text-blue-500">#{feed.hashtag}</p>
+        <Link
+          href={`/hashtag/${feed.hashtag}?startDate=${feed.startDate}&endDate=${feed.endDate}`}
+          className="font-bold text-blue-500"
+        >
+          #{feed.hashtag}
+        </Link>
         {feed.type === 'challenge' && (
           <div>
             <p>
@@ -199,3 +204,4 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
     </>
   );
 }
+

@@ -19,7 +19,7 @@ export function ChatRoomPreview({
       <div className="relative mr-3 flex-shrink-0">
         <Image
           alt={otherUser.avatarUrl + ' avatar'}
-          className="rounded-full object-cover sm:h-14 sm:w-14"
+          className="rounded-full object-cover sm:h-14 sm:w-14 h-12 w-12"
           src={
             otherUser.avatarUrl
               ? otherUser.avatarUrl.trim()

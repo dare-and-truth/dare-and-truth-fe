@@ -59,23 +59,19 @@ export function ChatRoom() {
   } = useWebSocket();
 
   const searchParams = useSearchParams();
-  const otherUserId = searchParams.get('userId');
+  let currentChatUserId: string | null;
 
+  // Fetch the chat when the userId changes
   useLayoutEffect(() => {
+    currentChatUserId = searchParams.get('userId');
     const fetchChat = async () => {
-      if (!otherUserId) return;
+      if (!currentChatUserId) return;
       try {
         setChatLoading(true);
-        const data = await getChat({ otherUserId });
-        if (data.conversationId) {
-          setConversationId(data.conversationId);
-        }
-        if (data.messages) {
-          setMessages(data.messages.reverse() || []);
-        }
-        if (data.otherUser) {
-          setCurrentChatUser(data.otherUser);
-        }
+        const data = await getChat({ currentChatUserId });
+        setConversationId(data.conversationId);
+        setMessages(data.messages?.reverse() || []);
+        setCurrentChatUser(data.otherUser);
         // Store the nextMessageId for loading more messages
         setNextMessageId(data.nextMessageId || null);
         setHasMoreMessages(!!data.nextMessageId);
@@ -126,7 +122,7 @@ export function ChatRoom() {
         firstMessageElement?.getBoundingClientRect().top;
 
       const data = await getChat({
-        otherUserId: otherUserId as string,
+        currentChatUserId: currentChatUser?.id as string,
         conversationId,
         nextMessageId,
         limit: 20, // You can adjust the limit as needed
@@ -343,7 +339,7 @@ export function ChatRoom() {
         <Link href={`/profile/${currentChatUser.id}`}>
           <Image
             alt={currentChatUser.avatarUrl + ' avatar'}
-            className="rounded-full object-cover sm:h-14 sm:w-14"
+            className="rounded-full object-cover sm:h-14 sm:w-14 h-12 w-12"
             src={
               currentChatUser.avatarUrl
                 ? currentChatUser.avatarUrl.trim()
@@ -367,7 +363,7 @@ export function ChatRoom() {
           >
             <Image
               alt={currentChatUser.avatarUrl + ' avatar'}
-              className="rounded-full object-cover sm:h-14 sm:w-14"
+              className="rounded-full object-cover sm:h-14 sm:w-14 h-12 w-12"
               src={
                 currentChatUser.avatarUrl
                   ? currentChatUser.avatarUrl.trim()

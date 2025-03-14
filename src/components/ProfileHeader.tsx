@@ -186,7 +186,9 @@ export default function ProfileHeader({ userId }: { userId: string }) {
                 handleReject={handleReject}
                 handleUnfriend={handleUnfriend}
               />
-              <Button variant="join">Chat</Button>
+              <Link href={`/message?userId=${userId}`}>
+                <Button variant="join">Chat</Button>
+              </Link>
             </>
           )}
         </div>

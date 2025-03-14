@@ -1,62 +1,46 @@
-import { MobileMenu } from '@/components/MobileMenu';
-import { UserDropdown } from '@/components/UserDropdown';
-import Image from 'next/image';
+'use client';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useLoading } from '@/app/contexts';
 
-export default function Header() {
+export default function NavBar() {
   const [username, setUsername] = useState('');
+  const [userAvatarUrl, setUserAvatarUrl] = useState(
+    '/images/default-profile.png',
+  );
+  const { isLoading } = useLoading();
+
   useEffect(() => {
     setUsername(localStorage.getItem('username') || '');
-  }, []);
+
+    const avatarUrl = localStorage.getItem('avatarUrl');
+    if (avatarUrl && avatarUrl.trim() !== 'null' && avatarUrl.trim() !== '') {
+      setUserAvatarUrl(avatarUrl);
+    } else {
+      setUserAvatarUrl('/images/default-profile.png');
+    }
+  }, [isLoading]);
+
   return (
-    <div className="fixed left-0 right-0 top-0 z-10 flex h-16 items-center justify-between bg-white p-3 shadow-sm md:left-64">
-      <div className="flex md:hidden">
-        <Image
-          src="/images/logo.png"
-          alt="Logo"
-          width={80}
-          height={32}
-          className="w-20"
-        />
+    <header className="fixed left-0 right-0 top-0 z-10 flex h-16 items-center justify-between bg-white p-3 shadow-sm md:left-64">
+      <div className="ml-auto flex items-center gap-2">
+        <span className="text-md max-w-[120px] truncate font-bold text-gray-700 dark:text-gray-200">
+          {username}
+        </span>
+        <Link href="#" className="flex items-center rounded-full">
+          <Avatar className="h-10 w-10 object-cover">
+            <AvatarImage
+              src={userAvatarUrl}
+              alt={username}
+              onError={(e) =>
+                (e.currentTarget.src = '/images/default-profile.png')
+              }
+              className="object-cover"
+            />
+          </Avatar>
+        </Link>
       </div>
-
-      <div className="hidden max-w-4xl flex-1 items-center rounded-lg bg-gray-50 px-4 py-2 md:flex">
-        <div className="sm:hidden md:block md:w-40 lg:block lg:w-56">
-          <p>Hi, {username}</p>
-          <p>Welcome Back!</p>
-        </div>
-        <div className="relative w-full sm:hidden md:block lg:block">
-          <input
-            className="w-full rounded-md border-2 border-gray-200 px-3 py-2 pl-10 leading-tight text-black transition-colors hover:border-gray-200 focus:outline-none"
-            id="search"
-            type="text"
-            placeholder="Search..."
-            aria-label="Search"
-          />
-          <div className="absolute inset-y-0 left-0 flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="ml-3 h-6 w-6 text-gray-400 hover:text-gray-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <MobileMenu />
-        <UserDropdown />
-      </div>
-    </div>
+    </header>
   );
 }

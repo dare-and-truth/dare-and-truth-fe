@@ -1,4 +1,5 @@
 'use client';
+import NavBar from '@/components/Header';
 import Header from '@/components/Header';
 import Loading from '@/components/Loading';
 import SideBar from '@/components/SideBar';
@@ -62,12 +63,12 @@ export default function AdminLayout({
       href: '/dashboard/post',
       active: pathname === '/dashboard/post',
     },
-    {
-      icon: <Badge size={20} />,
-      text: 'Manage Badges',
-      href: '/dashboard/badge',
-      active: pathname === '/dashboard/badge',
-    },
+    // {
+    //   icon: <Badge size={20} />,
+    //   text: 'Manage Badges',
+    //   href: '/dashboard/badge',
+    //   active: pathname === '/dashboard/badge',
+    // },
   ];
 
   // Nếu chưa kiểm tra xong hoặc không phải admin, không render nội dung chính
@@ -84,7 +85,7 @@ export default function AdminLayout({
     <div className="flex h-screen overflow-hidden bg-[#F1F5F9]">
       <SideBar navItems={adminNavItems} />
       <div className="flex-1 md:ml-64">
-        <Header />
+        <NavBar />
         {children}
       </div>
     </div>

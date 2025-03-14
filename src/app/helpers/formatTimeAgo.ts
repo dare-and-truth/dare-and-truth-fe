@@ -1,3 +1,12 @@
+import {
+  format,
+  isToday,
+  isYesterday,
+  differenceInDays,
+  differenceInMinutes,
+  differenceInSeconds,
+} from 'date-fns';
+
 export function formatTimeAgo(createdAt: string): string {
   const date = new Date(createdAt);
   const now = new Date();
@@ -38,24 +47,45 @@ export function formatTimeAgo(createdAt: string): string {
   });
 }
 
-import { format, formatDistanceToNow, isToday, isYesterday } from 'date-fns';
-import { enUS } from 'date-fns/locale';
-
 export const formatMessageTime = (dateString: string) => {
   const date = new Date(dateString);
-  if (isToday(date)) {
-    const distance = formatDistanceToNow(date, {
-      locale: enUS,
-      addSuffix: true,
-    });
+  const now = new Date();
 
-    // Nếu thời gian hiển thị là "less than a minute ago", chỉ hiển thị giờ
-    if (distance.includes('minute') || distance.includes('second')) {
-      return format(date, 'HH:mm');
+  // For messages sent today
+  if (isToday(date)) {
+    const secondsAgo = differenceInSeconds(now, date);
+    const minutesAgo = differenceInMinutes(now, date);
+
+    // Just now (less than a minute ago)
+    if (secondsAgo < 60) {
+      return 'Just now';
     }
 
-    return distance.includes('hour') ? distance : format(date, 'HH:mm');
+    // Within the last hour: "X min ago"
+    if (minutesAgo < 60) {
+      return `${minutesAgo} min ago`;
+    }
+
+    // Otherwise show the time
+    return format(date, 'h:mm a'); // e.g., "10:30 AM"
   }
-  if (isYesterday(date)) return 'yesterday';
-  return format(date, 'dd/MM/yyyy');
+
+  // For messages sent yesterday
+  if (isYesterday(date)) {
+    return `Yesterday at ${format(date, 'h:mm a')}`;
+  }
+
+  // For messages sent within the last week (less than 7 days ago)
+  const daysAgo = differenceInDays(now, date);
+  if (daysAgo < 7) {
+    return `${format(date, 'EEEE')} at ${format(date, 'h:mm a')}`; // e.g., "Monday at 10:30 AM"
+  }
+
+  // For messages from this year but more than a week ago
+  if (date.getFullYear() === now.getFullYear()) {
+    return format(date, 'MMM d at h:mm a'); // e.g., "Jan 15 at 10:30 AM"
+  }
+
+  // For older messages (different year)
+  return format(date, 'MMM d, yyyy at h:mm a'); // e.g., "Jan 15, 2023 at 10:30 AM"
 };

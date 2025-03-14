@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ChatRoomPreviewProps } from '@/app/types/chat.type';
 import { formatMessageTime } from '@/app/helpers/formatTimeAgo';
 import Image from 'next/image';
@@ -31,7 +30,7 @@ export function ChatRoomPreview({
 
         {chat.unreadMessages > 0 && (
           <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
-            {chat.unreadMessages}
+            {chat.unreadMessages > 9 ? '9+' : chat.unreadMessages}
           </div>
         )}
       </div>

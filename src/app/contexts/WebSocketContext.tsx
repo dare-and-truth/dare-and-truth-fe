@@ -15,7 +15,7 @@ import { FriendRequestNotificationToast } from '@/components/notificationToast/F
 import { CommentNotificationToast } from '@/components/notificationToast/CommentNotificationToast';
 import { LikeNotificationToast } from '@/components/notificationToast/LikeNotificationToast';
 import { Conversation, MessageResponse } from '@/app/types';
-import { getUnreadNotificationsCount } from '@/app/api/notification.api';
+import { useUserApp } from '@/app/contexts/UserAppContext';
 const SockJS = require('sockjs-client');
 
 interface WebSocketContextType {
@@ -41,9 +41,9 @@ export const WebSocketProvider: React.FC<{
   const [messages, setMessages] = useState<MessageResponse[]>([]);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [conversationId, setConversationId] = useState('');
-  const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
-  const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
   const conversationIdRef = useRef(conversationId);
+
+  const { setUnreadMessagesCount, setUnreadNotificationsCount } = useUserApp();
 
   useEffect(() => {
     conversationIdRef.current = conversationId;
@@ -52,10 +52,6 @@ export const WebSocketProvider: React.FC<{
   useEffect(() => {
     const userId = localStorage.getItem('userId');
     const token = localStorage.getItem('accessToken');
-
-    const fetchUnreadNotification = async () => {
-      const notificationCountRes =  await getUnreadNotificationsCount(userId as string);
-    };
 
     const socket = new SockJS(`${process.env.NEXT_PUBLIC_BASE_SERVER_URL}/ws`);
     const stompClient = new Client({
@@ -75,58 +71,7 @@ export const WebSocketProvider: React.FC<{
         // Đăng ký nhận tin nhắn
         stompClient.subscribe(`/topic/messages/${userId}`, (message) => {
           const data = JSON.parse(message.body);
-
-          setConversations((prevConversations) => {
-            const existingIndex = prevConversations.findIndex(
-              (conversation) => conversation.id === data.conversationId,
-            );
-
-            if (existingIndex !== -1) {
-              // Nếu conversation đã tồn tại, cập nhật thông tin mới nhất
-              const updatedConversations = [...prevConversations];
-              const existingConversation = {
-                ...updatedConversations[existingIndex],
-              };
-
-              // Cập nhật thông tin tin nhắn mới nhất
-              existingConversation.lastMessage = {
-                content: data.content,
-                senderId: data.senderId,
-              };
-              existingConversation.unreadMessages += 1;
-              existingConversation.updatedAt = new Date().toISOString();
-
-              // Đưa conversation lên đầu danh sách
-              updatedConversations.splice(existingIndex, 1);
-              updatedConversations.unshift(existingConversation);
-
-              return updatedConversations;
-            } else {
-              // Nếu không tìm thấy, thêm conversation mới
-              const newConversation: Conversation = {
-                id: data.conversationId,
-                participants: [
-                  {
-                    id: data.senderId,
-                    username: data.senderUsername,
-                    avatarUrl: data.senderAvatarUrl,
-                  },
-                ], // Danh sách người tham gia
-                lastMessage: {
-                  content: data.content,
-                  senderId: data.senderId,
-                },
-                unreadMessages: 1,
-                updatedAt: new Date().toISOString(),
-              };
-
-              return [newConversation, ...prevConversations];
-            }
-          });
-
-          if (data.conversationId === conversationIdRef.current) {
-            setMessages((prevMessages) => [...prevMessages, data]);
-          }
+          handleMessageNotification(data);
         });
       },
     });
@@ -140,8 +85,11 @@ export const WebSocketProvider: React.FC<{
     };
   }, []);
 
-  // Hàm xử lý các thông báo
+  // Hàm xử lý các thông báo tới
   const handleNotification = (notification: any) => {
+    // Cập nhật số thông báo chưa đọc
+    setUnreadNotificationsCount((prevCount) => prevCount + 1);
+    
     if (notification.type === 'friend-request') {
       toast(
         (props: ToastContentProps) => (
@@ -223,6 +171,65 @@ export const WebSocketProvider: React.FC<{
       );
     }
   };
+
+  // Hàm xử lý tin nhắn tới
+  const handleMessageNotification = (message: any) => {
+    // Cập nhật số tin nhắn đọc
+    setUnreadMessagesCount((prevCount) => prevCount + 1);
+
+    setConversations((prevConversations) => {
+      const existingIndex = prevConversations.findIndex(
+        (conversation) => conversation.id === message.conversationId,
+      );
+
+      if (existingIndex !== -1) {
+        // Nếu conversation đã tồn tại, cập nhật thông tin mới nhất
+        const updatedConversations = [...prevConversations];
+        const existingConversation = {
+          ...updatedConversations[existingIndex],
+        };
+
+        // Cập nhật thông tin tin nhắn mới nhất
+        existingConversation.lastMessage = {
+          content: message.content,
+          senderId: message.senderId,
+        };
+        existingConversation.unreadMessages += 1;
+        existingConversation.updatedAt = new Date().toISOString();
+
+        // Đưa conversation lên đầu danh sách
+        updatedConversations.splice(existingIndex, 1);
+        updatedConversations.unshift(existingConversation);
+
+        return updatedConversations;
+      } else {
+        // Nếu không tìm thấy, thêm conversation mới
+        const newConversation: Conversation = {
+          id: message.conversationId,
+          participants: [
+            {
+              id: message.senderId,
+              username: message.senderUsername,
+              avatarUrl: message.senderAvatarUrl,
+            },
+          ], // Danh sách người tham gia
+          lastMessage: {
+            content: message.content,
+            mediaUrl: message.mediaUrl,
+            senderId: message.senderId,
+          },
+          unreadMessages: 1,
+          updatedAt: new Date().toISOString(),
+        };
+
+        return [newConversation, ...prevConversations];
+      }
+    });
+
+    if (message.conversationId === conversationIdRef.current) {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    }
+  }
 
   // Hàm để subscribe kênh mới
   const subscribeToChannel = (

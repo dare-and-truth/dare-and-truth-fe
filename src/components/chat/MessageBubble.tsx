@@ -23,7 +23,7 @@ export function MessageBubble({
     <div
       className={`my-1 flex ${className} ${isCurrentUser ? 'justify-end' : 'justify-start'}`}
     >
-      <div className="flex max-w-[60%] flex-col md:max-w-[50%]">
+      <div className="flex max-w-[40%] flex-col md:max-w-[30%]">
         {message.mediaUrl && (
           <img
             src={message.mediaUrl || '/placeholder.svg'}

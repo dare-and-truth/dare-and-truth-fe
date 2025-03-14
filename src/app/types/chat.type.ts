@@ -66,7 +66,8 @@ export type Conversation = {
   id: string;
   participants: UserInfo[];
   lastMessage: {
-    content: string;
+    content?: string;
+    mediaUrl?: string;
     senderId: string;
   };
   unreadMessages: number;

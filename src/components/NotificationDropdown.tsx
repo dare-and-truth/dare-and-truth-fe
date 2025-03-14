@@ -35,6 +35,7 @@ import { formatTimeAgo } from '@/app/helpers/formatTimeAgo';
 import Loading from '@/components/Loading';
 import { useRouter } from 'next/navigation';
 import { useLoading } from '@/app/contexts';
+import { useUserApp } from '@/app/contexts/UserAppContext';
 
 export function NotificationDropdown({
   icon,
@@ -52,6 +53,9 @@ export function NotificationDropdown({
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const router = useRouter();
   const { setIsLoading } = useLoading();
+
+  const { unreadNotificationsCount } = useUserApp();
+  // Remove this line: console.log(unreadNotificationsCount);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState<number>(0);
@@ -354,9 +358,16 @@ export function NotificationDropdown({
       <DropdownMenuTrigger asChild>
         <SidebarMenuButton
           tooltip={text}
-          className={active ? 'bg-gray-200 text-base' : 'text-base'}
+          className={`h-full ${active ? 'bg-gray-200 text-base' : 'text-base'}`}
         >
-          <span className="mr-2">{icon}</span>
+          <span className="relative mr-2">
+            {icon}
+            {unreadNotificationsCount > 0 && (
+              <div className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
+                {unreadNotificationsCount > 9 ? '9+' : unreadNotificationsCount}
+              </div>
+            )}
+          </span>
           <span>{text}</span>
         </SidebarMenuButton>
       </DropdownMenuTrigger>

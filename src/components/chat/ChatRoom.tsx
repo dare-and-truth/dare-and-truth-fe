@@ -29,6 +29,7 @@ import { sendMessage } from '@/app/api/message.api';
 import { useWebSocket } from '@/app/contexts';
 import { uploadFileToSupabase } from '@/app/helpers/uploadFileToSupabase';
 import { FilePreview } from '@/components/FilePreview';
+import { useUserApp } from '@/app/contexts/UserAppContext';
 
 export function ChatRoom() {
   const [inputText, setInputText] = useState('');
@@ -49,6 +50,8 @@ export function ChatRoom() {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const { setUnreadMessagesCount } = useUserApp();
 
   const {
     messages,
@@ -222,6 +225,15 @@ export function ChatRoom() {
             ...updatedConversations[existingIndex],
           };
 
+          // Decrease unreadMessages count
+          if (existingConversation.unreadMessages > 0) {
+            setTimeout(() => {
+              setUnreadMessagesCount(
+                (prevCount) => prevCount - existingConversation.unreadMessages,
+              );
+            }, 0);
+          }
+
           existingConversation.lastMessage = {
             content: newMessage.content as string,
             senderId: currentUserId as string,
@@ -339,7 +351,7 @@ export function ChatRoom() {
         <Link href={`/profile/${currentChatUser.id}`}>
           <Image
             alt={currentChatUser.avatarUrl + ' avatar'}
-            className="rounded-full object-cover sm:h-14 sm:w-14 h-12 w-12"
+            className="h-12 w-12 rounded-full object-cover sm:h-14 sm:w-14"
             src={
               currentChatUser.avatarUrl
                 ? currentChatUser.avatarUrl.trim()
@@ -363,7 +375,7 @@ export function ChatRoom() {
           >
             <Image
               alt={currentChatUser.avatarUrl + ' avatar'}
-              className="rounded-full object-cover sm:h-14 sm:w-14 h-12 w-12"
+              className="h-12 w-12 rounded-full object-cover sm:h-14 sm:w-14"
               src={
                 currentChatUser.avatarUrl
                   ? currentChatUser.avatarUrl.trim()

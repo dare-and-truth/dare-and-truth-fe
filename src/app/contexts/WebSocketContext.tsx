@@ -16,6 +16,8 @@ import { CommentNotificationToast } from '@/components/notificationToast/Comment
 import { LikeNotificationToast } from '@/components/notificationToast/LikeNotificationToast';
 import { Conversation, MessageResponse } from '@/app/types';
 import { useUserApp } from '@/app/contexts/UserAppContext';
+import { MessageNotificationToast } from '@/components/notificationToast/MessageNotificationToast';
+import { usePathname } from 'next/navigation';
 const SockJS = require('sockjs-client');
 
 interface WebSocketContextType {
@@ -42,8 +44,15 @@ export const WebSocketProvider: React.FC<{
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [conversationId, setConversationId] = useState('');
   const conversationIdRef = useRef(conversationId);
+  const pathnameRef = useRef<string>('');
 
   const { setUnreadMessagesCount, setUnreadNotificationsCount } = useUserApp();
+
+  const pathname = usePathname();
+  // Cập nhật pathnameRef khi pathname thay đổi
+  useEffect(() => {
+    pathnameRef.current = pathname;
+  }, [pathname]);
 
   useEffect(() => {
     conversationIdRef.current = conversationId;
@@ -89,7 +98,7 @@ export const WebSocketProvider: React.FC<{
   const handleNotification = (notification: any) => {
     // Cập nhật số thông báo chưa đọc
     setUnreadNotificationsCount((prevCount) => prevCount + 1);
-    
+
     if (notification.type === 'friend-request') {
       toast(
         (props: ToastContentProps) => (
@@ -175,7 +184,17 @@ export const WebSocketProvider: React.FC<{
   // Hàm xử lý tin nhắn tới
   const handleMessageNotification = (message: any) => {
     // Cập nhật số tin nhắn đọc
-    setUnreadMessagesCount((prevCount) => prevCount + 1);
+    setUnreadMessagesCount((prevCount) => {
+      return prevCount + 1;
+    });
+    if (pathnameRef.current != '/message') {
+      toast(<MessageNotificationToast message={message} />, {
+        autoClose: 5000,
+        closeOnClick: true,
+        hideProgressBar: true,
+        position: 'bottom-right',
+      });
+    }
 
     setConversations((prevConversations) => {
       const existingIndex = prevConversations.findIndex(
@@ -229,7 +248,7 @@ export const WebSocketProvider: React.FC<{
     if (message.conversationId === conversationIdRef.current) {
       setMessages((prevMessages) => [...prevMessages, message]);
     }
-  }
+  };
 
   // Hàm để subscribe kênh mới
   const subscribeToChannel = (

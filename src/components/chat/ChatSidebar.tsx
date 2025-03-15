@@ -11,9 +11,6 @@ import { getConversations } from '@/app/api/conversation.api';
 import { useUserId } from '@/app/hooks';
 import { usePathname, useRouter } from 'next/navigation';
 import { useWebSocket } from '@/app/contexts';
-import { markReadConversation } from '@/app/api/message.api';
-import { useUserApp } from '@/app/contexts/UserAppContext';
-import { set } from 'date-fns';
 
 export function ChatSidebar() {
   const [loading, setLoading] = useState(false);
@@ -25,8 +22,6 @@ export function ChatSidebar() {
   const pathname = usePathname();
 
   const { conversations, setConversations } = useWebSocket();
-
-  const {setUnreadMessagesCount} = useUserApp();
 
   // Hide sidebar on mobile when chat is selected
   useEffect(() => {
@@ -49,17 +44,6 @@ export function ChatSidebar() {
     const otherUser = conversation.participants.find((p) => p.id !== userId);
 
     if (!otherUser) return;
-
-    if (conversation.unreadMessages > 0) {
-      setUnreadMessagesCount((prevCount) => prevCount - conversation.unreadMessages);
-      markReadConversation(conversation.id);
-      // Cập nhật danh sách conversation sau khi đánh dấu đã đọc
-      setConversations((prevConversations) =>
-        prevConversations.map((c) =>
-          c.id === conversation.id ? { ...c, unreadMessages: 0 } : c,
-        ),
-      );
-    }
 
     setActiveChat(conversation);
     setCurrentFriend(otherUser);

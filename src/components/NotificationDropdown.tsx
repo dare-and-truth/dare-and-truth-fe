@@ -381,7 +381,9 @@ export function NotificationDropdown({
         <DropdownMenuSeparator />
         {isNotificationLoading && notifications.length === 0 ? (
           <DropdownMenuItem>
-            <Loading />
+            <div className="flex h-full w-full items-center justify-center">
+              <Loading />
+            </div>
           </DropdownMenuItem>
         ) : error ? (
           <DropdownMenuItem className="text-red-500">{error}</DropdownMenuItem>

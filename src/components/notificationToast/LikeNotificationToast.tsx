@@ -1,4 +1,4 @@
-import { Heart, MessageSquare } from 'lucide-react';
+import { Heart } from 'lucide-react';
 
 interface CommentToastProps {
   name: string;

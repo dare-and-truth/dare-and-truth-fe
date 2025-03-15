@@ -34,11 +34,17 @@ export const getChat = async ({
   return response?.data;
 };
 
-
 export const getUnreadMessagesCount = async () => {
   const response = await request({
     method: 'get',
     url: `/conversations/unread-messages/count`,
   });
   return response?.data;
+};
+
+export const markConversationAsRead = async (conversationId: string) => {
+  await request({
+    method: 'put',
+    url: `/conversations/${conversationId}/mark-read`,
+  });
 };

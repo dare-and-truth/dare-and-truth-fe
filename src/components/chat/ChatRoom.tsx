@@ -30,6 +30,7 @@ import { useWebSocket } from '@/app/contexts';
 import { uploadFileToSupabase } from '@/app/helpers/uploadFileToSupabase';
 import { FilePreview } from '@/components/FilePreview';
 import { useUserApp } from '@/app/contexts/UserAppContext';
+import { markConversationAsRead } from '@/app/api/conversation.api';
 
 export function ChatRoom() {
   const [inputText, setInputText] = useState('');
@@ -52,13 +53,13 @@ export function ChatRoom() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const { setUnreadMessagesCount } = useUserApp();
-
   const {
     messages,
     setMessages,
     conversationId,
     setConversationId,
     setConversations,
+    conversations,
   } = useWebSocket();
 
   const searchParams = useSearchParams();
@@ -75,7 +76,6 @@ export function ChatRoom() {
         setConversationId(data.conversationId);
         setMessages(data.messages?.reverse() || []);
         setCurrentChatUser(data.otherUser);
-        // Store the nextMessageId for loading more messages
         setNextMessageId(data.nextMessageId || null);
         setHasMoreMessages(!!data.nextMessageId);
       } catch (error) {
@@ -88,6 +88,50 @@ export function ChatRoom() {
     fetchChat();
   }, [searchParams]);
 
+  // Focus vào ô input khi component mount
+  useEffect(() => {
+    if (inputRef.current && !chatLoading && currentChatUser) {
+      inputRef.current.focus();
+    }
+  }, [chatLoading, currentChatUser]);
+
+  // Hàm đánh dấu đã đọc
+  const markAsRead = async () => {
+    try {
+      if (conversationId) {
+        const currentConversation = conversations.find(
+          (conv) => conv.id === conversationId,
+        );
+
+        if (currentConversation && currentConversation.unreadMessages > 0) {
+          markConversationAsRead(conversationId);
+
+          setConversations((prevConversations) => {
+            return prevConversations.map((conversation) => {
+              if (conversation.id === conversationId) {
+                const unreadCount = conversation.unreadMessages;
+                if (unreadCount > 0) {
+                  setTimeout(() => setUnreadMessagesCount(pre => pre - unreadCount), 0)
+                }
+                // conversation.unreadMessages = 0;
+                console.log(conversation);
+                return { ...conversation, unreadMessages: 0 };
+              }
+              return conversation;
+            });
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error marking conversation as read:', error);
+    }
+  };
+
+  // Gắn sự kiện focus để đánh dấu đã đọc
+  const handleInputFocus = () => {
+    markAsRead();
+  };
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -99,7 +143,6 @@ export function ChatRoom() {
     }
   }, [messages, isInitialLoad, currentUserId]);
 
-  // Function to load older messages
   const loadOlderMessages = async () => {
     if (
       !hasMoreMessages ||
@@ -128,7 +171,7 @@ export function ChatRoom() {
         currentChatUserId: currentChatUser?.id as string,
         conversationId,
         nextMessageId,
-        limit: 20, // You can adjust the limit as needed
+        limit: 20,
       });
 
       if (data.messages && data.messages.length > 0) {
@@ -332,13 +375,15 @@ export function ChatRoom() {
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showEmojiPicker]);
 
   if (chatLoading) {
-    return <Loading />;
+    return (
+      <div className="flex h-full items-center justify-center">
+        <Loading />
+      </div>
+    );
   }
 
   if (!currentChatUser) {
@@ -396,7 +441,7 @@ export function ChatRoom() {
             message={message}
             isCurrentUser={message.senderId === currentUserId}
             showTimestamp={shouldShowTimestamp(messages, index)}
-            className="message-bubble" // Added a class for reference
+            className="message-bubble"
           />
         ))}
 
@@ -428,6 +473,7 @@ export function ChatRoom() {
             className="scrollbar mx-2 flex-1 resize-none bg-transparent py-2 text-sm focus:outline-none dark:bg-[#262626] dark:text-white"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
+            onFocus={handleInputFocus} // Đánh dấu đã đọc khi focus
             placeholder="Message..."
             maxRows={1}
             minRows={1}

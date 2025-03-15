@@ -8,10 +8,3 @@ export const sendMessage = async (data: SendMessagePayload) => {
     data,
   });
 };
-
-export const markReadConversation = async (conversationId: string) => {
-  await request({
-    method: 'put',
-    url: `/messages/${conversationId}/mark-read`,
-  });
-};

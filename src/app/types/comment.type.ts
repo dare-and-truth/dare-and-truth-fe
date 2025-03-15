@@ -1,4 +1,4 @@
-export interface Comment {
+export interface CommentType {
   id: string;
   userId: string;
   content: string;
@@ -11,4 +11,8 @@ export interface CreateCommentPayload {
   content: string;
   mediaUrl?: string | null;
   isChallenge: boolean;
+}
+
+export interface UpdateCommentPayload{
+  content: string;
 }

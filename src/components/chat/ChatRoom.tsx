@@ -244,7 +244,7 @@ export function ChatRoom() {
         mediaUrl: mediaUrl || null,
       };
 
-      await sendMessage(newMessage);
+      sendMessage(newMessage);
 
       setMessages((prevMessages) => [
         ...prevMessages,

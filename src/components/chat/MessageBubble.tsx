@@ -10,6 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { renderTextWithLinks } from '@/app/helpers/renderTextWithLinks';
 
 export function MessageBubble({
   message,
@@ -44,7 +45,7 @@ export function MessageBubble({
                     : 'rounded-bl-sm border border-gray-200 bg-gray-100 dark:border-zinc-600 dark:bg-zinc-700 dark:text-gray-100'
                 } `}
               >
-                {message.content?.trim()}
+                {renderTextWithLinks(message.content?.trim())}
               </div>
             ) : (
               <TooltipProvider delayDuration={100}>
@@ -57,10 +58,13 @@ export function MessageBubble({
                           : 'rounded-bl-sm border border-gray-200 bg-gray-100 dark:border-zinc-600 dark:bg-zinc-700 dark:text-gray-100'
                       } `}
                     >
-                      {message.content?.trim()}
+                      {renderTextWithLinks(message.content?.trim())}
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent side="left" align="center">
+                  <TooltipContent
+                    side={isCurrentUser ? 'left' : 'right'}
+                    align="center"
+                  >
                     {formatMessageTime(message.sentAt)}
                   </TooltipContent>
                 </Tooltip>
@@ -70,7 +74,7 @@ export function MessageBubble({
         )}
         {showTimestamp && (
           <div
-            className={`mt-1 text-end text-xs text-gray-500 dark:text-gray-400`}
+            className={`mt-1 ${isCurrentUser ? 'text-end' : 'text-start'} text-xs text-gray-500 dark:text-gray-400`}
           >
             {formatMessageTime(message.sentAt)}
           </div>

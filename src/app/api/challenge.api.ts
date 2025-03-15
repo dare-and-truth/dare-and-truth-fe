@@ -78,15 +78,15 @@ export const getChallengeByUserId = async (
 
 export const getChallengeDetailByHashTag = async (
   hashtag: string,
-  startDate:string | null,
-  endDate:string | null,
+  startDate:string,
+  endDate:string,
   page: number,
   size: number,
 ) => {
   try {
     const response = await request({
       method: 'get',
-      url: `/feeds/detail/${hashtag}?startDate=${startDate}&endDate=${endDate}&page=${page} &size=${size}&type=challenge`,
+      url: `/feeds/detail/${hashtag}?startDate=${startDate}&endDate=${endDate}&page=${page}&size=${size}`,
     });
     return response?.data;
   } catch (error) {

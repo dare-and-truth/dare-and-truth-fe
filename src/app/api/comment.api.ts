@@ -15,6 +15,20 @@ export const getCommentsByFeedId = async (feedId: string): Promise<CommentType[]
 };
 
 /**
+ * Lấy danh sách phản hồi của một comment theo commentId
+ * @param commentId ID của comment gốc
+ * @returns Danh sách replies
+ */
+export const getRepliesByCommentId = async (commentId: string): Promise<CommentType[]> => {
+  const response = await request({
+    method: 'get',
+    url: `/comments/${commentId}/replies`,
+  });
+  return response?.data as CommentType[];
+};
+
+
+/**
  * Tạo comment mới
  * @param data Dữ liệu comment cần tạo
  * @param handleSuccess Hàm callback khi tạo thành công
@@ -75,4 +89,17 @@ UpdateCommentPayload: UpdateCommentPayload, commentId:string, handleSuccess: () 
       console.error('Lỗi khi cập nhật comment:', error);
     },
   });
+};
+
+/**
+ * Lấy thông tin chi tiết của một comment theo ID
+ * @param commentId ID của comment cần lấy
+ * @returns Thông tin comment
+ */
+export const getCommentById = async (commentId: string): Promise<CommentType> => {
+  const response = await request({
+    method: 'get',
+    url: `/comments/${commentId}`,
+  });
+  return response?.data as CommentType;
 };

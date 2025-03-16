@@ -14,7 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Image as ImageIcon, Loader2, SendHorizontal, X } from 'lucide-react';
 import { MAX_FILE_SIZE, VALID_FILE_TYPES } from '@/app/constants';
 import { uploadFileToSupabase } from '@/app/helpers/uploadFileToSupabase';
-import { postComment } from '@/app/api/comment.api';
+import { getCommentById, postComment } from '@/app/api/comment.api';
 import type { CreateCommentPayload } from '@/app/types';
 import Image from 'next/image';
 
@@ -25,14 +25,18 @@ type FormErrors = {
 
 export default function CommentForm({
   feedId,
+  parentCommentId,
   isChallenge,
   setLoadComment,
   setCommentCount,
+  username,
 }: {
   feedId: string;
+  parentCommentId?: string;
   isChallenge: boolean;
   setLoadComment: Dispatch<SetStateAction<boolean>>;
   setCommentCount: Dispatch<SetStateAction<number>>;
+  username?:string;
 }) {
   const [content, setContent] = useState('');
   const [media, setMedia] = useState<File | null>(null);
@@ -113,26 +117,39 @@ export default function CommentForm({
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!validateForm() || isLoading) return; // Ngăn gửi nếu đang loading
-
-    setIsLoading(true); // Bắt đầu loading
+    if (!validateForm() || isLoading) return;
+  
+    setIsLoading(true);
     try {
       let mediaUrl;
       if (media) {
         mediaUrl = await uploadFileToSupabase(media);
       }
-
+  
+      // Xác định level khi tạo comment
+      let level = undefined;
+      if (parentCommentId) {
+        const parentComment = await getCommentById(parentCommentId); // Lấy comment cha
+        level = parentComment.level >= 3 ? 3 : parentComment.level + 1;
+        console.log("levell trong form",level); // Không vượt quá level 3
+      }
+      
+      
       const createCommentPayload: CreateCommentPayload = {
         feedId,
         content,
         mediaUrl,
         isChallenge,
+        parentCommentId,
+        level,
       };
+      
+      console.log("create createCommentPayload",createCommentPayload);
       await postComment(createCommentPayload, handleCommentSuccess);
     } catch (error) {
       console.error('Error submitting comment:', error);
     } finally {
-      setIsLoading(false); // Kết thúc loading dù thành công hay thất bại
+      setIsLoading(false);
     }
   };
 
@@ -160,7 +177,7 @@ export default function CommentForm({
         />
         <form className="item-center flex w-full" onSubmit={onSubmit}>
           <Textarea
-            placeholder="Type your comment..."
+            placeholder={username ? `Type your comment for ${username}` : 'Type your comment...'}
             className={`w-full ${errors.content ? 'border-red-500' : ''}`}
             value={content}
             onChange={handleContentChange}
@@ -192,7 +209,7 @@ export default function CommentForm({
                 variant="ghost"
                 size="icon"
                 onClick={() => fileInputRef.current?.click()}
-                disabled={isLoading} // Vô hiệu hóa nút upload khi loading
+                disabled={isLoading} 
               >
                 <ImageIcon className="h-7 w-7" />
               </Button>
@@ -200,7 +217,7 @@ export default function CommentForm({
             <Button
               type="submit"
               variant={'join'}
-              disabled={(!content && !media) || isLoading} // Vô hiệu hóa nút gửi khi loading
+              disabled={(!content.trim() && !media)|| !content || isLoading} // Vô hiệu hóa nút gửi khi loading
               className="m-1"
             >
               {isLoading ? (

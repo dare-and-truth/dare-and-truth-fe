@@ -20,15 +20,14 @@ export const updateUser = async (data: User, id: string) => {
     method: 'patch',
     url: `/users/${id}`,
     data,
-    onSuccess: () => {
-    },
+    onSuccess: () => {},
     onError: (error) => {
       console.log('error in sign up', error);
     },
   });
 };
 
-export const getUserByUserId = async (userId:string) => {
+export const getUserByUserId = async (userId: string) => {
   try {
     const response = await request({
       method: 'get',

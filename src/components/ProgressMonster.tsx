@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 
 export default function ProgressMonster({ userId }: { userId: string }) {
   const [score, setScore] = useState<number>(0);
-  const totalScore = 10000; 
+  const totalScore = 10000;
   useEffect(() => {
     const fetchScore = async () => {
       try {

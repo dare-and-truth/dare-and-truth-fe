@@ -35,6 +35,7 @@ import { formatTimeAgo } from '@/app/helpers/formatTimeAgo';
 import Loading from '@/components/Loading';
 import { useRouter } from 'next/navigation';
 import { useLoading } from '@/app/contexts';
+import { useUserApp } from '@/app/contexts/UserAppContext';
 
 export function NotificationDropdown({
   icon,
@@ -52,6 +53,9 @@ export function NotificationDropdown({
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const router = useRouter();
   const { setIsLoading } = useLoading();
+
+  const { unreadNotificationsCount } = useUserApp();
+  // Remove this line: console.log(unreadNotificationsCount);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState<number>(0);
@@ -255,7 +259,8 @@ export function NotificationDropdown({
           <div className="flex-shrink-0">
             <img
               src={
-                notification.sender.senderAvatarUrl || '/images/default-profile.png'
+                notification.sender.senderAvatarUrl ||
+                '/images/default-profile.png'
               }
               alt="User Avatar"
               className="h-12 w-12 rounded-full object-cover"
@@ -278,17 +283,17 @@ export function NotificationDropdown({
         <div className="flex-1">
           <p className={`${!notification.isRead ? 'font-medium' : ''}`}>
             <span className="font-semibold">
-            {notification.sender.username.length > 24
-              ? `${notification.sender.username.slice(0, 24)}...`
-              : notification.sender.username}
-          </span>{' '}
-          <span
-            className={`line-clamp-2 overflow-hidden text-ellipsis whitespace-pre-line ${
-              !notification.isRead ? 'text-blue-600' : ''
-            }`}
-          >
-            {content}
-          </span>
+              {notification.sender.username.length > 24
+                ? `${notification.sender.username.slice(0, 24)}...`
+                : notification.sender.username}
+            </span>{' '}
+            <span
+              className={`line-clamp-2 overflow-hidden text-ellipsis whitespace-pre-line ${
+                !notification.isRead ? 'text-blue-600' : ''
+              }`}
+            >
+              {content}
+            </span>
           </p>
           <div className="flex items-center gap-2">
             {notification.type === 'friend-request' && (
@@ -353,9 +358,16 @@ export function NotificationDropdown({
       <DropdownMenuTrigger asChild>
         <SidebarMenuButton
           tooltip={text}
-          className={active ? 'bg-gray-200 text-base' : 'text-base'}
+          className={`h-full ${active ? 'bg-gray-200 text-base' : 'text-base'}`}
         >
-          <span className="mr-2">{icon}</span>
+          <span className="relative mr-2">
+            {icon}
+            {unreadNotificationsCount > 0 && (
+              <div className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
+                {unreadNotificationsCount > 9 ? '9+' : unreadNotificationsCount}
+              </div>
+            )}
+          </span>
           <span>{text}</span>
         </SidebarMenuButton>
       </DropdownMenuTrigger>
@@ -369,7 +381,9 @@ export function NotificationDropdown({
         <DropdownMenuSeparator />
         {isNotificationLoading && notifications.length === 0 ? (
           <DropdownMenuItem>
-            <Loading />
+            <div className="flex h-full w-full items-center justify-center">
+              <Loading />
+            </div>
           </DropdownMenuItem>
         ) : error ? (
           <DropdownMenuItem className="text-red-500">{error}</DropdownMenuItem>

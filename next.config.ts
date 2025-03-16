@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
     ],
     unoptimized: true,
   },
+  reactStrictMode: false,
 };
 
 export default nextConfig;

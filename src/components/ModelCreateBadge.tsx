@@ -192,7 +192,7 @@ export function CreateBadge({ setRefreshBadge }: ModalCreateBadge) {
                           inputMode="numeric"
                           {...field}
                           onChange={(e) => {
-                            let value = e.target.value.replace(/^0+/, '');
+                            const value = e.target.value.replace(/^0+/, '');
                             field.onChange(value ? Number(value) : '');
                           }}
                           onBlur={(e) => {

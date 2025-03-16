@@ -11,8 +11,10 @@ import { toast } from 'react-toastify';
 import { FriendRequestCardProps } from '@/app/types';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function FriendRequestCard({
+  thisUserId,
   avatar,
   username,
   followedAt,
@@ -21,7 +23,7 @@ export default function FriendRequestCard({
   requestId,
   followerId,
   userId,
-  width = 'w-[65%]',
+  width = 'w-[55%]',
   onAccept,
   onReject,
   onUnfriend,
@@ -31,6 +33,7 @@ export default function FriendRequestCard({
   const [isAccepted, setIsAccepted] = useState(initialAccepted || false);
   const [loading, setLoading] = useState(false);
   const [maxUsernameLength, setMaxUsernameLength] = useState(30);
+  const router = useRouter();
 
   // Lấy userId từ localStorage
   const currentUserId = localStorage.getItem('userId');
@@ -183,7 +186,7 @@ export default function FriendRequestCard({
       className={`mb-4 flex items-center rounded-lg bg-white p-4 shadow-sm ${width} transition-all duration-300`}
     >
       <div className="flex-shrink-0">
-        <Link href={`/profile/${profileId}`}>
+        <Link href={`/profile/${thisUserId}`}>
           <Image
             src={avatar || '/images/default-profile.png'}
             alt="User Avatar"
@@ -215,6 +218,15 @@ export default function FriendRequestCard({
       </div>
 
       <div className="ml-auto flex items-center gap-2">
+        <Button
+          variant="join"
+          className="w-24 rounded-lg px-4 py-2 font-semibold text-white"
+          onClick={() =>
+            router.push(`/message?userId=${thisUserId}`, { scroll: false })
+          }
+        >
+          Chat
+        </Button>
         {mode === 'requests' ? (
           requestId ? (
             isAccepted ? (

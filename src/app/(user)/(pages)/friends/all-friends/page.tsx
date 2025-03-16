@@ -11,12 +11,12 @@ import Loading from '@/components/Loading';
 export default function ListFriendPage() {
   const [friends, setFriends] = useState<FriendList[]>([]);
   const [loading, setLoading] = useState(false);
-   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
-   useEffect(() => {
-     const currentUserId = localStorage.getItem('userId');
-     setCurrentUserId(currentUserId);
-   }, []);
+  useEffect(() => {
+    const currentUserId = localStorage.getItem('userId');
+    setCurrentUserId(currentUserId);
+  }, []);
 
   useEffect(() => {
     const fetchFriends = async () => {
@@ -41,7 +41,6 @@ export default function ListFriendPage() {
     );
   };
 
-  
   return (
     <div className="h-[calc(100vh-4rem)] overflow-y-auto p-4 pb-20 md:pb-4">
       {loading ? (
@@ -58,13 +57,19 @@ export default function ListFriendPage() {
                 : friend.follower.avatarUrl;
 
             // Loại bỏ khoảng trắng đầu cuối và kiểm tra nếu rỗng thì sử dụng default
-            const finalAvatar = rawAvatar && rawAvatar.trim() !== ''
-              ? rawAvatar
-              : '/images/default-profile.png';
+            const finalAvatar =
+              rawAvatar && rawAvatar.trim() !== ''
+                ? rawAvatar
+                : '/images/default-profile.png';
 
             return (
               <FriendRequestCard
                 key={friend.id}
+                thisUserId={
+                  currentUserId && friend.follower.id === currentUserId
+                    ? friend.user.id
+                    : friend.follower.id
+                }
                 mode="friends"
                 avatar={finalAvatar}
                 username={

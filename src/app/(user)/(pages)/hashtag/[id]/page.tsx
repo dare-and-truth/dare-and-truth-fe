@@ -4,11 +4,13 @@ import { useParams, useSearchParams } from 'next/navigation';
 import HashTag from '@/components/hashtag/HashTag';
 import PostHashTag from '@/components/hashtag/PostHashTag';
 import { getChallengeDetailByHashTag } from '@/app/api/challenge.api';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FeedType } from '@/app/types';
 import Loading from '@/components/Loading';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import { useFeedContext } from '@/app/contexts';
 import { ITEMS_PER_PAGE } from '@/app/constants';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import EndOfFeed from '@/components/EndOfFeed';
 
 export default function HashtagChallengePage() {
   const params = useParams();
@@ -24,6 +26,7 @@ export default function HashtagChallengePage() {
   const [pageNumber, setPageNumber] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
+  // Fetch dữ liệu ban đầu
   useEffect(() => {
     const fetchInitialData = async () => {
       if (!hashtag || !startDate || !endDate) return;
@@ -42,7 +45,7 @@ export default function HashtagChallengePage() {
         setPosts(response.feeds.slice(1));
         setPageNumber(1);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching initial data:', error);
       } finally {
         setLoading(false);
       }

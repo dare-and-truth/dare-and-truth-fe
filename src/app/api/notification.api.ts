@@ -42,19 +42,12 @@ export const getUserNotifications = async (
 
 // Lấy số lượng notification chưa đọc của user
 export const getUnreadNotificationsCount = async (
-  receiverId: string,
-  handleSuccess?: (count: number) => void,
 ) => {
-  await request({
+  const response = await request({
     method: 'get',
-    url: `/notifications/user/${receiverId}/unread-count`,
-    onSuccess: (data) => {
-      handleSuccess && handleSuccess(data);
-    },
-    onError: (error) => {
-      console.log('Error in get unread notifications count', error);
-    },
+    url: `/notifications/unread/count`
   });
+  return response?.data;
 };
 
 // Đánh dấu notification đã đọc

@@ -62,3 +62,38 @@ export const getPostByUserId = async (
     throw error;
   }
 };
+
+export const getFavouriteByUserId = async (
+  userId: string,
+  page: number,
+  size: number,
+) => {
+  try {
+    const response = await request({
+      method: 'get',
+      url: `/feeds/loved/user/${userId}?page=${page} &size=${size}`,
+    });
+    return response?.data;
+  } catch (error) {
+    console.error('Error in get favourite by userid:', error);
+    throw error;
+  }
+};
+
+
+
+export const getPostByHashtag = async (
+  hashtag: string,
+  createdAt: string | null,
+) => {
+  try {
+    const response = await request({
+      method: 'get',
+      url: `/posts/date/${hashtag}?createdAt=${createdAt}`,
+    });
+    return response?.data;
+  } catch (error) {
+    console.error('Error in get favourite by userid:', error);
+    throw error;
+  }
+};

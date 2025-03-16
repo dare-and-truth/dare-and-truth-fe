@@ -11,8 +11,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { getPostByHashtag } from '@/app/api/post.api';
 
 const isVideo = (mediaUrl: string) => {
   return mediaUrl?.match(/\.(mp4|webm|ogg)$/i);
@@ -21,7 +22,8 @@ const isVideo = (mediaUrl: string) => {
 export default function FeedContent({ feed }: { feed: FeedType }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isJoined, setIsJoined] = useState(feed.joined);
-
+  const [startDay, setStartDate] = useState('');
+  const [endDay, setEndDate] = useState('');
   const today = new Date();
   const endDate = new Date(feed.endDate);
   const isExpired = endDate < today;
@@ -32,6 +34,27 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
       ? feed.avatarUrl
       : '/images/default-profile.png';
 
+  useEffect(() => {
+    if (feed.type == 'post') {
+      const fetchDates = async () => {
+        try {
+          const response = await getPostByHashtag(feed.hashtag, feed.createdAt);
+          setStartDate(response.startDate);
+          setEndDate(response.endDate);
+        } catch (error) {
+          console.error('Error fetching post data:', error);
+        }
+      };
+      fetchDates();
+    }
+  }, [feed.hashtag, feed.createdAt, feed.type]);
+
+  const queryParams =
+    feed.type === 'challenge'
+      ? `?startDate=${feed.startDate}&endDate=${feed.endDate}`
+      : startDay && endDay
+        ? `?startDate=${startDay}&endDate=${endDay}`
+        : '';
   return (
     <>
       <div className="mb-2 flex items-center justify-between gap-4">
@@ -126,7 +149,12 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
       </div>
 
       <div className="mb-4">
-        <p className="font-bold text-blue-500">#{feed.hashtag}</p>
+        <Link
+          href={`/hashtag/${feed.hashtag}${queryParams}`}
+          className="font-bold text-blue-500"
+        >
+          #{feed.hashtag}
+        </Link>
         {feed.type === 'challenge' && (
           <div>
             <p>

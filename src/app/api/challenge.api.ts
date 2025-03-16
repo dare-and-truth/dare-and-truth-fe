@@ -75,3 +75,22 @@ export const getChallengeByUserId = async (
     throw error;
   }
 };
+
+export const getChallengeDetailByHashTag = async (
+  hashtag: string,
+  startDate:string,
+  endDate:string,
+  page: number,
+  size: number,
+) => {
+  try {
+    const response = await request({
+      method: 'get',
+      url: `/feeds/detail/${hashtag}?startDate=${startDate}&endDate=${endDate}&page=${page}&size=${size}`,
+    });
+    return response?.data;
+  } catch (error) {
+    console.error('Error in get challenges by userid:', error);
+    throw error;
+  }
+};

@@ -4,13 +4,10 @@ import { useParams, useSearchParams } from 'next/navigation';
 import HashTag from '@/components/hashtag/HashTag';
 import PostHashTag from '@/components/hashtag/PostHashTag';
 import { getChallengeDetailByHashTag } from '@/app/api/challenge.api';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FeedType } from '@/app/types';
 import Loading from '@/components/Loading';
-import { useFeedContext } from '@/app/contexts';
-import { ITEMS_PER_PAGE } from '@/app/constants';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import EndOfFeed from '@/components/EndOfFeed';
 
 export default function HashtagChallengePage() {
   const params = useParams();
@@ -80,7 +77,6 @@ export default function HashtagChallengePage() {
   }, [hashtag, startDate, endDate]);
 
   if (loading && posts.length === 0) return <Loading />;
-  console.log('Fetching:', hashtag, startDate, endDate, pageNumber, 5);
 
   return (
     <div
@@ -96,7 +92,7 @@ export default function HashtagChallengePage() {
           dataLength={posts.length}
           next={fetchMoreData}
           hasMore={hasMore}
-          loader={<Loading />}
+          loader={<></>}
           scrollableTarget="scrollableDiv"
         >
           {posts.length > 0 && <PostHashTag posts={posts} />}

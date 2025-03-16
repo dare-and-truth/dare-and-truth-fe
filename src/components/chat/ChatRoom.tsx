@@ -83,6 +83,7 @@ export function ChatRoom() {
       } finally {
         setChatLoading(false);
         setIsInitialLoad(false);
+        setTimeout(() => scrollToBottom(), 0);
       }
     };
     fetchChat();
@@ -113,8 +114,6 @@ export function ChatRoom() {
                 if (unreadCount > 0) {
                   setTimeout(() => setUnreadMessagesCount(pre => pre - unreadCount), 0)
                 }
-                // conversation.unreadMessages = 0;
-                console.log(conversation);
                 return { ...conversation, unreadMessages: 0 };
               }
               return conversation;
@@ -133,7 +132,7 @@ export function ChatRoom() {
   };
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView();
   };
 
   useEffect(() => {

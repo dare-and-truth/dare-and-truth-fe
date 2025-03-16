@@ -11,6 +11,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { renderTextWithLinks } from '@/app/helpers/renderTextWithLinks';
+import Image from 'next/image';
 
 export function MessageBubble({
   message,
@@ -26,11 +27,13 @@ export function MessageBubble({
     >
       <div className="flex max-w-[40%] flex-col md:max-w-[30%]">
         {message.mediaUrl && (
-          <img
+          <Image
             src={message.mediaUrl || '/placeholder.svg'}
             alt="Sent image"
             className="mb-2 max-w-full rounded-lg hover:cursor-pointer"
             onClick={() => setIsViewingImage(true)}
+            width={200}
+            height={200}
           />
         )}
         {message.content && (

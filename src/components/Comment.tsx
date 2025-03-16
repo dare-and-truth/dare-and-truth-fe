@@ -17,20 +17,19 @@ export default function CommentComponent({ comment }: any) {
 
   // Kiểm tra avatar: nếu avatar tồn tại và không phải chuỗi rỗng (sau khi trim), dùng nó, nếu không thì dùng ảnh default
   const userAvatar =
-    comment.user?.avatarUrl && comment.user.avatarUrl.trim() !== ""
+    comment.user?.avatarUrl && comment.user.avatarUrl.trim() !== ''
       ? comment.user.avatarUrl
-      : "/images/default-profile.png";
+      : '/images/default-profile.png';
 
   return (
     <div className="flex items-start gap-2">
-      <Avatar className="h-10 w-10">
-        <AvatarImage
-          src={userAvatar}
-          alt={comment.user.username}
-          className="object-cover"
-        />
-        <AvatarFallback>{comment.user.username.charAt(0)}</AvatarFallback>
-      </Avatar>
+      <Image
+        alt="User avatar"
+        className="rounded-full object-cover sm:h-14 sm:w-14"
+        src={userAvatar ? userAvatar.trim() : '/images/default-profile.png'}
+        width={100}
+        height={100}
+      />
       <div className="flex-1">
         <div className="bg-muted rounded-lg bg-slate-100 p-2">
           <p className="text-sm font-semibold">{comment.user.username}</p>

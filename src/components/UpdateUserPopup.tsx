@@ -4,16 +4,31 @@ import { useState, useRef, useEffect } from 'react';
 import { uploadFileToSupabase } from '@/app/helpers/uploadFileToSupabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import Image from 'next/image';
 
 type UpdateUserPopupProps = {
-    isOpen: boolean;
-    onClose: () => void;
-    user: { avatarUrl: string; username: string; email: string };
-    onUpdate: (updatedUser: { avatarUrl: string; username: string; email: string }) => void;
+  isOpen: boolean;
+  onClose: () => void;
+  user: { avatarUrl: string; username: string; email: string };
+  onUpdate: (updatedUser: {
+    avatarUrl: string;
+    username: string;
+    email: string;
+  }) => void;
 };
 
-export function UpdateUserPopup({ isOpen, onClose, user, onUpdate }: UpdateUserPopupProps) {
+export function UpdateUserPopup({
+  isOpen,
+  onClose,
+  user,
+  onUpdate,
+}: UpdateUserPopupProps) {
   const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl);
   const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
@@ -21,7 +36,7 @@ export function UpdateUserPopup({ isOpen, onClose, user, onUpdate }: UpdateUserP
   const [usernameError, setUsernameError] = useState('');
   const [emailError, setEmailError] = useState('');
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  
+
   // Validate email format
   const validateEmail = (email: string) => {
     const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -85,29 +100,37 @@ export function UpdateUserPopup({ isOpen, onClose, user, onUpdate }: UpdateUserP
   // Xử lý submit
   const handleSubmit = async () => {
     // Validate các trường bắt buộc
-    if (username.trim() === '' || email.trim() === '' || !validateEmail(email)) {
+    if (
+      username.trim() === '' ||
+      email.trim() === '' ||
+      !validateEmail(email)
+    ) {
       return;
     }
-  
+
     // Nếu dữ liệu không thay đổi so với ban đầu, chỉ đóng popup mà không gọi API cập nhật
-    if (avatarUrl === user.avatarUrl && username === user.username && email === user.email) {
+    if (
+      avatarUrl === user.avatarUrl &&
+      username === user.username &&
+      email === user.email
+    ) {
       onClose();
       return;
-    } 
+    }
 
     // console.log("avatarurrl trogn submit",avatarUrl);
-  
+
     // Nếu avatar được thay đổi, chỉ cập nhật avatarUrl mới, ngược lại giữ nguyên giá trị ban đầu
     const updatedUserData = {
       avatarUrl: avatarUrl !== user.avatarUrl ? avatarUrl : user.avatarUrl,
       username,
       email,
     };
-  
+
     // Cập nhật localStorage nếu cần
     localStorage.setItem('avatarUrl', updatedUserData.avatarUrl);
     localStorage.setItem('username', username);
-    
+
     console.log('Before update:', user);
     console.log('Updating with:', { updatedUserData });
 
@@ -117,7 +140,8 @@ export function UpdateUserPopup({ isOpen, onClose, user, onUpdate }: UpdateUserP
   };
 
   // Kiểm tra nếu username hoặc email không hợp lệ thì disable nút Save
-  const isSaveDisabled = username.trim() === '' || email.trim() === '' || !validateEmail(email);
+  const isSaveDisabled =
+    username.trim() === '' || email.trim() === '' || !validateEmail(email);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -128,11 +152,25 @@ export function UpdateUserPopup({ isOpen, onClose, user, onUpdate }: UpdateUserP
 
         {/* Avatar Upload */}
         <div className="flex flex-col items-center space-y-2">
-          <img src={avatarUrl?.trim() ? avatarUrl : '/images/default-profile.png'} 
-            alt="Avatar" 
-            className="w-24 h-24 rounded-full object-cover" />
-          <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} hidden />
-          <Button variant="join" onClick={() => fileInputRef.current?.click()} disabled={isUploading}>
+          <Image
+            src={avatarUrl ? avatarUrl : '/images/default-profile.png'}
+            alt="Avatar"
+            className="h-24 w-24 rounded-full object-cover"
+            width={96}
+            height={96}
+          />
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            hidden
+          />
+          <Button
+            variant="join"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading}
+          >
             {isUploading ? 'Uploading...' : 'Change Avatar'}
           </Button>
         </div>
@@ -141,20 +179,37 @@ export function UpdateUserPopup({ isOpen, onClose, user, onUpdate }: UpdateUserP
         <div>
           <label className="block text-sm font-medium">Username</label>
           <Input value={username} onChange={handleUsernameChange} />
-          {usernameError && <p className="text-red-500 text-xs mt-1">{usernameError}</p>}
+          {usernameError && (
+            <p className="mt-1 text-xs text-red-500">{usernameError}</p>
+          )}
         </div>
 
         {/* Email Input */}
         <div>
           <label className="block text-sm font-medium">Email</label>
-          <Input type="email" disabled value={email} onChange={handleEmailChange} />
-          {emailError && <p className="text-red-500 text-xs mt-1">{emailError}</p>}
+          <Input
+            type="email"
+            disabled
+            value={email}
+            onChange={handleEmailChange}
+          />
+          {emailError && (
+            <p className="mt-1 text-xs text-red-500">{emailError}</p>
+          )}
         </div>
 
         {/* Submit Button */}
         <div className="flex justify-end space-x-2">
-          <Button variant="outline" onClick={onClose}>Cancel</Button>
-          <Button variant="join" onClick={handleSubmit} disabled={isSaveDisabled}>Save</Button>
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button
+            variant="join"
+            onClick={handleSubmit}
+            disabled={isSaveDisabled}
+          >
+            Save
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

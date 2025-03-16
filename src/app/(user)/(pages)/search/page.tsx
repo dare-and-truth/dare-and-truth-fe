@@ -71,16 +71,16 @@ export default function SearchPage() {
                   id: crypto.randomUUID(), // Tạo tạm ID cho request mới
                   followedAt: new Date().toISOString(),
                   acceptedAt: undefined,
-                  user: { 
-                    id: userId, 
-                    username: user.user.username, 
-                    avatarUrl: user.user.avatarUrl // Thêm avatarUrl vào đây
+                  user: {
+                    id: userId,
+                    username: user.user.username,
+                    avatarUrl: user.user.avatarUrl, // Thêm avatarUrl vào đây
                   },
                   isAccepted: false,
                   follower: {
                     id: followerId,
                     username: localStorage.getItem('username') || '',
-                    avatarUrl: localStorage.getItem('avatarUrl') || '' // Đảm bảo follower cũng có avatarUrl
+                    avatarUrl: localStorage.getItem('avatarUrl') || '', // Đảm bảo follower cũng có avatarUrl
                   },
                 },
               ],
@@ -88,7 +88,7 @@ export default function SearchPage() {
           : user,
       ),
     );
-  };  
+  };
 
   const handleUnfriend = (requestId: string) => {
     setUsers((current) =>
@@ -152,6 +152,7 @@ export default function SearchPage() {
               users.map((user) => (
                 <FriendRequestCard
                   key={user.user.id}
+                  thisUserId={user.user.id}
                   mode="search"
                   avatar={user.user.avatarUrl}
                   username={user.user.username}

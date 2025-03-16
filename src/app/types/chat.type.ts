@@ -1,5 +1,7 @@
+import { UserInfo } from '@/app/types/user.type';
+
 export interface Chat {
-  chatId: string;
+  conversationId: string;
   userId: string;
   avatarURL: string;
   username: string;
@@ -8,21 +10,38 @@ export interface Chat {
 }
 
 export interface Message {
-  chatId: string;
+  conversationId: string;
   content: string;
-  imgUrl: string;
+  mediaUrl: string;
   senderId: string;
-  updated_at: string;
+  sentAt: string;
   id: string;
 }
+
+export type SendMessagePayload = {
+  receiverId: string;
+  conversationId: string | null;
+  content: string | null;
+  mediaUrl: string | null;
+};
+
+export type MessageResponse = {
+  id: string;
+  senderId: string;
+  conversationId?: string;
+  content?: string;
+  mediaUrl?: string;
+  sentAt: string;
+};
 
 export interface MessageList {
   messages: Message[];
 }
 
 export interface ChatRoomPreviewProps {
-  chat: Chat;
+  chat: Conversation;
   isActive: boolean;
+  otherUser: UserInfo;
 }
 
 export interface EmojiPickerProps {
@@ -30,14 +49,27 @@ export interface EmojiPickerProps {
 }
 
 export interface ChatContextType {
-  activeChat: Chat | null;
-  setActiveChat: (chat: Chat | null) => void;
+  activeChat: Conversation | null;
+  setActiveChat: (chat: Conversation | null) => void;
+  currentFriend: UserInfo;
+  setCurrentFriend: (friend: UserInfo) => void;
 }
 
 export interface MessageBubbleProps {
-  message: Message;
+  message: MessageResponse;
   isCurrentUser: boolean;
-  avatarURL: string;
-  showAvatar: boolean;
   showTimestamp: boolean;
+  className?: string;
 }
+
+export type Conversation = {
+  id: string;
+  participants: UserInfo[];
+  lastMessage: {
+    content?: string;
+    mediaUrl?: string;
+    senderId: string;
+  };
+  unreadMessages: number;
+  updatedAt: string;
+};

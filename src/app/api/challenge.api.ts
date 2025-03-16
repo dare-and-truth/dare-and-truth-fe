@@ -62,7 +62,7 @@ export const getChallengesWithLikeCount = async () => {
 export const getChallengeByUserId = async (
   userId: string,
   page: number,
-  size: number
+  size: number,
 ) => {
   try {
     const response = await request({

@@ -13,11 +13,11 @@ export default function HomePage() {
   const { feeds, setFeeds, page, setPage, hasMore, setHasMore } =
     useFeedContext();
   const [loading, setLoading] = useState(false);
-  
+
   useEffect(() => {
-    setFeeds([]); 
-    setPage(0);   
-    setHasMore(true); 
+    setFeeds([]);
+    setPage(0);
+    setHasMore(true);
   }, []);
 
   const fetchChallenges = useCallback(async () => {

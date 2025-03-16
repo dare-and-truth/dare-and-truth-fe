@@ -11,9 +11,7 @@ import EndOfFeed from '@/components/EndOfFeed';
 import { getChallengeByUserId } from '@/app/api/challenge.api';
 import { getPostByUserId } from '@/app/api/post.api';
 export default function ProfileChallengeDoing({ userId }: { userId: string }) {
-  const [activeTab, setActiveTab] = useState(
-    'challenges'
-  );
+  const [activeTab, setActiveTab] = useState('challenges');
   const { feeds, setFeeds, page, setPage, hasMore, setHasMore } =
     useFeedContext();
   const [loading, setLoading] = useState(false);
@@ -53,7 +51,7 @@ export default function ProfileChallengeDoing({ userId }: { userId: string }) {
     if (feeds.length === 0) {
       fetchChallenges();
     }
-  }, [feeds]);  
+  }, [feeds]);
 
   const refreshFeed = () => {
     setFeeds([]); // Clear existing feeds
@@ -104,7 +102,7 @@ export default function ProfileChallengeDoing({ userId }: { userId: string }) {
         </li>
       </ul>
 
-      <div className="mx-auto max-w-2xl p-4" id="scrollableDiv" >
+      <div className="mx-auto max-w-2xl p-4" id="scrollableDiv">
         <InfiniteScroll
           dataLength={feeds.length}
           next={fetchChallenges}

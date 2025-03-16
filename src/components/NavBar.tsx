@@ -1,7 +1,7 @@
 'use client';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useLoading } from '@/app/contexts';
@@ -9,7 +9,9 @@ import { useLoading } from '@/app/contexts';
 export default function NavBar() {
   const [username, setUsername] = useState('');
   const [userId, setUserId] = useState('');
-  const [userAvatarUrl, setUserAvatarUrl] = useState('/images/default-profile.png');
+  const [userAvatarUrl, setUserAvatarUrl] = useState(
+    '/images/default-profile.png',
+  );
   const { isLoading } = useLoading();
 
   useEffect(() => {

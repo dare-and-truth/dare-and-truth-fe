@@ -13,7 +13,8 @@ import { useRouter } from 'next/navigation';
 import { postSignUp } from '@/app/api/auth.api';
 import { useState } from 'react';
 
-const strictEmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|net|org|info|biz|edu|gov|mil|vn|com\.vn|net\.vn)$/;
+const strictEmailRegex =
+  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|net|org|info|biz|edu|gov|mil|vn|com\.vn|net\.vn)$/;
 // Validation Schema
 const registerSchema = z
   .object({

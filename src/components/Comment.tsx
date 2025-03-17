@@ -5,6 +5,9 @@ import { getRepliesByCommentId } from '@/app/api/comment.api';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { FaEdit, FaTrash, FaEllipsisH, FaPaperPlane } from 'react-icons/fa';
 import { CommentType } from '@/app/types';
+import { FilePreview } from './FilePreview';
+import Link from 'next/link';
+import { renderTextWithLinks } from '@/app/helpers/renderTextWithLinks';
 
 type CommentProps = {
   comment: CommentType;
@@ -91,6 +94,11 @@ export default function CommentComponent({ comment, onUpdate, onDelete, onReply,
     if (!editedContent.trim()) return;
     onUpdate(comment.id, editedContent);
     comment.content = editedContent;
+    setIsEditing(true);
+  };
+  
+  const handleCancelEdit = () => {
+    setEditedContent(comment.content);
     setIsEditing(false);
   };
   
@@ -111,13 +119,17 @@ export default function CommentComponent({ comment, onUpdate, onDelete, onReply,
       {/* Comment Cha */}
       <div className="flex items-start gap-2">
         {/* Avatar */}
-        <Image
-          alt="User avatar"
-          className="rounded-full object-cover sm:h-14 sm:w-14"
-          src={userAvatar}
-          width={100}
-          height={100}
-        />
+       
+          <Link href={`/profile/${comment.user.id}`} className='w-12'>
+              <Image
+                alt="User avatar"
+                className="rounded-full object-cover sm:h-10 sm:w-10 "
+                src={userAvatar}
+                width={0}
+                height={0}
+              />
+            </Link>
+      
 
         {/* Nội dung bình luận */}
         <div className="flex items-start justify-between w-full">
@@ -140,40 +152,15 @@ export default function CommentComponent({ comment, onUpdate, onDelete, onReply,
               ) : (
                 <>
                   <p className="text-sm font-semibold">{comment.user.username}</p>
-                  <p className="whitespace-pre-wrap text-sm">{comment.content}</p>
+                  <p className="whitespace-pre-wrap text-sm">
+                    {renderTextWithLinks(comment.content?.trim())}
+                  </p>
                   {comment.mediaUrl && (
-                  <div className="mt-2">
-                    {isVideo ? (
-                      <video
-                        src={comment.mediaUrl}
-                        className="h-24 w-24 cursor-pointer rounded object-cover"
-                        onClick={() => setIsVideoPlaying(true)}
-                      />
-                    ) : (
-                      <Dialog>
-                        <DialogTrigger>
-                          <Image
-                            src={comment.mediaUrl || '/images/placeholder-image.png'}
-                            alt="Comment media"
-                            width={96}
-                            height={96}
-                            className="h-24 w-24 cursor-pointer rounded object-cover"
-                          />
-                        </DialogTrigger>
-                        <DialogContent className="max-w-3xl">
-                          <DialogTitle />
-                          <Image
-                            src={comment.mediaUrl || '/images/placeholder.svg'}
-                            alt="Comment media"
-                            width={800}
-                            height={600}
-                            className="max-h-96 w-full object-contain"
-                          />
-                        </DialogContent>
-                      </Dialog>
-                    )}
-                  </div>
-                )}
+                    <FilePreview 
+                      fileType={'image'} 
+                      previewUrl={comment.mediaUrl} 
+                    />
+                  )}
                 </>
               )}
             </div>
@@ -199,6 +186,18 @@ export default function CommentComponent({ comment, onUpdate, onDelete, onReply,
                 >
                   Reply
                 </button>
+              )}
+            </div>
+            <div className="flex justify-end">
+              {isEditing && (
+                <div className="flex items-center">
+                  <button
+                    onClick={handleCancelEdit}
+                    className=" text-blue-400 hover:text-blue-500 "
+                  >
+                    Cancel
+                  </button>
+                </div>
               )}
             </div>
           </div>
@@ -231,6 +230,7 @@ export default function CommentComponent({ comment, onUpdate, onDelete, onReply,
                     <FaTrash /> Delete
                   </button>
                 </div>
+                
               )}
             </div>
           )}

@@ -28,7 +28,7 @@ export interface GetFeedResponse {
   createdAt: string;
   userId: string;
   username: string;
-  avatarUrl:String;
+  avatarUrl: string;
   likeCount: number;
   commentCount: number;
   liked: boolean;

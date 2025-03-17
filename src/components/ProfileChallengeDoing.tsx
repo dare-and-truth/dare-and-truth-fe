@@ -1,5 +1,6 @@
 'use client';
-import { Bolt, Grid } from 'lucide-react';
+import { Bolt, Grid, Heart } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { act, useCallback, useEffect, useState } from 'react';
 import { FeedType } from '@/app/types';
 import Feed from '@/components/Feed';
@@ -9,11 +10,15 @@ import { useFeedContext } from '@/app/contexts';
 import Loading from '@/components/Loading';
 import EndOfFeed from '@/components/EndOfFeed';
 import { getChallengeByUserId } from '@/app/api/challenge.api';
-import { getPostByUserId } from '@/app/api/post.api';
+import { getFavouriteByUserId, getPostByUserId } from '@/app/api/post.api';
 export default function ProfileChallengeDoing({ userId }: { userId: string }) {
-  const [activeTab, setActiveTab] = useState(
-    'challenges'
-  );
+  const [activeTab, setActiveTab] = useState('challenges');
+  const tabs = [
+    { id: 'challenges', label: 'Challenges', icon: Bolt },
+    { id: 'posts', label: 'Posts', icon: Grid },
+    { id: 'favourites', label: 'Favourite', icon: Heart },
+  ];
+
   const { feeds, setFeeds, page, setPage, hasMore, setHasMore } =
     useFeedContext();
   const [loading, setLoading] = useState(false);
@@ -30,9 +35,15 @@ export default function ProfileChallengeDoing({ userId }: { userId: string }) {
 
     setLoading(true);
     try {
-      const fetchFunc =
-        activeTab === 'challenges' ? getChallengeByUserId : getPostByUserId;
-      const response = await fetchFunc(userId, page, ITEMS_PER_PAGE);
+      let fetchFunc;
+      if (activeTab === 'challenges') {
+        fetchFunc = getChallengeByUserId;
+      } else if (activeTab === 'posts') {
+        fetchFunc = getPostByUserId;
+      } else if (activeTab === 'favourites') {
+        fetchFunc = getFavouriteByUserId; // ✅ Gọi API danh sách yêu thích
+      }
+      const response = await fetchFunc?.(userId, page, ITEMS_PER_PAGE);
       if (response && response.length > 0) {
         setFeeds((prev) => [...prev, ...response]);
         if (response.length < ITEMS_PER_PAGE) {
@@ -53,7 +64,7 @@ export default function ProfileChallengeDoing({ userId }: { userId: string }) {
     if (feeds.length === 0) {
       fetchChallenges();
     }
-  }, [feeds]);  
+  }, [feeds]);
 
   const refreshFeed = () => {
     setFeeds([]); // Clear existing feeds
@@ -63,48 +74,39 @@ export default function ProfileChallengeDoing({ userId }: { userId: string }) {
 
   return (
     <div className="mt-4 md:px-3">
-      <ul className="flex items-center justify-around space-x-12 border-t text-xs font-semibold uppercase tracking-widest text-gray-600 md:justify-center">
-        <li
-          className={`md:-mt-px md:border-t ${
-            activeTab === 'challenges'
-              ? 'md:border-gray-700 md:text-gray-700'
-              : ''
-          }`}
-        >
-          <button
-            className="flex items-center p-3"
-            onClick={() => {
-              setActiveTab('challenges');
-              setFeeds([]);
-              setPage(0);
-              setHasMore(true);
-            }}
-          >
-            <Bolt className="mr-1 h-5 w-5 md:h-4 md:w-4" />
-            <span className="text-black">Challenges</span>
-          </button>
-        </li>
-        <li
-          className={`md:-mt-px md:border-t ${
-            activeTab === 'posts' ? 'md:border-gray-700 md:text-gray-700' : ''
-          }`}
-        >
-          <button
-            className="flex items-center p-3"
-            onClick={() => {
-              setActiveTab('posts');
-              setFeeds([]);
-              setPage(0);
-              setHasMore(true);
-            }}
-          >
-            <Grid className="mr-1 h-5 w-5 md:h-4 md:w-4" />
-            <span className="text-black">Posts</span>
-          </button>
-        </li>
+      <ul className="relative flex items-center justify-around space-x-12 border-t text-xs font-semibold uppercase tracking-widest text-gray-600 md:justify-center">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          return (
+            <li key={tab.id} className="relative flex flex-col items-center">
+              {/* Hiệu ứng ánh sáng trên tab.label */}
+              {activeTab === tab.id && (
+                <motion.div
+                  layoutId="top-glow"
+                 
+                  className="left-1/5 absolute  w-20 -translate-x-1/2  h-1 bg-blue-600 md:border-blue-700 "
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                />
+              )}
+
+              <button
+                className="flex flex-col items-center p-3 transition-all duration-300"
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setFeeds([]);
+                  setPage(0);
+                  setHasMore(true);
+                }}
+              >
+                <Icon className="mb-1 h-5 w-5 md:h-4 md:w-4" />
+                <span className="text-black">{tab.label}</span>
+              </button>
+            </li>
+          );
+        })}
       </ul>
 
-      <div className="mx-auto max-w-2xl p-4" id="scrollableDiv" >
+      <div className="mx-auto max-w-2xl p-4" id="scrollableDiv">
         <InfiniteScroll
           dataLength={feeds.length}
           next={fetchChallenges}

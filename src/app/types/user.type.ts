@@ -34,10 +34,8 @@ export interface UserWithRequestsResponse {
   }>;
 }
 
-interface UpdateUserRequest {
-  username?: string;  
-  email?: string;
-  avatarUrl?: string;
-}
-
-
+export type UserInfo = {
+  id: string;
+  username: string;
+  avatarUrl: string;
+};

@@ -71,7 +71,12 @@ export default function Feed({ feed }: { feed: FeedType }) {
               {commentCount} {commentCount === 1 ? 'Comment' : 'Comments'}
             </span>
           </Button>
-          <Button variant="ghost" size="lg" className="gap-2 hover:bg-sky-300" onClick={handleShare}>
+          <Button
+            variant="ghost"
+            size="lg"
+            className="gap-2 hover:bg-sky-300"
+            onClick={handleShare}
+          >
             <Share2 className="h-4 w-4" />
             <span>Shares</span>
           </Button>

@@ -1,4 +1,4 @@
-import request from "@/app/utils/Axiosconfig";
+import request from '@/app/utils/Axiosconfig';
 
 export const getScoreByUserId = async (userId: string) => {
   try {

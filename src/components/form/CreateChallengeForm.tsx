@@ -265,7 +265,12 @@ export default function CreateChallengeForm() {
       </div>
 
       <div className="text-right">
-        <Button type="submit" disabled={isUploading} className="" variant='join'>
+        <Button
+          type="submit"
+          disabled={isUploading}
+          className=""
+          variant="join"
+        >
           {isUploading ? 'Uploading...' : 'Submit'}
         </Button>
       </div>

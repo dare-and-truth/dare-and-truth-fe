@@ -114,7 +114,11 @@ httpClient.interceptors.response.use(
           });
         });
       }
+    } else if (error.response?.status === 403) {
+      toast.error('Session expired. Please log in again.');
+      window.location.href = '/auth/login';
     }
+    console.log(error)
 
     // Xử lý các lỗi khác ngoài 401
     return Promise.reject({

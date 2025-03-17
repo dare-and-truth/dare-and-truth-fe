@@ -17,6 +17,7 @@ import { uploadFileToSupabase } from '@/app/helpers/uploadFileToSupabase';
 import { getCommentById, postComment } from '@/app/api/comment.api';
 import type { CreateCommentPayload } from '@/app/types';
 import Image from 'next/image';
+import Link from 'next/link';
 
 type FormErrors = {
   content?: string;
@@ -46,7 +47,7 @@ export default function CommentForm({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [avatarUrl, setUserAvatarUrl] = useState('/images/default-profile.png');
-
+  const currentUser = localStorage.getItem('userId');
   useEffect(() => {
     const userAvatarUrl = localStorage.getItem('avatarUrl');
     if (
@@ -127,7 +128,7 @@ export default function CommentForm({
       }
   
       // Xác định level khi tạo comment
-      let level = undefined;
+      let level = 1;
       if (parentCommentId) {
         const parentComment = await getCommentById(parentCommentId); // Lấy comment cha
         level = parentComment.level >= 3 ? 3 : parentComment.level + 1;
@@ -168,13 +169,15 @@ export default function CommentForm({
   return (
     <div>
       <div className="flex items-center gap-2">
-        <Image
-          alt={avatarUrl + ' avatar'}
-          className="rounded-full object-cover sm:h-14 sm:w-14"
-          src={avatarUrl ? avatarUrl.trim() : '/images/default-profile.png'}
-          width={100}
-          height={100}
-        />
+        <Link href={`/profile/${currentUser}`} className="w-14 h-14 relative">
+          <Image
+            alt={avatarUrl + ' avatar'}
+            className="rounded-full object-cover sm:h-14 sm:w-14"
+            src={avatarUrl ? avatarUrl.trim() : '/images/default-profile.png'}
+            width={100}
+            height={100}
+          />
+        </Link>
         <form className="item-center flex w-full" onSubmit={onSubmit}>
           <Textarea
             placeholder={username ? `Type your comment for ${username}` : 'Type your comment...'}
@@ -251,7 +254,7 @@ export default function CommentForm({
             <X className="h-4 w-4" />
           </Button>
         </div>
-      )}
+      )}  
       {errors.content && (
         <p className="mt-1 text-sm text-red-500">{errors.content}</p>
       )}

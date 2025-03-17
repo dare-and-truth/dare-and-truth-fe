@@ -77,3 +77,11 @@ body {
 .animate-pulse {
   animation: custom-pulse 1.5s ease-in-out infinite;
 }
+
+.border-gradient {
+  border: 1px solid transparent;
+  border-radius: 100%;
+  background: linear-gradient(45deg, #ff00ff, #ffcc00);
+  background-clip: padding-box;
+  padding: 2px; /* Đảm bảo phần nền gradient hiển thị */
+}

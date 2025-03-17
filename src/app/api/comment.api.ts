@@ -6,10 +6,10 @@ import request from '@/app/utils/Axiosconfig';
  * @param feedId ID của bài đăng
  * @returns Danh sách comment
  */
-export const getCommentsByFeedId = async (feedId: string): Promise<CommentType[]> => {
+export const getCommentsByFeedId = async (feedId: string, feedUserId:string): Promise<CommentType[]> => {
   const response = await request({
     method: 'get',
-    url: `/comments/feed/${feedId}`,
+    url: `/comments/feed/${feedId}?feedUserId=${feedUserId}`,
   });
   return response?.data as CommentType[];
 };
@@ -45,7 +45,7 @@ export const postComment = async (
       handleSuccess();
     },
     onError: (error) => {
-      console.error('Lỗi khi tạo comment:', error);
+      console.error('Failed to create comment', error);
     },
   });
 };
@@ -60,7 +60,7 @@ export const deleteComment = async (commentId: string, onSuccess?: () => void): 
       method: 'delete',
       url: `/comments/${commentId}`,
       onError: (error) => {
-        console.error('Lỗi khi xóa comment:', error);
+        console.error('Failed to delete comment:', error);
       },
     });
 
@@ -69,7 +69,7 @@ export const deleteComment = async (commentId: string, onSuccess?: () => void): 
       onSuccess();
     }
   } catch (error) {
-    console.error('Lỗi khi xóa comment:', error);
+    console.error('Failed to delete comment:', error);
   }
 };
 
@@ -86,7 +86,7 @@ UpdateCommentPayload: UpdateCommentPayload, commentId:string, handleSuccess: () 
     url: `/comments/${commentId}`, 
     data:  { content: UpdateCommentPayload.content }, 
     onError: (error) => {
-      console.error('Lỗi khi cập nhật comment:', error);
+      console.error('Failed to update comment:', error);
     },
   });
 };

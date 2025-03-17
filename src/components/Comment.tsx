@@ -8,6 +8,8 @@ import { CommentType } from '@/app/types';
 import { FilePreview } from './FilePreview';
 import Link from 'next/link';
 import { renderTextWithLinks } from '@/app/helpers/renderTextWithLinks';
+import { ExpandedModal } from './ExpandedModal';
+import { PencilIcon } from 'lucide-react';
 
 type CommentProps = {
   comment: CommentType;
@@ -15,9 +17,10 @@ type CommentProps = {
   onUpdate: (commentId: string, content: string) => void;
   onDelete: (commentId: string) => void;
   avatarUrl: string;
+  feedUserId?:string;
 };
 
-export default function CommentComponent({ comment, onUpdate, onDelete, onReply,avatarUrl }: CommentProps) {
+export default function CommentComponent({ comment, onUpdate, onDelete, onReply,avatarUrl,feedUserId }: CommentProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(comment.content);
   const [showActions, setShowActions] = useState(false);
@@ -31,14 +34,10 @@ export default function CommentComponent({ comment, onUpdate, onDelete, onReply,
   const [isReplyVisible, setIsReplyVisible] = useState(false); // Điều khiển hiển thị reply
   const [replies, setReplies] = useState<CommentType[]>([]);
   const [loadingReplies, setLoadingReplies] = useState(false);
-  const [replyParent, setReplyParent] = useState<{ id: string | null; username: string | null }>({
-    id: null,
-    username: null,
-  });
   const currentUserId = typeof window !== 'undefined' ? localStorage.getItem('userId') : null;
   const userAvatar = avatarUrl?.trim() ? avatarUrl : '/images/default-profile.png';
   const isVideo =
-    comment.mediaUrl?.endsWith('.mp4') || comment.mediaUrl?.endsWith('.webm');
+  comment.mediaUrl?.endsWith('.mp4') || comment.mediaUrl?.endsWith('.webm');
   // 🆕 Gọi API lấy comment reply khi mở comment cha
   useEffect(() => {
     if (!isReplyVisible) return;
@@ -61,10 +60,6 @@ export default function CommentComponent({ comment, onUpdate, onDelete, onReply,
   
     fetchReplyComments();
   }, [isReplyVisible, comment.id]);
-
-  useEffect(() => {
-    console.log('replyComments after update:', replyComments);
-  }, [replyComments]);
   
   const handleDeleteConfirm = () => {
     if (deleteId !== null) {
@@ -94,7 +89,7 @@ export default function CommentComponent({ comment, onUpdate, onDelete, onReply,
     if (!editedContent.trim()) return;
     onUpdate(comment.id, editedContent);
     comment.content = editedContent;
-    setIsEditing(true);
+    setIsEditing(false);
   };
   
   const handleCancelEdit = () => {
@@ -120,17 +115,17 @@ export default function CommentComponent({ comment, onUpdate, onDelete, onReply,
       <div className="flex items-start gap-2">
         {/* Avatar */}
        
-          <Link href={`/profile/${comment.user.id}`} className='w-12'>
-              <Image
-                alt="User avatar"
-                className="rounded-full object-cover sm:h-10 sm:w-10 "
-                src={userAvatar}
-                width={0}
-                height={0}
-              />
-            </Link>
-      
-
+        <Link href={`/profile/${comment.user.id}`} className="w-14 h-14 relative">
+          <Image
+            alt="User avatar"
+            className={`rounded-full object-cover sm:h-10 sm:w-10${
+              comment.user.id === feedUserId ? ' border-gradient sm:h-11 sm:w-11' : 'sm:h-10 sm:w-10'
+            }`}
+            src={userAvatar}
+            width={0}
+            height={0}
+          />
+        </Link>
         {/* Nội dung bình luận */}
         <div className="flex items-start justify-between w-full">
           <div className="flex-col w-[95%]">
@@ -151,16 +146,37 @@ export default function CommentComponent({ comment, onUpdate, onDelete, onReply,
                 </div>
               ) : (
                 <>
-                  <p className="text-sm font-semibold">{comment.user.username}</p>
-                  <p className="whitespace-pre-wrap text-sm">
-                    {renderTextWithLinks(comment.content?.trim())}
-                  </p>
-                  {comment.mediaUrl && (
-                    <FilePreview 
-                      fileType={'image'} 
-                      previewUrl={comment.mediaUrl} 
-                    />
+                  <p className="text-sm font-semibold flex items-center">
+                  {comment.user.username}
+                  {comment.user.id === feedUserId && (
+                    <span className="text-gray-300 text-[13px] ml-2 flex items-center gap-1">
+                      Author <PencilIcon size={12} />
+                    </span>
                   )}
+                </p>
+                <p className="whitespace-pre-wrap text-sm">
+                  {renderTextWithLinks(comment.content?.trim())}
+                </p>
+                  {comment.mediaUrl && (
+                  <div className="mt-2">
+                    {isVideo ? (
+                      <video
+                        src={comment.mediaUrl}
+                        className="h-24 w-24 cursor-pointer rounded object-cover"
+                        onClick={() => setIsVideoPlaying(true)}
+                      />
+                    ) : (
+                    <Image
+                      src={comment.mediaUrl || '/images/placeholder-image.png'}
+                      alt="Comment media"
+                      width={96}
+                      height={96}
+                      className="h-24 w-24 cursor-pointer rounded object-cover"
+                      onClick={() => setIsVideoPlaying(true)}
+                    />
+                    )}
+                  </div>
+                )}
                 </>
               )}
             </div>
@@ -249,6 +265,7 @@ export default function CommentComponent({ comment, onUpdate, onDelete, onReply,
             onDelete={onDelete}
             onReply={onReply}
             avatarUrl={reply.user?.avatarUrl?.trim() ? reply.user.avatarUrl : '/images/default-profile.png'}
+            feedUserId={feedUserId}
           />
         ))
         }
@@ -277,18 +294,12 @@ export default function CommentComponent({ comment, onUpdate, onDelete, onReply,
           </div>
         </DialogContent>
       </Dialog>
-      {isVideo && isVideoPlaying && (
-        <Dialog open={isVideoPlaying} onOpenChange={setIsVideoPlaying}>
-          <DialogContent className="max-w-3xl">
-            <DialogTitle />
-            <video
-              src={comment.mediaUrl ?? undefined}
-              className="h-auto w-full"
-              controls
-              autoPlay
-            />
-          </DialogContent>
-        </Dialog>
+      {isVideoPlaying && (
+        <ExpandedModal
+          fileType={isVideo?"video":"image"}
+          previewUrl={comment.mediaUrl!}
+          onClose={() => setIsVideoPlaying(false)}
+        />
       )}
     </div>
   );

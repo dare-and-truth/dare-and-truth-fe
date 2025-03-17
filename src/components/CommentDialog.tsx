@@ -36,7 +36,7 @@ export default function CommentDialog({
     if (isCommentOpen) {
       const fetchComments = async () => {
         try {
-          const comments = await getCommentsByFeedId(feed.id);
+          const comments = await getCommentsByFeedId(feed.id,feed.userId);
           if (feed) {
             setComments(comments);
           }
@@ -78,7 +78,6 @@ export default function CommentDialog({
   };
   
   const handleReplyComment = (parentCommentId?: string, username?: string) => {
-    console.log("Reply to comment:", parentCommentId);
     setSelectedComment({ parentCommentId: parentCommentId, user: { username } } as CommentType);
     setShowReplyForm(true);
   };
@@ -107,6 +106,7 @@ export default function CommentDialog({
                 onDelete={handleDeleteComment}
                 onReply={handleReplyComment}
                 avatarUrl={comment.user?.avatarUrl?.trim() ? comment.user.avatarUrl : '/images/default-profile.png'}
+                feedUserId={feed.userId}
               />
             ))}
             </div>

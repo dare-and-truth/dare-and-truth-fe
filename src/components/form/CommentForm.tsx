@@ -37,7 +37,7 @@ export default function CommentForm({
   isChallenge: boolean;
   setLoadComment: Dispatch<SetStateAction<boolean>>;
   setCommentCount: Dispatch<SetStateAction<number>>;
-  username?:string;
+  username?: string;
 }) {
   const [content, setContent] = useState('');
   const [media, setMedia] = useState<File | null>(null);
@@ -119,23 +119,21 @@ export default function CommentForm({
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm() || isLoading) return;
-  
+
     setIsLoading(true);
     try {
       let mediaUrl;
       if (media) {
         mediaUrl = await uploadFileToSupabase(media);
       }
-  
+
       // Xác định level khi tạo comment
       let level = 1;
       if (parentCommentId) {
         const parentComment = await getCommentById(parentCommentId); // Lấy comment cha
         level = parentComment.level >= 3 ? 3 : parentComment.level + 1;
-        console.log("levell trong form",level); // Không vượt quá level 3
       }
-      
-      
+
       const createCommentPayload: CreateCommentPayload = {
         feedId,
         content,
@@ -144,8 +142,7 @@ export default function CommentForm({
         parentCommentId,
         level,
       };
-      
-      console.log("create createCommentPayload",createCommentPayload);
+
       await postComment(createCommentPayload, handleCommentSuccess);
     } catch (error) {
       console.error('Error submitting comment:', error);
@@ -169,18 +166,22 @@ export default function CommentForm({
   return (
     <div>
       <div className="flex items-center gap-2">
-        <Link href={`/profile/${currentUser}`} className="w-14 h-14 relative">
+        <Link href={`/profile/${currentUser}`} className="relative h-14 w-14">
           <Image
             alt={avatarUrl + ' avatar'}
-            className="rounded-full object-cover sm:h-14 sm:w-14"
+            className="self-center rounded-full object-cover sm:h-12 sm:w-12"
             src={avatarUrl ? avatarUrl.trim() : '/images/default-profile.png'}
-            width={100}
-            height={100}
+            width={0}
+            height={0}
           />
         </Link>
         <form className="item-center flex w-full" onSubmit={onSubmit}>
           <Textarea
-            placeholder={username ? `Type your comment for ${username}` : 'Type your comment...'}
+            placeholder={
+              username
+                ? `Type your comment for ${username}`
+                : 'Type your comment...'
+            }
             className={`w-full ${errors.content ? 'border-red-500' : ''}`}
             value={content}
             onChange={handleContentChange}
@@ -212,7 +213,7 @@ export default function CommentForm({
                 variant="ghost"
                 size="icon"
                 onClick={() => fileInputRef.current?.click()}
-                disabled={isLoading} 
+                disabled={isLoading}
               >
                 <ImageIcon className="h-7 w-7" />
               </Button>
@@ -220,7 +221,7 @@ export default function CommentForm({
             <Button
               type="submit"
               variant={'join'}
-              disabled={(!content.trim() && !media)|| !content || isLoading} // Vô hiệu hóa nút gửi khi loading
+              disabled={(!content.trim() && !media) || !content || isLoading} // Vô hiệu hóa nút gửi khi loading
               className="m-1"
             >
               {isLoading ? (
@@ -254,7 +255,7 @@ export default function CommentForm({
             <X className="h-4 w-4" />
           </Button>
         </div>
-      )}  
+      )}
       {errors.content && (
         <p className="mt-1 text-sm text-red-500">{errors.content}</p>
       )}

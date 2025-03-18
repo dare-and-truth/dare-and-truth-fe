@@ -16,7 +16,6 @@ import Link from 'next/link';
 import { getPostByHashtag } from '@/app/api/post.api';
 import { ExpandedModal } from './ExpandedModal';
 
-
 export default function FeedContent({ feed }: { feed: FeedType }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isJoined, setIsJoined] = useState(feed.joined);
@@ -26,7 +25,7 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
   const endDate = new Date(feed.endDate);
   const isExpired = endDate < today;
   const isVideo =
-  feed.mediaUrl?.endsWith('.mp4') || feed.mediaUrl?.endsWith('.webm');
+    feed.mediaUrl?.endsWith('.mp4') || feed.mediaUrl?.endsWith('.webm');
   // Create a helper variable to decide the avatar URL
   const avatarUrl =
     feed.avatarUrl && feed.avatarUrl.trim() !== ''
@@ -172,38 +171,42 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
       <div className="mb-4 overflow-hidden rounded-lg">
         {/* Dialog to show enlarged image/video */}
         <div className="mb-4 overflow-hidden rounded-lg">
-        {isVideo && feed.mediaUrl ? (
-          <video
-            src={feed.mediaUrl}
-            controls
-            className="w-full cursor-pointer"
-            style={{ maxHeight: '400px', objectFit: 'cover' }}
-            onClick={()=>{setIsOpen(true);}}
-          />
-        ) : (
-          <Image
-            src={feed.mediaUrl}
-            alt="Challenge media"
-            width={0}
-            height={0}
-            sizes="100vw"
-            className="w-full cursor-pointer"
-            style={{
-              maxHeight: '400px',
-              height: 'auto',
-              objectFit: 'cover',
-            }}
-            onClick={()=>{setIsOpen(true);}}
+          {isVideo && feed.mediaUrl ? (
+            <video
+              src={feed.mediaUrl}
+              controls
+              className="w-full cursor-pointer"
+              style={{ maxHeight: '400px', objectFit: 'cover' }}
+              onClick={() => {
+                setIsOpen(true);
+              }}
+            />
+          ) : (
+            <Image
+              src={feed.mediaUrl}
+              alt="Challenge media"
+              width={0}
+              height={0}
+              sizes="100vw"
+              className="w-full cursor-pointer"
+              style={{
+                maxHeight: '400px',
+                height: 'auto',
+                objectFit: 'cover',
+              }}
+              onClick={() => {
+                setIsOpen(true);
+              }}
+            />
+          )}
+        </div>
+        {isOpen && (
+          <ExpandedModal
+            fileType={isVideo ? 'video' : 'image'}
+            previewUrl={feed.mediaUrl}
+            onClose={() => setIsOpen(false)}
           />
         )}
-      </div>
-      {isOpen && (
-      <ExpandedModal
-        fileType={isVideo?"video":"image"}
-        previewUrl={feed.mediaUrl}
-        onClose={() => setIsOpen(false)}
-      />
-    )}
       </div>
     </>
   );

@@ -10,7 +10,7 @@ export interface CommentType {
     username: string;
     avatarUrl: string;
   };
-  level:number;
+  level: number;
 }
 export interface CreateCommentPayload {
   feedId: string;
@@ -21,6 +21,6 @@ export interface CreateCommentPayload {
   level?: number;
 }
 
-export interface UpdateCommentPayload{
+export interface UpdateCommentPayload {
   content: string;
 }

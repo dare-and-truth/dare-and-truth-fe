@@ -1,6 +1,10 @@
 'use client';
-import { deleteComment, getCommentsByFeedId, updateComment } from '@/app/api/comment.api';
-import { CommentType, FeedType} from '@/app/types';
+import {
+  deleteComment,
+  getCommentsByFeedId,
+  updateComment,
+} from '@/app/api/comment.api';
+import { CommentType, FeedType } from '@/app/types';
 import CommentComponent from '@/components/Comment';
 import Comment from '@/components/Comment';
 import FeedContent from '@/components/FeedContent';
@@ -27,16 +31,17 @@ export default function CommentDialog({
 }) {
   const [loadComment, setLoadComment] = useState(false);
   const [comments, setComments] = useState<CommentType[]>([]);
-  const [selectedComment, setSelectedComment] = useState<CommentType | null>(null);
+  const [selectedComment, setSelectedComment] = useState<CommentType | null>(
+    null,
+  );
   const [showReplyForm, setShowReplyForm] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  
+
   useEffect(() => {
     // Chỉ fetch dữ liệu khi dialog đang mở
     if (isCommentOpen) {
       const fetchComments = async () => {
         try {
-          const comments = await getCommentsByFeedId(feed.id,feed.userId);
+          const comments = await getCommentsByFeedId(feed.id, feed.userId);
           if (feed) {
             setComments(comments);
           }
@@ -50,12 +55,11 @@ export default function CommentDialog({
 
   const handleUpdateComment = async (commentId: string, content: string) => {
     try {
-      await updateComment({ content }, commentId,
-        () => {
-          toast.success('Updated comment successfully');
-          setLoadComment((prev) => !prev);
-        }
-      );
+      await updateComment({ content }, commentId, () => {
+        setLoadComment(true);
+        toast.success('Updated comment successfully');
+        setLoadComment((prev) => !prev);
+      });
     } catch (error) {
       toast.error('Update comment failed');
       console.error('Update comment failed', error);
@@ -65,20 +69,20 @@ export default function CommentDialog({
   // 🗑 Hàm xóa bình luận
   const handleDeleteComment = async (commentId: string) => {
     try {
-      await deleteComment(commentId,
-        () => {
-          toast.success('Delete Comment successfully');
-          setLoadComment((prev) => !prev);
-        }
-      );
-      
+      await deleteComment(commentId, () => {
+        toast.success('Delete Comment successfully');
+        setLoadComment((prev) => !prev);
+      });
     } catch (error) {
       toast.error('Delete Comment failed');
     }
   };
-  
+
   const handleReplyComment = (parentCommentId?: string, username?: string) => {
-    setSelectedComment({ parentCommentId: parentCommentId, user: { username } } as CommentType);
+    setSelectedComment({
+      parentCommentId: parentCommentId,
+      user: { username },
+    } as CommentType);
     setShowReplyForm(true);
   };
 
@@ -98,29 +102,41 @@ export default function CommentDialog({
 
             {/* Comments Section */}
             <div className="space-y-2 border-t-2 pt-2">
-            {comments.map((comment) => (
-              <CommentComponent
-                key={comment.id}
-                comment={comment}
-                onUpdate={handleUpdateComment}
-                onDelete={handleDeleteComment}
-                onReply={handleReplyComment}
-                avatarUrl={comment.user?.avatarUrl?.trim() ? comment.user.avatarUrl : '/images/default-profile.png'}
-                feedUserId={feed.userId}
-              />
-            ))}
+              {comments.map((comment) => (
+                <CommentComponent
+                  key={comment.id}
+                  comment={comment}
+                  onUpdate={handleUpdateComment}
+                  onDelete={handleDeleteComment}
+                  onReply={handleReplyComment}
+                  avatarUrl={
+                    comment.user?.avatarUrl?.trim()
+                      ? comment.user.avatarUrl
+                      : '/images/default-profile.png'
+                  }
+                  feedUserId={feed.userId}
+                  loadComment={loadComment}
+                  setLoadComment={setLoadComment}
+                />
+              ))}
             </div>
           </div>
         </div>
         <div className="flex-none border-t pt-4">
-        <CommentForm
-          feedId={feed.id}
-          isChallenge={feed.type === 'challenge'}
-          setLoadComment={setLoadComment}
-          setCommentCount={setCommentCount}
-          parentCommentId={showReplyForm ? selectedComment?.parentCommentId ?? undefined : undefined}
-          username={showReplyForm ? selectedComment?.user?.username : undefined}
-        />
+          <CommentForm
+            feedId={feed.id}
+            isChallenge={feed.type === 'challenge'}
+            setLoadComment={setLoadComment}
+            setCommentCount={setCommentCount}
+            parentCommentId={
+              showReplyForm
+                ? (selectedComment?.parentCommentId ?? undefined)
+                : undefined
+            }
+            username={
+              showReplyForm ? selectedComment?.user?.username : undefined
+            }
+          />
         </div>
       </DialogContent>
     </Dialog>

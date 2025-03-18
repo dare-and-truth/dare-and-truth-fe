@@ -33,6 +33,7 @@ export default function SearchPage() {
     if (!query) return;
 
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         if (activeTab === 'challenges') {
           const response = await getChallengeBySearchChallenge(query);
@@ -53,6 +54,8 @@ export default function SearchPage() {
         }
       } catch (error) {
         console.error('Error fetching data:', error);
+      }finally{
+        setIsLoading(false);
       }
     };
 

@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/dialog';
 import { FaEdit, FaTrash, FaEllipsisH, FaPaperPlane } from 'react-icons/fa';
 import { CommentType } from '@/app/types';
-import { FilePreview } from './FilePreview';
 import Link from 'next/link';
 import { renderTextWithLinks } from '@/app/helpers/renderTextWithLinks';
 import { ExpandedModal } from './ExpandedModal';
@@ -130,7 +129,7 @@ export default function CommentComponent({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
+  console.log("feeeuddeid và cmmtuser id",feedUserId,"cmt",comment.user.id);
   return (
     <div>
       {/* Comment Cha */}
@@ -143,9 +142,9 @@ export default function CommentComponent({
         >
           <Image
             alt="User avatar"
-            className={`rounded-full object-cover sm:h-10 sm:w-10${
+            className={`rounded-full object-cover sm:h-10 sm:w-10 ${
               comment.user.id === feedUserId
-                ? 'border-gradient sm:h-11 sm:w-11'
+                ? 'border-gradient  sm:h-11 sm:w-11'
                 : 'sm:h-10 sm:w-10'
             }`}
             src={userAvatar}
@@ -154,7 +153,7 @@ export default function CommentComponent({
           />
         </Link>
         {/* Nội dung bình luận */}
-        <div className="flex w-full items-start justify-between">
+        <div className="flex w-full max-w-[85%] items-start justify-between">
           <div className="w-[95%] flex-col">
             <div className="bg-muted w-[100%] rounded-lg bg-slate-100 p-2">
               {isEditing ? (
@@ -181,7 +180,7 @@ export default function CommentComponent({
                       </span>
                     )}
                   </p>
-                  <p className="whitespace-pre-wrap text-sm">
+                  <p className="whitespace-pre-wrap break-words text-sm">
                     {renderTextWithLinks(comment.content?.trim())}
                   </p>
                   {comment.mediaUrl && (

@@ -18,90 +18,82 @@ import {
   MessageSquare,
   Users,
   Calendar,
-  BarChart2,
-  Bookmark,
   UsersRound,
   UserPlus,
   PlusSquare,
+  Dumbbell,
 } from 'lucide-react';
-import { SearchChallengeUser } from '@/components/SearchChallengeUser';
 
 export function MainSideBar({ ...props }) {
   const pathname = usePathname();
 
-  const data = {
-    navMain: [
-      {
-        icon: <Home size={22} />,
-        text: 'Home Page',
-        href: '/home',
-        active: pathname === '/home',
-      },
-      {
-        icon: <PlusSquare size={22} />,
-        text: 'Create Challenge',
-        href: '/create-challenge',
-        active: pathname === '/create-challenge',
-      },
-      {
-        icon: <Trophy size={22} />,
-        text: 'Do Challenge',
-        href: '/do-challenge',
-        active: pathname === '/do-challenge',
-      },
-      {
-        icon: <Bell size={22} />,
-        text: 'Notification',
-        href: '/notification',
-        active: pathname === '/notification',
-        isButton: true,
-      },
-      {
-        icon: <MessageSquare size={22} />,
-        text: 'Message',
-        href: '/message',
-        active: pathname === '/message',
-      },
-      {
-        icon: <Users size={22} />,
-        text: 'Friends',
-        href: '/friends',
-        active: pathname.startsWith('/friends'),
-        subMenu: [
-          {
-            icon: <UsersRound size={18} className="text-blue-500" />,
-            text: 'All Friends',
-            href: '/friends/all-friends',
-            active: pathname === '/friends/all-friends',
-          },
-          {
-            icon: <UserPlus size={18} className="text-green-500" />,
-            text: 'Friend Requests',
-            href: '/friends/add-friends',
-            active: pathname === '/friends/add-friends',
-          },
-        ],
-      },
-      {
-        icon: <Calendar size={22} />,
-        text: 'Calendar',
-        href: '/calendar',
-        active: pathname === '/calendar',
-      },
-      {
-        icon: <BarChart2 size={22} />,
-        text: 'Ranking',
-        href: '/ranking',
-        active: pathname === '/ranking',
-      },
-      {
-        icon: <Bookmark size={22} />,
-        text: 'Task',
-        href: '/task',
-        active: pathname === '/task',
-      },
-    ],
-  };
+ const data = {
+   navMain: [
+     {
+       icon: <Home size={20} />,
+       text: 'Home Page',
+       href: '/home',
+       active: pathname === '/home',
+     },
+     {
+       icon: <PlusSquare size={20} />,
+       text: 'Create Challenge',
+       href: '/create-challenge',
+       active: pathname === '/create-challenge',
+     },
+     {
+       icon: <Dumbbell size={20} />,
+       text: 'Do Challenge',
+       href: '/do-challenge',
+       active: pathname === '/do-challenge',
+     },
+     {
+       icon: <Bell size={20} />,
+       text: 'Notification',
+       href: '/notification',
+       active: pathname === '/notification',
+       isButton: true,
+     },
+     {
+       icon: <MessageSquare size={20} />,
+       text: 'Message',
+       href: '/message',
+       active: pathname === '/message',
+     },
+     {
+       icon: <Users size={20} />,
+       text: 'Friends',
+       href: '/friends',
+       active: pathname.startsWith('/friends'),
+       subMenu: [
+         {
+           icon: <UsersRound size={16} className='text-blue-500' />,
+           text: 'All Friends',
+           href: '/friends/all-friends',
+           active: pathname === '/friends/all-friends',
+         },
+         {
+           icon: <UserPlus size={16} className='text-green-500' />,
+           text: 'Friend Requests',
+           href: '/friends/add-friends',
+           active: pathname === '/friends/add-friends',
+         },
+       ],
+     },
+     {
+       icon: <Calendar size={20} />,
+       text: 'Calendar',
+       href: '/calendar',
+       active: pathname === '/calendar',
+     },
+     {
+       icon: <Trophy size={20} />,
+       text: 'Ranking',
+       href: '/ranking',
+       active: pathname === '/ranking',
+     },
+   ],
+ };
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -109,7 +101,6 @@ export function MainSideBar({ ...props }) {
         <LogoSideBar />
       </SidebarHeader>
       <SidebarContent>
-        <SearchChallengeUser />
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>

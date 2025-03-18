@@ -8,7 +8,6 @@ import {
 } from '@/components/ui/collapsible';
 import {
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -19,6 +18,7 @@ import {
 import Link from 'next/link';
 import { NotificationDropdown } from '@/components/NotificationDropdown';
 import { useUserApp } from '@/app/contexts/UserAppContext';
+import { SearchChallengeUser } from '@/components/SearchChallengeUser';
 
 export function NavMain({
   items,
@@ -41,8 +41,9 @@ export function NavMain({
   return (
     <SidebarGroup>
       <SidebarMenu>
+         <SearchChallengeUser />
         {items.map((item) => (
-          <SidebarMenuItem className="p-0" key={item.text}>
+          <SidebarMenuItem className="p-1" key={item.text}>
             {/* Trường hợp là button (Notification) */}
             {item.isButton ? (
               <NotificationDropdown
@@ -62,7 +63,7 @@ export function NavMain({
                     {item.icon}
                     {item.text === 'Message' &&
                       unreadMessagesCount > 0 && (
-                        <div className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
+                        <div className="absolute -right-0.5 -top-1.5 flex h-4 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
                           {unreadMessagesCount > 9
                             ? '9+'
                             : unreadMessagesCount}

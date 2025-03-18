@@ -2,23 +2,22 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { FcGoogle } from 'react-icons/fc';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { ErrorFormLogin } from '@/app/types';
 import { postSignIn } from '@/app/api/auth.api';
 import { jwtDecode } from 'jwt-decode';
 import { useLoading } from '@/app/contexts';
+import { Eye, EyeOff } from 'lucide-react';
 
 type JwtPayload = {
   role: string;
 };
 
-export default function LoginForm() {
+export default function SignInForm() {
   const { setIsLoading } = useLoading();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -26,6 +25,8 @@ export default function LoginForm() {
     email: '',
     password: '',
   });
+  const [showPassword, setShowPassword] = useState<string>('password');
+
   const router = useRouter();
 
   const validateForm = () => {
@@ -91,82 +92,57 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="flex h-screen w-full flex-col-reverse md:flex-row">
-      <div className="flex w-full flex-col p-6 md:w-1/2 md:p-12">
-        <div
-          className={`mx-auto flex w-full max-w-md flex-1 flex-col ${errors.email || errors.password ? '' : 'md:mt-8 lg:mt-8'} `}
-        >
-          <div className="flex-1">
-            <h1 className="mb-2 text-3xl font-bold">Welcome Back 👋</h1>
-            <p className="mb-8 text-gray-600">
-              Today is a new day. It's your day. You shape it.
-              <br />
-              Sign in to start enjoying the DoDo app
-            </p>
-
-            <form onSubmit={handleSubmit} className="space-y-8">
-              <div className="space-y-1">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="user@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={errors.email ? 'border-red-500' : ''}
-                />
-                {errors.email && (
-                  <p className="text-sm text-red-500">{errors.email}</p>
-                )}
-              </div>
-
-              <div className="space-y-1">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="At least 8 characters"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={errors.password ? 'border-red-500' : ''}
-                />
-                {errors.password && (
-                  <p className="text-sm text-red-500">{errors.password}</p>
-                )}
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700"
-              >
-                Sign in
-              </Button>
-            </form>
-
-            <p className="mt-8 text-center text-sm text-gray-600">
-              Don't you have an account?{' '}
-              <Link
-                href="/auth/sign-up"
-                className="font-medium text-blue-600 hover:underline"
-              >
-                Sign up
-              </Link>
-            </p>
-          </div>
-        </div>
+    <form onSubmit={handleSubmit} className="auth-form sign-in-form space-y-4">
+      <Image
+        src="/images/logo.png"
+        alt="image"
+        width={0}
+        height={0}
+        className="h-32 w-32 object-cover"
+      />
+      <h2 className="mb-2 text-3xl text-gray-500">Welcome Back 👋</h2>
+      <div className="w-3/5">
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="user@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="h-14 w-full rounded-full bg-gray-100 px-6 pr-12 text-gray-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300"
+        />
+        {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
       </div>
 
-      <div className="h-screen w-full p-6 md:w-1/2 lg:w-1/2">
-        <div className="relative h-full w-full">
-          <Image
-            src="/images/image-login.png"
-            alt="Badminton Player Illustration"
-            layout="fill"
-            className="h-full w-full rounded-lg object-cover"
-            priority
+      <div className="relative w-3/5">
+        <Label htmlFor="password">Password</Label>
+        <div className="relative">
+          <Input
+            id="password"
+            type={showPassword}
+            placeholder="At least 8 characters"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="h-14 w-full rounded-full bg-gray-100 px-6 pr-10 text-gray-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300"
           />
+          <button
+            type="button"
+            className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
+            onClick={() =>
+              setShowPassword(showPassword == 'password' ? 'text' : 'password')
+            }
+          >
+            {showPassword === 'password' ? <Eye /> : <EyeOff />}
+          </button>
         </div>
+        {errors.password && (
+          <p className="text-sm text-red-500">{errors.password}</p>
+        )}
       </div>
-    </div>
+
+      <Button type="submit" variant="login" size="login">
+        Sign in
+      </Button>
+    </form>
   );
 }

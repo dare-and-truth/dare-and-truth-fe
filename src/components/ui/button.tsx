@@ -22,12 +22,14 @@ const buttonVariants = cva(
         link: 'text-zinc-900 underline-offset-4 hover:underline dark:text-zinc-50',
         icon: 'text-blue-500 hover:text-blue-700 bg-none ',
         join: 'border border-zinc-200 bg-blue-600 text-white shadow-sm hover:bg-blue-800 hover:text-white dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-800 dark:hover:text-zinc-50',
+        login:'h-[49px] w-[150px] rounded-[49px] bg-blue-500 font-bold uppercase text-white transition duration-500 hover:bg-blue-600',
       },
       size: {
         default: 'h-9 px-4 py-2',
         sm: 'h-8 rounded-md px-3 text-xs',
         lg: 'h-10 rounded-md px-8',
         icon: 'h-9 w-9',
+        login: 'h-[49px] w-[150px]',
       },
     },
     defaultVariants: {

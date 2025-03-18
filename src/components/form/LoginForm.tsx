@@ -92,7 +92,10 @@ export default function SignInForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="auth-form sign-in-form space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      className="auth-form sign-in-form mx-auto flex w-full flex-col items-center space-y-4 px-4 sm:px-6 md:px-8"
+    >
       <Image
         src="/images/logo.png"
         alt="image"
@@ -100,13 +103,19 @@ export default function SignInForm() {
         height={0}
         className="h-32 w-32 object-cover"
       />
-      <h2 className="mb-2 text-3xl text-gray-500">Welcome Back 👋</h2>
-      <div className="w-3/5">
+      <div className="flex">
+        <h2 className="mb-2 mr-2 font-serif md:text-3xl text-xl text-gray-500">
+          Welcome Back
+        </h2>
+        <h2 className="animate-tilt md:text-3xl text-xl">👋</h2>
+      </div>
+
+      <div className="md:w-3/5 w-full">
         <Label htmlFor="email">Email</Label>
         <Input
           id="email"
           type="email"
-          placeholder="user@example.com"
+          placeholder="user@gmail.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="h-14 w-full rounded-full bg-gray-100 px-6 pr-12 text-gray-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300"
@@ -114,7 +123,7 @@ export default function SignInForm() {
         {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
       </div>
 
-      <div className="relative w-3/5">
+      <div className="relative md:w-3/5 w-full">
         <Label htmlFor="password">Password</Label>
         <div className="relative">
           <Input

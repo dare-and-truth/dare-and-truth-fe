@@ -2,9 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-
 import SignUpForm from '@/components/form/SignUpForm';
 import SignInForm from '@/components/form/LoginForm';
 
@@ -24,18 +22,17 @@ export default function TestLogin() {
       <div className="panels-container">
         <div className="panel left-panel">
           <div className="content">
-            <h3>New here?</h3>
-            <p>
-              <i className="mb-8">
-                Today is a new day. It's your day. You shape it.
-                <br />
-                Sign up to start enjoying the DoDo app
-              </i>
+            <h3 className="animate-bounce">First time here?</h3>
+            <p className="mb-4 italic">
+              <i>Every great journey begins with a single step.</i>
+              <br />
+              <i> Sign up today and start your DoDo experience!</i>
             </p>
+
             <Button
               variant="login"
               size="login"
-              className="btn transparent bg-[#5995fd]"
+              className="btn transparent animate-pulse bg-[#5995fd]"
               onClick={() => setIsSignUpMode(true)}
             >
               Sign up
@@ -52,9 +49,9 @@ export default function TestLogin() {
 
         <div className="panel right-panel">
           <div className="content">
-            <h3>One of us?</h3>
-            <p>
-              <i className="mb-8">
+            <h3 className="animate-pulse">New here?</h3>
+            <p className="mb-4">
+              <i>
                 Today is a new day. It's your day. You shape it.
                 <br />
                 Sign in to start enjoying the DoDo app
@@ -63,7 +60,7 @@ export default function TestLogin() {
             <Button
               variant="login"
               size="login"
-              className="btn transparent bg-[#5995fd]"
+              className="btn transparent animate-pulse bg-[#5995fd]"
               onClick={() => setIsSignUpMode(false)}
             >
               Sign in

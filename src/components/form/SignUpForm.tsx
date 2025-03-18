@@ -58,48 +58,59 @@ export default function SignUpForm({
       username: data.username,
       password: data.password,
     };
-
-    await postSignUp(signUpPayload, router);
-    setIsSignUpMode(false);
+    try {
+      const isSuccess = await postSignUp(signUpPayload);
+      if (isSuccess) {
+        setIsSignUpMode(false);
+      }
+    } catch (error) {}
   };
-
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="auth-form sign-up-form space-y-4"
+      className="auth-form sign-up-form mx-auto flex w-full flex-col items-center space-y-4 px-4 sm:px-6 md:px-8"
     >
-      <h2 className="mb-2 text-3xl text-gray-500">Welcome 👋</h2>
+      <div className="flex">
+        <h2 className="mb-2 font-serif md:text-3xl text-xl text-gray-500">
+          Sign Up & Elevate Your Life
+        </h2>
+        <h2 className="animate-tilt md:text-3xl text-xl">🚀</h2>
+      </div>
 
-      <div className="w-3/5">
+      <div className="w-full  md:w-3/5">
         <Label htmlFor="email">Email</Label>
         <Input
           {...register('email')}
           id="email"
           type="email"
-          placeholder="Example@email.com"
-          className="h-14 w-full rounded-full bg-gray-100 px-6 text-gray-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300"
+          placeholder="Example@gmail.com"
+          className="h-12 w-full rounded-full bg-gray-100 px-4 text-sm text-gray-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 sm:h-14 sm:px-6 sm:text-base"
         />
         {errors.email && (
-          <p className="text-sm text-red-500">{errors.email.message}</p>
+          <p className="mt-1 text-xs text-red-500 sm:text-sm">
+            {errors.email.message}
+          </p>
         )}
       </div>
 
-      <div className="w-3/5">
+      <div className="w-full  md:w-3/5">
         <Label htmlFor="username">User name</Label>
         <Input
           {...register('username')}
           id="username"
           type="text"
           placeholder="Nguyen Van A"
-          className="h-14 w-full rounded-full bg-gray-100 px-6 text-gray-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300"
+          className="h-12 w-full rounded-full bg-gray-100 px-4 text-sm text-gray-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 sm:h-14 sm:px-6 sm:text-base"
         />
         {errors.username && (
-          <p className="text-sm text-red-500">{errors.username.message}</p>
+          <p className="mt-1 text-xs text-red-500 sm:text-sm">
+            {errors.username.message}
+          </p>
         )}
       </div>
 
-      <div className="relative w-3/5">
+      <div className="relative w-full  md:w-3/5">
         <Label htmlFor="password">Password</Label>
         <div className="relative">
           <Input
@@ -107,25 +118,30 @@ export default function SignUpForm({
             id="password"
             type={showPassword}
             placeholder="At least 8 characters"
-            className="h-14 w-full rounded-full bg-gray-100 px-6 pr-12 text-gray-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300"
+            className="h-12 w-full rounded-full bg-gray-100 px-4 pr-10 text-sm text-gray-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 sm:h-14 sm:px-6 sm:pr-12 sm:text-base"
           />
           <button
             type="button"
-            className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
+            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer sm:right-4"
             onClick={() =>
-              setShowPassword(showPassword == 'password' ? 'text' : 'password')
+              setShowPassword(showPassword === 'password' ? 'text' : 'password')
             }
           >
-            {showPassword === 'password' ? <Eye /> : <EyeOff />}
+            {showPassword === 'password' ? (
+              <Eye className="h-5 w-5" />
+            ) : (
+              <EyeOff className="h-5 w-5" />
+            )}
           </button>
         </div>
-
         {errors.password && (
-          <p className="text-sm text-red-500">{errors.password.message}</p>
+          <p className="mt-1 text-xs text-red-500 sm:text-sm">
+            {errors.password.message}
+          </p>
         )}
       </div>
 
-      <div className="relative w-3/5">
+      <div className="relative w-full  md:w-3/5">
         <Label htmlFor="confirm-password">Confirm Password</Label>
         <div className="relative">
           <Input
@@ -133,23 +149,26 @@ export default function SignUpForm({
             id="confirm-password"
             type={confirmShowpassword}
             placeholder="At least 8 characters"
-            className="h-14 w-full rounded-full bg-gray-100 px-6 pr-12 text-gray-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300"
+            className="h-12 w-full rounded-full bg-gray-100 px-4 pr-10 text-sm text-gray-500 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 sm:h-14 sm:px-6 sm:pr-12 sm:text-base"
           />
           <button
             type="button"
-            className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
+            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer sm:right-4"
             onClick={() =>
               setShowConfirmPassword(
-                confirmShowpassword == 'password' ? 'text' : 'password',
+                confirmShowpassword === 'password' ? 'text' : 'password',
               )
             }
           >
-            {confirmShowpassword === 'password' ? <Eye /> : <EyeOff />}
+            {confirmShowpassword === 'password' ? (
+              <Eye className="h-5 w-5" />
+            ) : (
+              <EyeOff className="h-5 w-5" />
+            )}
           </button>
         </div>
-
         {errors.confirmPassword && (
-          <p className="text-sm text-red-500">
+          <p className="mt-1 text-xs text-red-500 sm:text-sm">
             {errors.confirmPassword.message}
           </p>
         )}

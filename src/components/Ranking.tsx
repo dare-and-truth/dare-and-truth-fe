@@ -9,6 +9,7 @@ import Confetti from 'react-confetti';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { formatScores } from '@/app/helpers/formatScore';
+import Link from 'next/link';
 export default function RankingDisplay({
   topUsers,
   nearbyUsers,
@@ -76,7 +77,10 @@ export default function RankingDisplay({
         <div className="sticky top-0 z-10 pb-4">
           <div className="mt-20 flex justify-center md:mt-16">
             {/* 2nd Place */}
-            <div className="relative mt-8 flex w-24 flex-col items-center rounded-tl-[2.5rem] bg-black px-2 py-6 shadow-lg transition-all duration-200 hover:brightness-125 sm:w-32 sm:px-4 sm:py-8 md:w-40 md:px-6">
+            <Link
+              href={`/profile/${topUsers[1]?.userId}`}
+              className="relative mt-8 flex w-24 flex-col items-center rounded-tl-[2.5rem] bg-black px-2 py-6 shadow-lg transition-all duration-200 hover:brightness-125 sm:w-32 sm:px-4 sm:py-8 md:w-40 md:px-6"
+            >
               <div className="absolute -top-8 flex w-full justify-center sm:-top-8">
                 <Avatar className="h-14 w-14 rounded-full border-4 border-orange-400 sm:h-16 sm:w-16 md:h-16 md:w-16">
                   <AvatarImage
@@ -84,7 +88,6 @@ export default function RankingDisplay({
                     alt={topUsers[1]?.username || 'User'}
                     className="object-cover"
                   />
-
                   <AvatarFallback>
                     {topUsers[1]?.username?.[0] || '?'}
                   </AvatarFallback>
@@ -100,11 +103,13 @@ export default function RankingDisplay({
                 {formatScores(topUsers[1]?.totalScore || 0)}{' '}
                 {type === 'score' ? 'score' : 'Like'}
               </p>
-            </div>
+            </Link>
 
             {/* 1st Place */}
-
-            <div className="relative flex min-h-[220px] w-28 flex-col items-center rounded-t-[2.2rem] bg-[#454545] px-3 py-14 shadow-lg transition-all duration-200 hover:brightness-110 sm:w-36 sm:px-6 sm:py-16 md:w-48 md:px-8">
+            <Link
+              href={`/profile/${topUsers[0]?.userId}`}
+              className="relative flex min-h-[220px] w-28 flex-col items-center rounded-t-[2.2rem] bg-[#454545] px-3 py-14 shadow-lg transition-all duration-200 hover:brightness-110 sm:w-36 sm:px-6 sm:py-16 md:w-48 md:px-8"
+            >
               <div className="absolute -top-8 flex w-full justify-center md:-top-12">
                 <Avatar className="h-16 w-16 rounded-full border-4 border-yellow-500 sm:h-24 sm:w-24 md:h-20 md:w-20">
                   <AvatarImage
@@ -116,14 +121,11 @@ export default function RankingDisplay({
                     {topUsers[0]?.username?.[0] || '?'}
                   </AvatarFallback>
                 </Avatar>
-
                 <Crown className="absolute -top-6 left-1/2 h-8 w-8 -translate-x-1/2 text-yellow-400 sm:-top-8 sm:h-10 sm:w-10" />
               </div>
               <span className="mt-3 text-3xl text-yellow-400 sm:text-4xl">
-                {' '}
                 🥇
               </span>
-
               <p className="mt-3 max-w-full truncate text-base text-white sm:text-lg">
                 {topUsers[0]?.username || 'Coming soon'}
               </p>
@@ -131,10 +133,13 @@ export default function RankingDisplay({
                 {formatScores(topUsers[0]?.totalScore || 0)}{' '}
                 {type === 'score' ? 'score' : 'Like'}
               </p>
-            </div>
+            </Link>
 
             {/* 3rd Place */}
-            <div className="relative mt-8 flex w-24 flex-col items-center rounded-tr-[2.5rem] bg-black px-2 py-6 shadow-lg transition-all duration-200 hover:brightness-125 sm:w-32 sm:px-4 sm:py-8 md:w-40 md:px-6">
+            <Link
+              href={`/profile/${topUsers[2]?.userId}`}
+              className="relative mt-8 flex w-24 flex-col items-center rounded-tr-[2.5rem] bg-black px-2 py-6 shadow-lg transition-all duration-200 hover:brightness-125 sm:w-32 sm:px-4 sm:py-8 md:w-40 md:px-6"
+            >
               <div className="absolute -top-8 flex w-full justify-center sm:-top-8">
                 <Avatar className="h-14 w-14 rounded-full border-4 border-purple-500 sm:h-16 sm:w-16 md:h-16 md:w-16">
                   <AvatarImage
@@ -157,7 +162,7 @@ export default function RankingDisplay({
                 {formatScores(topUsers[2]?.totalScore || 0)}{' '}
                 {type === 'score' ? 'score' : 'Like'}
               </p>
-            </div>
+            </Link>
           </div>
         </div>
       )}

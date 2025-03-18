@@ -31,7 +31,7 @@ export default function NavBar() {
       <SidebarTrigger className="-ml-1" />
       <Separator orientation="vertical" className="mr-2 h-4" />
       <div className="ml-auto flex items-center gap-2">
-        <span className="text-md max-w-[120px] truncate font-bold text-gray-700 dark:text-gray-200">
+        <span className="text-md font-bold text-gray-700 dark:text-gray-200">
           {username}
         </span>
         <Link

@@ -56,7 +56,6 @@ export default function SignInForm() {
 
     try {
       const response = await postSignIn({ email, password });
-
       const { accessToken, refreshToken } = response?.data;
 
       localStorage.setItem('accessToken', accessToken);
@@ -101,7 +100,7 @@ export default function SignInForm() {
         alt="image"
         width={0}
         height={0}
-        className="h-32 w-32 object-cover"
+        className="h-32 w-32 object-cover animate-pulse"
       />
       <div className="flex">
         <h2 className="mb-2 mr-2 font-serif md:text-3xl text-xl text-gray-500">

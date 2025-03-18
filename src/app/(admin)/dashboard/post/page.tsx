@@ -71,7 +71,7 @@ export default function PostPage() {
                 <thead className="bg-gray-100">
                   <tr className="text-left">
                     <th className="p-4 font-medium text-black">Hashtag</th>
-                    <th className="p-4 font-medium text-black">content</th>
+                    <th className="p-4 font-medium text-black">Content</th>
                     <th className="p-4 font-medium text-black">Status</th>
                   </tr>
                 </thead>

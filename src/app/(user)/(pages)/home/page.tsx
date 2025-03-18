@@ -28,9 +28,13 @@ export default function HomePage() {
       const newFeeds = await getFeeds(page, ITEMS_PER_PAGE);
 
       if (newFeeds && newFeeds.length > 0) {
+        const fixedFirstItem = newFeeds[0]; // Lưu phần tử đầu tiên
+        const restOfItems = newFeeds.slice(1); // Lấy các phần tử còn lại
+        restOfItems.sort(() => 0.5 - Math.random()); // Xáo trộn các phần tử còn lại
+        const newFeeds2 = [fixedFirstItem, ...restOfItems];
         setFeeds((prev) => [
           ...prev,
-          ...newFeeds.sort(() => 0.5 - Math.random()),
+          ...newFeeds2,
         ]);
         if (newFeeds.length < ITEMS_PER_PAGE) {
           setHasMore(false);

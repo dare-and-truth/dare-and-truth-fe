@@ -4,16 +4,15 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import SignUpForm from '@/components/form/SignUpForm';
-import SignInForm from '@/components/form/LoginForm';
+import SignInForm from '@/components/form/SignInForm';
 
-export default function TestLogin() {
+export default function SignInSignUpForm() {
   const [isSignUpMode, setIsSignUpMode] = useState(false);
   return (
     <div className={`container ${isSignUpMode ? 'sign-up-mode' : ''}`}>
       <div className="forms-container">
         <div className="signin-signup flex-1">
           <SignInForm />
-
           <SignUpForm setIsSignUpMode={setIsSignUpMode} />
         </div>
       </div>

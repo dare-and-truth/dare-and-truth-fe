@@ -363,7 +363,7 @@ export function NotificationDropdown({
           <span className="relative mr-2">
             {icon}
             {unreadNotificationsCount > 0 && (
-              <div className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
+              <div className="absolute -right-0.5 -top-1.5 flex h-4 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
                 {unreadNotificationsCount > 9 ? '9+' : unreadNotificationsCount}
               </div>
             )}

@@ -80,8 +80,6 @@ export const getFavouriteByUserId = async (
   }
 };
 
-
-
 export const getPostByHashtag = async (
   hashtag: string,
   createdAt: string | null,

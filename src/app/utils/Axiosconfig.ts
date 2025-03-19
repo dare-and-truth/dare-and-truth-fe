@@ -118,7 +118,7 @@ httpClient.interceptors.response.use(
       toast.error('Session expired. Please log in again.');
       window.location.href = '/auth/login';
     }
-    console.log(error)
+    console.log(error);
 
     // Xử lý các lỗi khác ngoài 401
     return Promise.reject({

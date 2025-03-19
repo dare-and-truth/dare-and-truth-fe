@@ -1,4 +1,5 @@
 import { Heart } from 'lucide-react';
+import Image from 'next/image';
 
 interface CommentToastProps {
   name: string;
@@ -20,7 +21,9 @@ export const LikeNotificationToast = ({
       <div className="flex items-center gap-4">
         <div className="relative">
           <div className="flex-shrink-0">
-            <img
+            <Image
+              height={0}
+              width={0}
               src={avatarUrl || '/images/default-profile.png'}
               alt="User Avatar"
               className="h-12 w-12 rounded-full"

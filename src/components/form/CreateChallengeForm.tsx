@@ -10,6 +10,7 @@ import { postChallenge } from '@/app/api/challenge.api';
 import { X } from 'lucide-react';
 import { MAX_FILE_SIZE, VALID_FILE_TYPES } from '@/app/constants';
 import { uploadFileToSupabase } from '@/app/helpers/uploadFileToSupabase';
+import Image from 'next/image';
 
 // Type definitions
 type FormData = z.infer<typeof formSchema>;
@@ -240,7 +241,9 @@ export default function CreateChallengeForm() {
         {filePreview && (
           <div className="relative w-full">
             {formData.file?.type.startsWith('image/') ? (
-              <img
+              <Image
+                height={0}
+                width={0}
                 src={filePreview}
                 alt="Preview"
                 className="w-full rounded-md object-contain"

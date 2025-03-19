@@ -37,12 +37,6 @@ export default function FriendRequestCard({
 
   // Lấy userId từ localStorage
   const currentUserId = localStorage.getItem('userId');
-
-  // Kiểm tra nếu mode là 'requests' và người dùng hiện tại là người gửi, không hiển thị
-  if (mode === 'requests' && currentUserId && followerId === currentUserId) {
-    return null;
-  }
-
   useEffect(() => {
     const updateUI = () => {
       if (window.innerWidth < 1024) {
@@ -58,14 +52,6 @@ export default function FriendRequestCard({
     window.addEventListener('resize', updateUI);
     return () => window.removeEventListener('resize', updateUI);
   }, []);
-
-  const isCurrentUserReceiver = userId === currentUserId;
-  const isCurrentUserSender = followerId === currentUserId;
-
-  const truncatedUsername =
-    username?.length > maxUsernameLength
-      ? `${username.slice(0, maxUsernameLength)}...`
-      : username || 'Unknown User';
 
   const timeAgo = useMemo(() => {
     const fromDate = new Date(
@@ -86,6 +72,19 @@ export default function FriendRequestCard({
     if (diffDays < 30) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
     return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
   }, [followedAt, acceptedAt, isAccepted]);
+
+  // Kiểm tra nếu mode là 'requests' và người dùng hiện tại là người gửi, không hiển thị
+  if (mode === 'requests' && currentUserId && followerId === currentUserId) {
+    return null;
+  }
+
+  const isCurrentUserReceiver = userId === currentUserId;
+  const isCurrentUserSender = followerId === currentUserId;
+
+  const truncatedUsername =
+    username?.length > maxUsernameLength
+      ? `${username.slice(0, maxUsernameLength)}...`
+      : username || 'Unknown User';
 
   const handleAddFriend = async () => {
     if (!userId || !currentUserId) {

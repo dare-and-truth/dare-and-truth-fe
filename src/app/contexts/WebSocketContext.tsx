@@ -18,7 +18,7 @@ import { Conversation, MessageResponse } from '@/app/types';
 import { useUserApp } from '@/app/contexts/UserAppContext';
 import { MessageNotificationToast } from '@/components/notificationToast/MessageNotificationToast';
 import { usePathname } from 'next/navigation';
-const SockJS = require('sockjs-client');
+import SockJS from 'sockjs-client';
 
 interface WebSocketContextType {
   client: Client | null;

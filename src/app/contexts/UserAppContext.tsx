@@ -1,7 +1,15 @@
 'use client';
 import { getUnreadMessagesCount } from '@/app/api/conversation.api';
 import { getUnreadNotificationsCount } from '@/app/api/notification.api';
-import { createContext, useContext, useState, useEffect, ReactNode, Dispatch, SetStateAction } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+  Dispatch,
+  SetStateAction,
+} from 'react';
 
 type UserAppContextType = {
   unreadNotificationsCount: number;
@@ -41,7 +49,7 @@ export const UserAppProvider = ({ children }: { children: ReactNode }) => {
         unreadNotificationsCount,
         setUnreadNotificationsCount,
         unreadMessagesCount,
-        setUnreadMessagesCount
+        setUnreadMessagesCount,
       }}
     >
       {children}

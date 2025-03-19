@@ -19,6 +19,7 @@ import { supabaseClient } from '@/app/utils/Supabase';
 import { CreateChallengePayload } from '@/app/types';
 import { postChallenge } from '@/app/api/challenge.api';
 import { X } from 'lucide-react';
+import Image from 'next/image';
 
 const supabase = supabaseClient;
 
@@ -285,7 +286,9 @@ export default function CreateChallengeDialog(props: any) {
             {filePreview && (
               <div className="relative w-full">
                 {formData.file?.type.startsWith('image/') ? (
-                  <img
+                  <Image
+                    height={0}
+                    width={0}
                     src={filePreview}
                     alt="Preview"
                     className="w-full rounded-md object-contain"

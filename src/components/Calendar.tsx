@@ -13,8 +13,7 @@ import { CalendarList } from '@/components/CalendarList';
 import { getAllRemindersByDate } from '@/app/api/reminder.api';
 
 const getInitialDate = (): Date => {
-  const savedDate = localStorage.getItem('selectedDate');
-  return savedDate ? new Date(savedDate) : new Date();
+  return new Date();
 };
 
 export default function CalendarComponent() {
@@ -31,7 +30,6 @@ export default function CalendarComponent() {
   useEffect(() => {
     if (date) {
       fetchEventsByDate(date);
-      localStorage.setItem('selectedDate', date.toISOString());
     }
   }, [date, isRefreshingCalendarList]);
 

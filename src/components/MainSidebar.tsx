@@ -27,73 +27,73 @@ import {
 export function MainSideBar({ ...props }) {
   const pathname = usePathname();
 
- const data = {
-   navMain: [
-     {
-       icon: <Home size={20} />,
-       text: 'Home Page',
-       href: '/home',
-       active: pathname === '/home',
-     },
-     {
-       icon: <PlusSquare size={20} />,
-       text: 'Create Challenge',
-       href: '/create-challenge',
-       active: pathname === '/create-challenge',
-     },
-     {
-       icon: <Dumbbell size={20} />,
-       text: 'Do Challenge',
-       href: '/do-challenge',
-       active: pathname === '/do-challenge',
-     },
-     {
-       icon: <Bell size={20} />,
-       text: 'Notification',
-       href: '/notification',
-       active: pathname === '/notification',
-       isButton: true,
-     },
-     {
-       icon: <MessageSquare size={20} />,
-       text: 'Message',
-       href: '/message',
-       active: pathname === '/message',
-     },
-     {
-       icon: <Users size={20} />,
-       text: 'Friends',
-       href: '/friends',
-       active: pathname.startsWith('/friends'),
-       subMenu: [
-         {
-           icon: <UsersRound size={16} className='text-blue-500' />,
-           text: 'All Friends',
-           href: '/friends/all-friends',
-           active: pathname === '/friends/all-friends',
-         },
-         {
-           icon: <UserPlus size={16} className='text-green-500' />,
-           text: 'Friend Requests',
-           href: '/friends/add-friends',
-           active: pathname === '/friends/add-friends',
-         },
-       ],
-     },
-     {
-       icon: <Calendar size={20} />,
-       text: 'Calendar',
-       href: '/calendar',
-       active: pathname === '/calendar',
-     },
-     {
-       icon: <Trophy size={20} />,
-       text: 'Ranking',
-       href: '/ranking',
-       active: pathname === '/ranking',
-     },
-   ],
- };
+  const data = {
+    navMain: [
+      {
+        icon: <Home size={20} />,
+        text: 'Home Page',
+        href: '/home',
+        active: pathname === '/home',
+      },
+      {
+        icon: <PlusSquare size={20} />,
+        text: 'Create Challenge',
+        href: '/create-challenge',
+        active: pathname === '/create-challenge',
+      },
+      {
+        icon: <Dumbbell size={20} />,
+        text: 'Do Challenge',
+        href: '/do-challenge',
+        active: pathname === '/do-challenge',
+      },
+      {
+        icon: <Bell size={20} />,
+        text: 'Notification',
+        href: '/notification',
+        active: pathname === '/notification',
+        isButton: true,
+      },
+      {
+        icon: <MessageSquare size={20} />,
+        text: 'Message',
+        href: '/message',
+        active: pathname === '/message',
+      },
+      {
+        icon: <Users size={20} />,
+        text: 'Friends',
+        href: '/friends',
+        active: pathname.startsWith('/friends'),
+        subMenu: [
+          {
+            icon: <UsersRound size={16} className="text-blue-500" />,
+            text: 'All Friends',
+            href: '/friends/all-friends',
+            active: pathname === '/friends/all-friends',
+          },
+          {
+            icon: <UserPlus size={16} className="text-green-500" />,
+            text: 'Friend Requests',
+            href: '/friends/add-friends',
+            active: pathname === '/friends/add-friends',
+          },
+        ],
+      },
+      {
+        icon: <Calendar size={20} />,
+        text: 'Calendar',
+        href: '/calendar',
+        active: pathname === '/calendar',
+      },
+      {
+        icon: <Trophy size={20} />,
+        text: 'Ranking',
+        href: '/ranking',
+        active: pathname === '/ranking',
+      },
+    ],
+  };
 
   return (
     <Sidebar collapsible="icon" {...props}>

@@ -215,7 +215,9 @@ export default function CommentForm({
       {preview && (
         <div className="relative mt-2 inline-block">
           {media?.type.startsWith('image/') ? (
-            <img
+            <Image
+              height={0}
+              width={0}
               src={preview || '/placeholder.svg'}
               alt="Preview"
               className="max-h-40 max-w-xs object-contain"

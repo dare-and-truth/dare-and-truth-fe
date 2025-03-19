@@ -30,16 +30,16 @@ const formSchema = z
       ),
     hashtag: z
       .string()
-      .min(2,{ message: 'Hashtag must be at least 2 characters.' })
+      .min(2, { message: 'Hashtag must be at least 2 characters.' })
       .max(30, { message: 'Hashtag must not exceed 30 characters.' })
       .regex(
         /^[a-zA-Z0-9_]+$/,
         'Hashtag can only contain letters, numbers and underscores',
       ),
     content: z
-    .string()
-    .min(10, { message: 'Content must be at least 10 characters.' })
-    .max(5000, { message: 'Content must not exceed 5000 characters.' }),
+      .string()
+      .min(10, { message: 'Content must be at least 10 characters.' })
+      .max(5000, { message: 'Content must not exceed 5000 characters.' }),
     startDate: z
       .string()
       .refine(

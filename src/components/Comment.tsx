@@ -117,7 +117,7 @@ export default function CommentComponent({
     const value = e.target.value;
     if (value.length > 2000) return; // Nếu vượt quá 30 ký tự thì không cập nhật
     setEditedContent(value);
-  }
+  };
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -143,7 +143,7 @@ export default function CommentComponent({
             alt="User avatar"
             className={`rounded-full object-cover sm:h-10 sm:w-10 ${
               comment.user.id === feedUserId
-                ? 'border-gradient  sm:h-11 sm:w-11'
+                ? 'border-gradient sm:h-11 sm:w-11'
                 : 'sm:h-10 sm:w-10'
             }`}
             src={userAvatar}

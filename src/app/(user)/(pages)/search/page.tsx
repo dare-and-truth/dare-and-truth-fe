@@ -54,7 +54,7 @@ export default function SearchPage() {
         }
       } catch (error) {
         console.error('Error fetching data:', error);
-      }finally{
+      } finally {
         setIsLoading(false);
       }
     };

@@ -23,7 +23,7 @@ export default function FriendRequestCard({
   requestId,
   followerId,
   userId,
-  width = 'w-[55%]',
+  width = 'w-[65%]',
   onAccept,
   onReject,
   onUnfriend,
@@ -62,9 +62,10 @@ export default function FriendRequestCard({
   const isCurrentUserReceiver = userId === currentUserId;
   const isCurrentUserSender = followerId === currentUserId;
 
+  const maxLength = mode === 'search' ? 23 : maxUsernameLength;
   const truncatedUsername =
-    username?.length > maxUsernameLength
-      ? `${username.slice(0, maxUsernameLength)}...`
+    username?.length > maxLength
+      ? `${username.slice(0, maxLength)}...`
       : username || 'Unknown User';
 
   const timeAgo = useMemo(() => {
@@ -179,8 +180,6 @@ export default function FriendRequestCard({
     }
   };
 
-  const profileId = followerId !== currentUserId ? followerId : userId;
-
   return (
     <div
       className={`mb-4 flex items-center rounded-lg bg-white p-4 shadow-sm ${width} transition-all duration-300`}
@@ -218,15 +217,6 @@ export default function FriendRequestCard({
       </div>
 
       <div className="ml-auto flex items-center gap-2">
-        <Button
-          variant="join"
-          className="w-24 rounded-lg px-4 py-2 font-semibold text-white"
-          onClick={() =>
-            router.push(`/message?userId=${thisUserId}`, { scroll: false })
-          }
-        >
-          Chat
-        </Button>
         {mode === 'requests' ? (
           requestId ? (
             isAccepted ? (
@@ -314,6 +304,15 @@ export default function FriendRequestCard({
             </Button>
           )
         ) : null}
+        <Button
+          variant="join"
+          className="w-24 rounded-lg px-4 py-2 font-semibold text-white"
+          onClick={() =>
+            router.push(`/message?userId=${thisUserId}`, { scroll: false })
+          }
+        >
+          Chat
+        </Button>
       </div>
     </div>
   );

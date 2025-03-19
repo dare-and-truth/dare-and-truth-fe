@@ -28,6 +28,15 @@ export default {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      animation: {
+        tilt: 'tilt 0.3s infinite alternate',
+      },
+      keyframes: {
+        tilt: {
+          '0%': { transform: 'rotate(5deg)' },
+          '100%': { transform: 'rotate(-5deg)' },
+        },
+      },
     },
   },
   plugins: [require('tailwindcss-animate')],

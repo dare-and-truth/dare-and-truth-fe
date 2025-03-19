@@ -4,22 +4,19 @@ import request from '@/app/utils/Axiosconfig';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { toast } from 'react-toastify';
 
-export const postSignUp = async (
-  data: SignUpPayload,
-  navigate: AppRouterInstance,
-) => {
+export const postSignUp = async (data: SignUpPayload) => {
   await request({
     method: 'post',
     url: '/auth/sign-up',
     data,
     onSuccess: () => {
       toast.success('Sign Up successful');
-      navigate.push(LOGIN_PATH);
     },
     onError: (error) => {
       console.log('error in sign up', error);
     },
   });
+  return true;
 };
 export const postSignIn = async (data: LoginPayload) => {
   try {

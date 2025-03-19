@@ -2,6 +2,7 @@
 import { Search } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { SidebarMenuItem } from '@/components/ui/sidebar';
 
 export function SearchChallengeUser() {
   const router = useRouter();
@@ -14,30 +15,23 @@ export function SearchChallengeUser() {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-    }
-  };
-
   return (
-    <div className="relative mx-auto ml-2 mt-2 max-w-sm">
+    <SidebarMenuItem className="mt-1 p-1">
       <form onSubmit={handleSearch} className="relative flex">
         <button
           type="submit"
           className="rounded-l-md border border-gray-300 bg-gray-100 px-2 text-gray-700 hover:bg-gray-200 focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-200"
         >
-          <Search className="h-5 w-5" />
+          <Search className="h-4 w-4" />
         </button>
         <input
           type="search"
-          placeholder="Search"
+          placeholder="  Search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="w-full rounded-r-md border border-gray-300 px-2 py-2 shadow-sm focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-100"
+          className="w-full rounded-r-md border border-gray-300 py-2 shadow-sm focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-100"
         />
       </form>
-    </div>
+    </SidebarMenuItem>
   );
 }

@@ -83,8 +83,7 @@ export default function ProfileChallengeDoing({ userId }: { userId: string }) {
               {activeTab === tab.id && (
                 <motion.div
                   layoutId="top-glow"
-                 
-                  className="left-1/5 absolute  w-20 -translate-x-1/2  h-1 bg-blue-600 md:border-blue-700 "
+                  className="left-1/5 absolute h-1 w-20 -translate-x-1/2 bg-blue-600 md:border-blue-700"
                   transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                 />
               )}

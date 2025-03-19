@@ -25,7 +25,7 @@ export const CommentNotificationToast = ({
             <img
               src={avatarUrl || '/images/default-profile.png'}
               alt="User Avatar"
-              className="h-12 w-12 rounded-full"
+              className="h-12 w-12 rounded-full object-cover"
             />
           </div>
           <div className="absolute -bottom-1 -right-1 rounded-full border-2 border-green-500 bg-green-500 p-0.5">

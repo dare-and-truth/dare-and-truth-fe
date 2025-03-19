@@ -112,7 +112,10 @@ export function ChatRoom() {
               if (conversation.id === conversationId) {
                 const unreadCount = conversation.unreadMessages;
                 if (unreadCount > 0) {
-                  setTimeout(() => setUnreadMessagesCount(pre => pre - unreadCount), 0)
+                  setTimeout(
+                    () => setUnreadMessagesCount((pre) => pre - unreadCount),
+                    0,
+                  );
                 }
                 return { ...conversation, unreadMessages: 0 };
               }

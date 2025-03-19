@@ -16,7 +16,7 @@ export function SearchChallengeUser() {
   };
 
   return (
-    <SidebarMenuItem className="p-1 mt-1">
+    <SidebarMenuItem className="mt-1 p-1">
       <form onSubmit={handleSearch} className="relative flex">
         <button
           type="submit"

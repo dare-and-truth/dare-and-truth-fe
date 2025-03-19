@@ -237,8 +237,12 @@ export function CreateCalendarDialog({
               <Input
                 placeholder="Event title"
                 value={eventTitle}
-                onChange={(e) => setEventTitle(e.target.value)}
-                maxLength={255}
+                onChange={(e) => {
+                  if (e.target.value.length <= 30) {
+                    setEventTitle(e.target.value);
+                  }
+                }}
+                maxLength={30}
               />
             )}
           </div>
@@ -250,9 +254,13 @@ export function CreateCalendarDialog({
               <Textarea
                 placeholder="Reminder content"
                 value={reminderContent}
-                onChange={(e) => setReminderContent(e.target.value)}
+                onChange={(e) => {
+                  if (e.target.value.length <= 100) {
+                    setReminderContent(e.target.value);
+                  }
+                }}
                 rows={4}
-                maxLength={255}
+                maxLength={100}
               />
             </div>
           )}

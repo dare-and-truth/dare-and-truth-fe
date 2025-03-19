@@ -15,7 +15,7 @@ export default function HashTag({
   return (
     <>
       <motion.a
-      href={`/feed/${challenges.type}/${challenges.id}`}
+        href={`/feed/${challenges.type}/${challenges.id}`}
         className="relative flex items-center overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 md:max-w-xl"
       >
         {/* Hiệu ứng nền xoay */}
@@ -32,7 +32,7 @@ export default function HashTag({
 
         {/* Nội dung card */}
         <Image
-          className="relative z-10 h-16 w-16 flex-shrink-0 rounded-s-lg object-cover lg:h-32 lg:w-28 m-2"
+          className="relative z-10 m-2 h-16 w-16 flex-shrink-0 rounded-s-lg object-cover lg:h-32 lg:w-28"
           src={challenges.mediaUrl}
           width={0}
           height={0}

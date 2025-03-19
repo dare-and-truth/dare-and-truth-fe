@@ -78,8 +78,8 @@ export const getChallengeByUserId = async (
 
 export const getChallengeDetailByHashTag = async (
   hashtag: string,
-  startDate:string,
-  endDate:string,
+  startDate: string,
+  endDate: string,
   page: number,
   size: number,
 ) => {

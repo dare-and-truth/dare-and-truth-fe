@@ -37,11 +37,11 @@ export function NavMain({
     }[];
   }[];
 }) {
-  const {unreadMessagesCount} = useUserApp();
+  const { unreadMessagesCount } = useUserApp();
   return (
     <SidebarGroup>
       <SidebarMenu>
-         <SearchChallengeUser />
+        <SearchChallengeUser />
         {items.map((item) => (
           <SidebarMenuItem className="p-1" key={item.text}>
             {/* Trường hợp là button (Notification) */}
@@ -61,14 +61,11 @@ export function NavMain({
                 <Link className="h-4" href={item.href}>
                   <span className="relative mr-2">
                     {item.icon}
-                    {item.text === 'Message' &&
-                      unreadMessagesCount > 0 && (
-                        <div className="absolute -right-0.5 -top-1.5 flex h-4 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
-                          {unreadMessagesCount > 9
-                            ? '9+'
-                            : unreadMessagesCount}
-                        </div>
-                      )}
+                    {item.text === 'Message' && unreadMessagesCount > 0 && (
+                      <div className="absolute -right-0.5 -top-1.5 flex h-4 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white">
+                        {unreadMessagesCount > 9 ? '9+' : unreadMessagesCount}
+                      </div>
+                    )}
                   </span>
                   <span>{item.text}</span>
                 </Link>

@@ -18,7 +18,7 @@ export function ChatRoomPreview({
       <div className="relative mr-3 flex-shrink-0">
         <Image
           alt={otherUser.avatarUrl + ' avatar'}
-          className="rounded-full object-cover sm:h-14 sm:w-14 h-12 w-12"
+          className="h-12 w-12 rounded-full object-cover sm:h-14 sm:w-14"
           src={
             otherUser.avatarUrl
               ? otherUser.avatarUrl.trim()
@@ -48,7 +48,9 @@ export function ChatRoomPreview({
           className={`truncate text-sm ${chat.unreadMessages > 0 ? 'font-medium text-foreground' : 'text-gray-500'}`}
         >
           {chat.lastMessage.senderId === otherUser.id ? '' : 'You: '}{' '}
-          {chat.lastMessage.content === null ? 'Sent an image' : chat.lastMessage.content}
+          {chat.lastMessage.content === null
+            ? 'Sent an image'
+            : chat.lastMessage.content}
         </p>
 
         <div className="mt-1 flex items-center justify-between">

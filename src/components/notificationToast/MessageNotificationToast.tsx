@@ -5,14 +5,12 @@ interface MessageToastProps {
   message: any;
 }
 
-export const MessageNotificationToast = ({
-  message
-}: MessageToastProps) => {
+export const MessageNotificationToast = ({ message }: MessageToastProps) => {
   const router = useRouter();
 
   const handleClick = () => {
     router.push(`/message?userId=${message.senderId.trim()}`);
-  }
+  };
   return (
     <div
       onClick={handleClick}

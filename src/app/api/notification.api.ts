@@ -41,11 +41,10 @@ export const getUserNotifications = async (
 };
 
 // Lấy số lượng notification chưa đọc của user
-export const getUnreadNotificationsCount = async (
-) => {
+export const getUnreadNotificationsCount = async () => {
   const response = await request({
     method: 'get',
-    url: `/notifications/unread/count`
+    url: `/notifications/unread/count`,
   });
   return response?.data;
 };
@@ -96,3 +95,10 @@ interface Page<T> {
   numberOfElements: number;
   empty: boolean;
 }
+
+export const updateFcmToken = async (token: string) => {
+  await request({
+    method: 'post',
+    url: `/notifications/update-fcm-token/${token}`,
+  });
+};

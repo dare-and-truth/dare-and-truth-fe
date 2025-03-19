@@ -7,6 +7,7 @@ export interface User {
   isActive?: boolean;
   avatarUrl?: string;
   isAdmin?: string;
+  fcmToken?: string;
 }
 
 export interface UserWithRequestsResponse {

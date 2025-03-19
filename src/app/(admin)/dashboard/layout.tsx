@@ -1,10 +1,9 @@
 'use client';
 import NavBar from '@/components/Header';
-import Header from '@/components/Header';
 import Loading from '@/components/Loading';
 import SideBar from '@/components/SideBar';
 import { jwtDecode } from 'jwt-decode';
-import { Badge, FileText, Users } from 'lucide-react';
+import { FileText, Users } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
@@ -38,7 +37,7 @@ export default function AdminLayout({
     if (!token || role !== 'admin') {
       setIsAuthorized(false);
       toast.error('You are not an admin. Please log in as an admin.');
-      router.push('/auth/login');
+      router.push('/');
     } else {
       setIsAuthorized(true);
     }

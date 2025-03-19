@@ -11,6 +11,7 @@ import { X } from 'lucide-react';
 import { MAX_FILE_SIZE, VALID_FILE_TYPES } from '@/app/constants';
 import { uploadFileToSupabase } from '@/app/helpers/uploadFileToSupabase';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 // Type definitions
 type FormData = z.infer<typeof formSchema>;
@@ -31,11 +32,16 @@ const formSchema = z
       ),
     hashtag: z
       .string()
+      .min(2, { message: 'Hashtag must be at least 2 characters.' })
+      .max(30, { message: 'Hashtag must not exceed 30 characters.' })
       .regex(
         /^[a-zA-Z0-9_]+$/,
         'Hashtag can only contain letters, numbers and underscores',
       ),
-    content: z.string(),
+    content: z
+      .string()
+      .min(10, { message: 'Content must be at least 10 characters.' })
+      .max(5000, { message: 'Content must not exceed 5000 characters.' }),
     startDate: z
       .string()
       .refine(
@@ -62,7 +68,7 @@ export default function CreateChallengeForm() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
+  const router = useRouter();
   // Handle file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -154,6 +160,7 @@ export default function CreateChallengeForm() {
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+    router.push('/home');
   };
 
   const handleRemoveFile = () => {

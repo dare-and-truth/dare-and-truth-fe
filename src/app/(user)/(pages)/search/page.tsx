@@ -33,6 +33,7 @@ function SearchContent() {
     if (!query) return;
 
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         if (activeTab === 'challenges') {
           const response = await getChallengeBySearchChallenge(query);
@@ -53,6 +54,8 @@ function SearchContent() {
         }
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -120,7 +123,7 @@ function SearchContent() {
   };
 
   return (
-    <div className="h-[calc(100vh-4rem)] overflow-y-auto p-4 pb-20 md:pb-4">
+    <div className="h-[calc(100vh-3rem)] overflow-y-auto p-4 pb-20 md:pb-4">
       <div className="mx-auto max-w-2xl p-4">
         <Tabs
           defaultValue="challenges"

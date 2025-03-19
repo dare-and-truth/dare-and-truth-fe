@@ -84,7 +84,11 @@ export default function RankingDisplay({
               <div className="absolute -top-8 flex w-full justify-center sm:-top-8">
                 <Avatar className="h-14 w-14 rounded-full border-4 border-orange-400 sm:h-16 sm:w-16 md:h-16 md:w-16">
                   <AvatarImage
-                    src={topUsers[1]?.avatarURL}
+                    src={
+                      topUsers[1]?.avatarURL?.trim()
+                        ? topUsers[1]?.avatarURL
+                        : '/images/default-profile.png'
+                    }
                     alt={topUsers[1]?.username || 'User'}
                     className="object-cover"
                   />
@@ -113,7 +117,11 @@ export default function RankingDisplay({
               <div className="absolute -top-8 flex w-full justify-center md:-top-12">
                 <Avatar className="h-16 w-16 rounded-full border-4 border-yellow-500 sm:h-24 sm:w-24 md:h-20 md:w-20">
                   <AvatarImage
-                    src={topUsers[0]?.avatarURL}
+                    src={
+                      topUsers[0]?.avatarURL?.trim()
+                        ? topUsers[0]?.avatarURL
+                        : '/images/default-profile.png'
+                    }
                     alt={topUsers[0]?.username || 'User'}
                     className="object-cover"
                   />
@@ -143,7 +151,11 @@ export default function RankingDisplay({
               <div className="absolute -top-8 flex w-full justify-center sm:-top-8">
                 <Avatar className="h-14 w-14 rounded-full border-4 border-purple-500 sm:h-16 sm:w-16 md:h-16 md:w-16">
                   <AvatarImage
-                    src={topUsers[2]?.avatarURL}
+                    src={
+                      topUsers[2]?.avatarURL?.trim()
+                        ? topUsers[2]?.avatarURL
+                        : '/images/default-profile.png'
+                    }
                     alt={topUsers[2]?.username || 'User'}
                     className="object-cover"
                   />
@@ -187,7 +199,11 @@ export default function RankingDisplay({
                 >
                   <Avatar className="mr-2 h-8 w-8 sm:mr-3 sm:h-10 sm:w-10">
                     <AvatarImage
-                      src={user.avatarURL}
+                      src={
+                        user.avatarURL?.trim()
+                          ? user.avatarURL
+                          : '/images/default-profile.png'
+                      }
                       alt={user.username}
                       className="object-cover"
                     />

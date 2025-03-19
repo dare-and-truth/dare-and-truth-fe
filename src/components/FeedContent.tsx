@@ -14,10 +14,7 @@ import {
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getPostByHashtag } from '@/app/api/post.api';
-
-const isVideo = (mediaUrl: string) => {
-  return mediaUrl?.match(/\.(mp4|webm|ogg)$/i);
-};
+import { ExpandedModal } from './ExpandedModal';
 
 export default function FeedContent({ feed }: { feed: FeedType }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +24,8 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
   const today = new Date();
   const endDate = new Date(feed.endDate);
   const isExpired = endDate < today;
-
+  const isVideo =
+    feed.mediaUrl?.endsWith('.mp4') || feed.mediaUrl?.endsWith('.webm');
   // Create a helper variable to decide the avatar URL
   const avatarUrl =
     feed.avatarUrl && feed.avatarUrl.trim() !== ''
@@ -172,60 +170,43 @@ export default function FeedContent({ feed }: { feed: FeedType }) {
 
       <div className="mb-4 overflow-hidden rounded-lg">
         {/* Dialog to show enlarged image/video */}
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            {isVideo(feed.mediaUrl) ? (
-              <video
-                src={feed.mediaUrl}
-                controls
-                className="w-full cursor-pointer"
-                style={{ maxHeight: '400px', objectFit: 'cover' }}
-                onClick={() => setIsOpen(true)}
-              />
-            ) : (
-              <Image
-                src={feed.mediaUrl}
-                alt="Challenge media"
-                width={0}
-                height={0}
-                sizes="100vw"
-                className="w-full cursor-pointer"
-                style={{
-                  maxHeight: '400px',
-                  height: 'auto',
-                  objectFit: 'cover',
-                }}
-                onClick={() => setIsOpen(true)}
-              />
-            )}
-          </DialogTrigger>
-          <DialogContent className="max-w-3xl p-0">
-            <DialogTitle />
-            {isVideo(feed.mediaUrl) ? (
-              <video
-                src={feed.mediaUrl}
-                controls
-                autoPlay
-                className="w-full"
-                style={{ maxHeight: '95vh', objectFit: 'contain' }}
-              />
-            ) : (
-              <Image
-                src={feed.mediaUrl}
-                alt="Challenge media zoomed"
-                width={0}
-                height={0}
-                sizes="100vw"
-                className="w-full"
-                style={{
-                  maxHeight: '80vh',
-                  height: 'auto',
-                  objectFit: 'contain',
-                }}
-              />
-            )}
-          </DialogContent>
-        </Dialog>
+        <div className="mb-4 overflow-hidden rounded-lg">
+          {isVideo && feed.mediaUrl ? (
+            <video
+              src={feed.mediaUrl}
+              controls
+              className="w-full cursor-pointer"
+              style={{ maxHeight: '400px', objectFit: 'cover' }}
+              onClick={() => {
+                setIsOpen(true);
+              }}
+            />
+          ) : (
+            <Image
+              src={feed.mediaUrl}
+              alt="Challenge media"
+              width={0}
+              height={0}
+              sizes="100vw"
+              className="w-full cursor-pointer"
+              style={{
+                maxHeight: '400px',
+                height: 'auto',
+                objectFit: 'cover',
+              }}
+              onClick={() => {
+                setIsOpen(true);
+              }}
+            />
+          )}
+        </div>
+        {isOpen && (
+          <ExpandedModal
+            fileType={isVideo ? 'video' : 'image'}
+            previewUrl={feed.mediaUrl}
+            onClose={() => setIsOpen(false)}
+          />
+        )}
       </div>
     </>
   );

@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 
 export const postSignUp = async (
   data: SignUpPayload,
-  navigate: AppRouterInstance,
 ) => {
   await request({
     method: 'post',
@@ -14,12 +13,12 @@ export const postSignUp = async (
     data,
     onSuccess: () => {
       toast.success('Sign Up successful');
-      navigate.push(LOGIN_PATH);
     },
     onError: (error) => {
       console.log('error in sign up', error);
     },
   });
+  return true;
 };
 export const postSignIn = async (data: LoginPayload) => {
   try {

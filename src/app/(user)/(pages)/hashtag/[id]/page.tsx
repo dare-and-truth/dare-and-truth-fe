@@ -18,7 +18,7 @@ export default function HashtagChallengePage() {
 
   const [challenges, setChallenges] = useState<FeedType | null>(null);
   const [posts, setPosts] = useState<FeedType[]>([]);
-  const [totalPosts, setTotalPosts] = useState(0);
+  const [totalPost, setTotalPosts] = useState(0);
   const [loading, setLoading] = useState(false);
   const [pageNumber, setPageNumber] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -37,7 +37,8 @@ export default function HashtagChallengePage() {
           0,
           6,
         );
-        setTotalPosts(response.totalPosts + response.feeds.length);
+        console.log(response);
+        setTotalPosts(response.totalPosts);
         setChallenges(response.feeds[0]);
         setPosts(response.feeds.slice(1));
         setPageNumber(1);
@@ -62,6 +63,7 @@ export default function HashtagChallengePage() {
         pageNumber,
         6,
       );
+      setTotalPosts((prev) => prev + response.totalPosts);
       setPosts((prev) => [...prev, ...response.feeds]); // Nối thêm dữ liệu
       setPageNumber((prev) => prev + 1); // Cập nhật trang tiếp theo
 
@@ -77,7 +79,6 @@ export default function HashtagChallengePage() {
   }, [hashtag, startDate, endDate]);
 
   if (loading && posts.length === 0) return <Loading />;
-
   return (
     <div
       className="h-[calc(100vh-4rem)] overflow-y-auto p-7 pb-20 md:pb-4"
@@ -85,7 +86,7 @@ export default function HashtagChallengePage() {
     >
       <div className="p-2 sm:p-4">
         {challenges && (
-          <HashTag challenges={challenges} totalPosts={totalPosts} />
+          <HashTag challenges={challenges} totalPosts={totalPost} />
         )}
 
         <InfiniteScroll

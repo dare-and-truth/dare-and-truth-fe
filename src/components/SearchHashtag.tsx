@@ -8,7 +8,6 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-// import CreatePostForm from '@/components/form/CreatePostForm';
 import { HashtagForDoChallengeResponse } from '@/app/types';
 import { getHashtags } from '@/app/api/reminder.api';
 import { Check } from 'lucide-react';

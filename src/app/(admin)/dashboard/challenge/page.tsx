@@ -2,14 +2,22 @@
 
 import { getChallenges } from '@/app/api/challenge.api';
 import { Challenge } from '@/app/types';
-import CreateChallengeDialog from '@/components/CreateChallengeDialog';
 import { DialogConfirm } from '@/components/DiaLogConfirmDelete';
 import NotFound from '@/components/NotFound';
 import Pagination from '@/components/Pagination';
 import SearchBar from '@/components/Search';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 
+// Tải động CreatePostForm, tắt SSR
+const CreateChallengeDialog = dynamic(
+  () => import('@/components/CreateChallengeDialog'),
+  {
+    ssr: false, // Chỉ chạy ở client-side
+    loading: () => <p>Loading form...</p>, // Hiển thị trong lúc tải
+  },
+);
 export default function ChallengePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);

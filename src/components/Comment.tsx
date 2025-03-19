@@ -129,7 +129,6 @@ export default function CommentComponent({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-  console.log("feeeuddeid và cmmtuser id",feedUserId,"cmt",comment.user.id);
   return (
     <div>
       {/* Comment Cha */}

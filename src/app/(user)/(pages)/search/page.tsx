@@ -123,7 +123,7 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-4rem)] overflow-y-auto p-4 pb-20 md:pb-4">
+    <div className="h-[calc(100vh-3rem)] overflow-y-auto p-4 pb-20 md:pb-4">
       <div className="mx-auto max-w-2xl p-4">
         <Tabs
           defaultValue="challenges"

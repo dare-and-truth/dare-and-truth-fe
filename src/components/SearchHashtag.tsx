@@ -8,11 +8,20 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-import CreatePostForm from '@/components/form/CreatePostForm';
+// import CreatePostForm from '@/components/form/CreatePostForm';
 import { HashtagForDoChallengeResponse } from '@/app/types';
 import { getHashtags } from '@/app/api/reminder.api';
 import { Check } from 'lucide-react';
+import dynamic from 'next/dynamic';
 
+// Tải động CreatePostForm, tắt SSR
+const CreatePostForm = dynamic(
+  () => import('@/components/form/CreatePostForm'),
+  {
+    ssr: false, // Chỉ chạy ở client-side
+    loading: () => <p>Loading form...</p>, // Hiển thị trong lúc tải
+  },
+);
 export default function SearchHashtag() {
   const [selectedItemHashtag, setSelectedItemHashtag] =
     useState<HashtagForDoChallengeResponse | null>(null);

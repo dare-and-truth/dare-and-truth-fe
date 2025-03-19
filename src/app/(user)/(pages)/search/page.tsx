@@ -2,7 +2,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import {
@@ -15,7 +15,7 @@ import FriendRequestCard from '@/components/FriendsRequestCard';
 import { useLoading } from '@/app/contexts';
 import Loading from '@/components/Loading';
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';
   const [activeTab, setActiveTab] = useState('challenges');
@@ -175,6 +175,16 @@ export default function SearchPage() {
           </TabsContent>
         </Tabs>
       </div>
+    </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <div className="h-[calc(100vh-4rem)] overflow-y-auto p-4 pb-20 md:pb-4">
+      <Suspense fallback={<Loading />}>
+        <SearchContent />
+      </Suspense>
     </div>
   );
 }

@@ -6,8 +6,8 @@ import {
   useRef,
   type KeyboardEvent,
   useLayoutEffect,
-  Suspense,
 } from 'react';
+import { Suspense } from 'react';
 import Link from 'next/link';
 import TextareaAutosize from 'react-textarea-autosize';
 import { Image as ImageIcon, Send, Smile, X } from 'lucide-react';
@@ -33,7 +33,10 @@ import { FilePreview } from '@/components/FilePreview';
 import { useUserApp } from '@/app/contexts/UserAppContext';
 import { markConversationAsRead } from '@/app/api/conversation.api';
 
+// Component con chứa logic dùng useSearchParams
 function ChatContent() {
+  const searchParams = useSearchParams();
+  const currentChatUserId = searchParams.get('userId');
   const [inputText, setInputText] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -50,7 +53,6 @@ function ChatContent() {
   const [nextMessageId, setNextMessageId] = useState<string | null>(null);
   const [hasMoreMessages, setHasMoreMessages] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const { setUnreadMessagesCount } = useUserApp();
@@ -63,12 +65,8 @@ function ChatContent() {
     conversations,
   } = useWebSocket();
 
-  const searchParams = useSearchParams();
-  let currentChatUserId: string | null;
-
   // Fetch the chat when the userId changes
   useLayoutEffect(() => {
-    currentChatUserId = searchParams.get('userId');
     const fetchChat = async () => {
       if (!currentChatUserId) return;
       try {
@@ -88,7 +86,7 @@ function ChatContent() {
       }
     };
     fetchChat();
-  }, [searchParams]);
+  }, [searchParams, currentChatUserId]);
 
   // Focus vào ô input khi component mount
   useEffect(() => {
@@ -130,7 +128,6 @@ function ChatContent() {
     }
   };
 
-  // Gắn sự kiện focus để đánh dấu đã đọc
   const handleInputFocus = () => {
     markAsRead();
   };
@@ -140,7 +137,6 @@ function ChatContent() {
   };
 
   useEffect(() => {
-    // Only scroll to bottom on initial load or when sending a new message
     if (isInitialLoad || messages.length > 0) {
       scrollToBottom();
     }
@@ -157,15 +153,11 @@ function ChatContent() {
 
     try {
       setLoadingMoreMessages(true);
-
-      // Store current scroll position before loading more messages
       const container = messagesContainerRef.current;
       if (!container) return;
 
       const oldScrollHeight = container.scrollHeight;
       const oldScrollTop = container.scrollTop;
-
-      // Get the first message element as a reference point
       const firstMessageElement = container.querySelector('.message-bubble');
       const firstMessageOffsetTop =
         firstMessageElement?.getBoundingClientRect().top;
@@ -178,17 +170,13 @@ function ChatContent() {
       });
 
       if (data.messages && data.messages.length > 0) {
-        // Update the messages state by adding older messages at the beginning
         setMessages((prevMessages) => [
           ...data.messages.reverse(),
           ...prevMessages,
         ]);
-
-        // Update the nextMessageId for the next fetch
         setNextMessageId(data.nextMessageId || null);
         setHasMoreMessages(!!data.nextMessageId);
 
-        // After rendering, restore scroll position
         requestAnimationFrame(() => {
           if (container) {
             const newScrollHeight = container.scrollHeight;
@@ -206,7 +194,6 @@ function ChatContent() {
     }
   };
 
-  // Handle scroll to detect when user reaches the top
   const handleScroll = () => {
     const container = messagesContainerRef.current;
     if (
@@ -234,8 +221,6 @@ function ChatContent() {
 
     try {
       setIsUploading(selectedFile !== null);
-
-      // Upload file if selected
       if (selectedFile) {
         mediaUrl = await uploadFileToSupabase(selectedFile);
       }
@@ -259,7 +244,6 @@ function ChatContent() {
         } as MessageResponse,
       ]);
 
-      // Update conversations list
       setConversations((prevConversations) => {
         const existingIndex = prevConversations.findIndex(
           (conversation) => conversation.id === conversationId,
@@ -271,7 +255,6 @@ function ChatContent() {
             ...updatedConversations[existingIndex],
           };
 
-          // Decrease unreadMessages count
           if (existingConversation.unreadMessages > 0) {
             setTimeout(() => {
               setUnreadMessagesCount(
@@ -287,13 +270,11 @@ function ChatContent() {
           existingConversation.unreadMessages = 0;
           existingConversation.updatedAt = new Date().toISOString();
 
-          // Move conversation to top of list
           updatedConversations.splice(existingIndex, 1);
           updatedConversations.unshift(existingConversation);
 
           return updatedConversations;
         } else {
-          // Create new conversation if not found
           const newConversation: Conversation = {
             id: conversationId,
             participants: [
@@ -315,7 +296,6 @@ function ChatContent() {
         }
       });
 
-      // Reset input
       setInputText('');
       setSelectedFile(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -355,11 +335,9 @@ function ChatContent() {
       return;
     }
 
-    // Create preview URL
     const objectUrl = URL.createObjectURL(selectedFile);
     setPreviewUrl(objectUrl);
 
-    // Clean up the URL when component unmounts or file changes
     return () => {
       URL.revokeObjectURL(objectUrl);
     };
@@ -394,7 +372,7 @@ function ChatContent() {
   }
 
   return (
-    <div className="absolute inset-0 flex flex-col bg-white dark:bg-[#1c1c1c] md:left-[350px]">
+    <div className="absolute inset-0 flex flex-col bg-white dark:bg-[#1c1c1c]">
       <div className="flex h-[60px] items-center gap-2 border-b border-stone-300 pl-6 dark:border-stone-700 md:gap-4 md:pl-6">
         <Link href={`/profile/${currentChatUser.id}`}>
           <Image
@@ -476,7 +454,7 @@ function ChatContent() {
             className="scrollbar mx-2 flex-1 resize-none bg-transparent py-2 text-sm focus:outline-none dark:bg-[#262626] dark:text-white"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            onFocus={handleInputFocus} // Đánh dấu đã đọc khi focus
+            onFocus={handleInputFocus}
             placeholder="Message..."
             maxRows={1}
             minRows={1}
@@ -522,7 +500,8 @@ function ChatContent() {
   );
 }
 
-export function ChatRoom() {
+// Component chính bọc Suspense
+export default function ChatRoomWrapper() {
   return (
     <Suspense fallback={<Loading />}>
       <ChatContent />

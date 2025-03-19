@@ -425,7 +425,7 @@ body {
 .border-gradient {
   border: 1px solid transparent;
   border-radius: 100%;
-  background: linear-gradient(45deg, #ff00ff, #ffcc00);
+  background: linear-gradient(45deg, #3a2739, #cd2e43, #e76d7e);
   background-clip: padding-box;
   padding: 2px; /* Đảm bảo phần nền gradient hiển thị */
 }

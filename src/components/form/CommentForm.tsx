@@ -60,6 +60,7 @@ export default function CommentForm({
   }, []);
 
   const handleContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    if (e.target.value.length > 20) return;
     setContent(e.target.value);
     setErrors((prev) => ({ ...prev, content: undefined }));
   };
@@ -221,7 +222,7 @@ export default function CommentForm({
             <Button
               type="submit"
               variant={'join'}
-              disabled={(!content.trim() && !media) || !content || isLoading} // Vô hiệu hóa nút gửi khi loading
+              disabled={(!content.trim() && !media) || isLoading} // Vô hiệu hóa nút gửi khi loading
               className="m-1"
             >
               {isLoading ? (

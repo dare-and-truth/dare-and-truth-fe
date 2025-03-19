@@ -43,12 +43,11 @@ export default function CommentComponent({
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
-
+  const [usernameError, setUsernameError] = useState('');
   // 🆕 State để lưu reply comments
   const [replyComments, setReplyComments] = useState<any[]>([]);
   const [isReplyVisible, setIsReplyVisible] = useState(false); // Điều khiển hiển thị reply
   const [replies, setReplies] = useState<CommentType[]>([]);
-  const [loadingReplies, setLoadingReplies] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
   const currentUserId =
     typeof window !== 'undefined' ? localStorage.getItem('userId') : null;
@@ -62,7 +61,6 @@ export default function CommentComponent({
     if (!isReplyVisible) return;
 
     const fetchReplyComments = async () => {
-      setLoadingReplies(true);
       try {
         const replyData = await getRepliesByCommentId(comment.id);
 
@@ -74,8 +72,6 @@ export default function CommentComponent({
         setLoadComment(true);
       } catch (error) {
         console.error('Error fetching reply comments:', error);
-      } finally {
-        setLoadingReplies(false);
       }
     };
 
@@ -117,7 +113,11 @@ export default function CommentComponent({
     setEditedContent(comment.content);
     setIsEditing(false);
   };
-
+  const handleReplyContentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value.length > 2000) return; // Nếu vượt quá 30 ký tự thì không cập nhật
+    setEditedContent(value);
+  }
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -160,7 +160,7 @@ export default function CommentComponent({
                 <div className="flex w-full items-center">
                   <textarea
                     value={editedContent}
-                    onChange={(e) => setEditedContent(e.target.value)}
+                    onChange={() => handleReplyContentChange}
                     className="flex-1 resize-none rounded border p-1"
                     rows={3}
                   />
@@ -214,10 +214,10 @@ export default function CommentComponent({
               {comment.numberOfReplies > 0 && (
                 <button
                   onClick={() => setIsReplyVisible((prev) => !prev)}
-                  className="text-sm text-blue-500 hover:underline"
+                  className="text-sm text-gray-400 hover:underline"
                 >
                   {isReplyVisible
-                    ? 'Hide replies'
+                    ? 'Hide '
                     : `See ${comment.numberOfReplies} ${comment.numberOfReplies === 1 ? 'reply' : 'replies'}`}
                 </button>
               )}
@@ -225,7 +225,7 @@ export default function CommentComponent({
               {/* Nút Reply (chỉ hiển thị nếu không phải đang edit) */}
               {!isEditing && comment.level < 3 && (
                 <button
-                  className="text-sm text-blue-500 hover:underline"
+                  className="text-sm text-gray-400 hover:underline"
                   onClick={() =>
                     handleReplyComment(comment.id, comment.user.username)
                   }
@@ -239,7 +239,7 @@ export default function CommentComponent({
                 <div className="flex items-center">
                   <button
                     onClick={handleCancelEdit}
-                    className="text-blue-400 hover:text-blue-500"
+                    className="text-gray-400 hover:text-blue-500"
                   >
                     Cancel
                   </button>

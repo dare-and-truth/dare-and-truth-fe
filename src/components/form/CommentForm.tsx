@@ -60,7 +60,7 @@ export default function CommentForm({
   }, []);
 
   const handleContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    if (e.target.value.length > 20) return;
+    if (e.target.value.length > 2000) return;
     setContent(e.target.value);
     setErrors((prev) => ({ ...prev, content: undefined }));
   };

@@ -6,6 +6,8 @@ export interface NotificationItem {
     | 'like-post'
     | 'comment-post'
     | 'comment-challenge'
+    | 'reply-comment-post'
+    | 'reply-comment-challenge'
     | 'like-post'
     | 'like-challenge';
   content: string;

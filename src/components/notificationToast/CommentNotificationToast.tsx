@@ -1,4 +1,5 @@
 import { MessageSquare } from 'lucide-react';
+import Image from 'next/image';
 
 interface CommentToastProps {
   name: string;
@@ -22,7 +23,9 @@ export const CommentNotificationToast = ({
       <div className="flex items-center gap-4">
         <div className="relative">
           <div className="flex-shrink-0">
-            <img
+            <Image
+              height={0}
+              width={0}
               src={avatarUrl || '/images/default-profile.png'}
               alt="User Avatar"
               className="h-12 w-12 rounded-full object-cover"
@@ -44,11 +47,9 @@ export const CommentNotificationToast = ({
       </div>
 
       <div className="bg-muted/50 rounded-md p-2 text-sm italic">
-        "
         {commentContent.length > 60
           ? `${commentContent.substring(0, 60)}...`
           : commentContent}
-        "
       </div>
     </div>
   );

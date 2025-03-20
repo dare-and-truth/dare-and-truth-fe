@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
 import { ExpandedModal } from '@/components/ExpandedModal';
+import Image from 'next/image';
 
 interface FilePreviewProps {
   fileType: 'image' | 'video' | 'other';
@@ -31,7 +32,9 @@ export function FilePreview({
     <div className={`relative inline-block ${className}`}>
       <div className="cursor-pointer" onClick={toggleExpanded}>
         {fileType === 'image' && (
-          <img
+          <Image
+            height={0}
+            width={0}
             src={previewUrl || '/placeholder.svg'}
             alt="Preview"
             className="h-20 w-20 rounded object-cover"

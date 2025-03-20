@@ -2,14 +2,21 @@
 
 import { getPost } from '@/app/api/post.api';
 import { Post } from '@/app/types';
-import CreatePostDialog from '@/components/CreatePostDialog';
 import { DialogConfirm } from '@/components/DiaLogConfirmDelete';
 import NotFound from '@/components/NotFound';
 import Pagination from '@/components/Pagination';
 import SearchBar from '@/components/Search';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
-
+import dynamic from 'next/dynamic';
+// Tải động CreatePostForm, tắt SSR
+const CreatePostDialog = dynamic(
+  () => import('@/components/CreatePostDialog'),
+  {
+    ssr: false, // Chỉ chạy ở client-side
+    loading: () => <p>Loading form...</p>, // Hiển thị trong lúc tải
+  },
+);
 export default function PostPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);

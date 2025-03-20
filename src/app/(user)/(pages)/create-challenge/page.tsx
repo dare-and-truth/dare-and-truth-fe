@@ -1,5 +1,13 @@
-import CreateChallengeForm from '@/components/form/CreateChallengeForm';
-
+'use client';
+import dynamic from 'next/dynamic';
+// Tải động CreatePostForm, tắt SSR
+const CreateChallengeForm = dynamic(
+  () => import('@/components/form/CreateChallengeForm'),
+  {
+    ssr: false, // Chỉ chạy ở client-side
+    loading: () => <p>Loading form...</p>, // Hiển thị trong lúc tải
+  },
+);
 export default function CreateChallengePage() {
   return (
     <div

@@ -43,8 +43,6 @@ export default function CommentComponent({
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
-  const [usernameError, setUsernameError] = useState('');
-  // 🆕 State để lưu reply comments
   const [replyComments, setReplyComments] = useState<any[]>([]);
   const [isReplyVisible, setIsReplyVisible] = useState(false); // Điều khiển hiển thị reply
   const [replies, setReplies] = useState<CommentType[]>([]);

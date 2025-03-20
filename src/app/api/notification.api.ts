@@ -32,6 +32,7 @@ export const getUserNotifications = async (
       sort: params?.sort || 'createdAt,desc',
     },
     onSuccess: (data) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       handleSuccess && handleSuccess(data);
     },
     onError: (error) => {
@@ -58,6 +59,7 @@ export const markNotificationAsRead = async (
     method: 'put',
     url: `/notifications/${notificationId}/read`,
     onSuccess: () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       handleSuccess && handleSuccess();
     },
     onError: (error) => {

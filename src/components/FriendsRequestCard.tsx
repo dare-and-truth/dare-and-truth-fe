@@ -37,12 +37,6 @@ export default function FriendRequestCard({
 
   // Lấy userId từ localStorage
   const currentUserId = localStorage.getItem('userId');
-
-  // Kiểm tra nếu mode là 'requests' và người dùng hiện tại là người gửi, không hiển thị
-  if (mode === 'requests' && currentUserId && followerId === currentUserId) {
-    return null;
-  }
-
   useEffect(() => {
     const updateUI = () => {
       if (window.innerWidth < 1024) {
@@ -87,6 +81,11 @@ export default function FriendRequestCard({
     if (diffDays < 30) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
     return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
   }, [followedAt, acceptedAt, isAccepted]);
+
+  // Kiểm tra nếu mode là 'requests' và người dùng hiện tại là người gửi, không hiển thị
+  if (mode === 'requests' && currentUserId && followerId === currentUserId) {
+    return null;
+  }
 
   const handleAddFriend = async () => {
     if (!userId || !currentUserId) {

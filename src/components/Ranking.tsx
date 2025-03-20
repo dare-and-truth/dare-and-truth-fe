@@ -18,8 +18,8 @@ export default function RankingDisplay({
   type,
 }: RankingProps) {
   const [windowDimesion, setDimesion] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width: typeof window !== 'undefined' ? window.innerWidth : 0,
+    height: typeof window !== 'undefined' ? window.innerHeight : 0,
   });
   const detectSize = () => {
     setDimesion({
@@ -84,7 +84,11 @@ export default function RankingDisplay({
               <div className="absolute -top-8 flex w-full justify-center sm:-top-8">
                 <Avatar className="h-14 w-14 rounded-full border-4 border-orange-400 sm:h-16 sm:w-16 md:h-16 md:w-16">
                   <AvatarImage
-                    src={topUsers[1]?.avatarURL?.trim() ? topUsers[1]?.avatarURL : '/images/default-profile.png'}
+                    src={
+                      topUsers[1]?.avatarURL?.trim()
+                        ? topUsers[1]?.avatarURL
+                        : '/images/default-profile.png'
+                    }
                     alt={topUsers[1]?.username || 'User'}
                     className="object-cover"
                   />
@@ -113,7 +117,11 @@ export default function RankingDisplay({
               <div className="absolute -top-8 flex w-full justify-center md:-top-12">
                 <Avatar className="h-16 w-16 rounded-full border-4 border-yellow-500 sm:h-24 sm:w-24 md:h-20 md:w-20">
                   <AvatarImage
-                    src={topUsers[0]?.avatarURL?.trim() ? topUsers[0]?.avatarURL : '/images/default-profile.png'}
+                    src={
+                      topUsers[0]?.avatarURL?.trim()
+                        ? topUsers[0]?.avatarURL
+                        : '/images/default-profile.png'
+                    }
                     alt={topUsers[0]?.username || 'User'}
                     className="object-cover"
                   />
@@ -143,7 +151,11 @@ export default function RankingDisplay({
               <div className="absolute -top-8 flex w-full justify-center sm:-top-8">
                 <Avatar className="h-14 w-14 rounded-full border-4 border-purple-500 sm:h-16 sm:w-16 md:h-16 md:w-16">
                   <AvatarImage
-                    src={topUsers[2]?.avatarURL?.trim() ? topUsers[2]?.avatarURL : '/images/default-profile.png'}
+                    src={
+                      topUsers[2]?.avatarURL?.trim()
+                        ? topUsers[2]?.avatarURL
+                        : '/images/default-profile.png'
+                    }
                     alt={topUsers[2]?.username || 'User'}
                     className="object-cover"
                   />
@@ -177,36 +189,42 @@ export default function RankingDisplay({
               className={`mt-2 grid gap-2 ${nearbyUsers.length > 1 ? 'mb-32 grid-cols-1 sm:grid-cols-2 md:mb-48' : 'mb-48 space-y-2'}`}
             >
               {nearbyUsers.map((user) => (
-                <Card
-                  key={user.userId}
-                  className={`flex items-center rounded-xl border-0 p-2 transition-all duration-200 hover:brightness-125 sm:p-3 ${
-                    user.userId === currentUserId
-                      ? 'bg-gradient-to-r from-orange-400 to-purple-500'
-                      : 'bg-[#2E3034]'
-                  }`}
-                >
-                  <Avatar className="mr-2 h-8 w-8 sm:mr-3 sm:h-10 sm:w-10">
-                    <AvatarImage
-                      src={user.avatarURL?.trim() ? user.avatarURL : '/images/default-profile.png'}
-                      alt={user.username}
-                      className="object-cover"
-                    />
-                    <AvatarFallback>{user.username[0]}</AvatarFallback>
-                  </Avatar>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium text-white">
-                      {user.username}
-                    </p>
-                    <p className="text-xs text-gray-200 sm:text-sm">
-                      {user.totalScore} {type === 'score' ? 'score' : 'like'}
-                    </p>
-                  </div>
-                  <div className="ml-2 flex items-center rounded-full border border-white">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full text-xs text-white sm:h-6 sm:w-6 sm:text-sm">
-                      {user.rank}
-                    </span>
-                  </div>
-                </Card>
+                <Link href={`/profile/${user.userId}`} key={user.userId}>
+                  <Card
+                    key={user.userId}
+                    className={`flex items-center rounded-xl border-0 p-2 transition-all duration-200 hover:brightness-125 sm:p-3 ${
+                      user.userId === currentUserId
+                        ? 'bg-gradient-to-r from-orange-400 to-purple-500'
+                        : 'bg-[#2E3034]'
+                    }`}
+                  >
+                    <Avatar className="mr-2 h-8 w-8 sm:mr-3 sm:h-10 sm:w-10">
+                      <AvatarImage
+                        src={
+                          user.avatarURL?.trim()
+                            ? user.avatarURL
+                            : '/images/default-profile.png'
+                        }
+                        alt={user.username}
+                        className="object-cover"
+                      />
+                      <AvatarFallback>{user.username[0]}</AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium text-white">
+                        {user.username}
+                      </p>
+                      <p className="text-xs text-gray-200 sm:text-sm">
+                        {user.totalScore} {type === 'score' ? 'score' : 'like'}
+                      </p>
+                    </div>
+                    <div className="ml-2 flex items-center rounded-full border border-white">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full text-xs text-white sm:h-6 sm:w-6 sm:text-sm">
+                        {user.rank}
+                      </span>
+                    </div>
+                  </Card>
+                </Link>
               ))}
             </div>
           </div>

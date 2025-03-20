@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
+import Image from 'next/image';
 
 interface ExpandedModalProps {
   fileType: 'image' | 'video' | 'other';
@@ -74,7 +75,9 @@ export function ExpandedModal({
         </button>
 
         {fileType === 'image' && (
-          <img
+          <Image
+            height={0}
+            width={0}
             src={previewUrl || '/placeholder.svg'}
             alt="Preview"
             className="max-h-[85vh] max-w-[85vw] rounded object-contain"

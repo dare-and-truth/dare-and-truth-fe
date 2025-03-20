@@ -36,6 +36,7 @@ import Loading from '@/components/Loading';
 import { useRouter } from 'next/navigation';
 import { useLoading } from '@/app/contexts';
 import { useUserApp } from '@/app/contexts/UserAppContext';
+import Image from 'next/image';
 
 export function NotificationDropdown({
   icon,
@@ -270,7 +271,9 @@ export function NotificationDropdown({
       >
         <div className="relative">
           <div className="flex-shrink-0">
-            <img
+            <Image
+              height={0}
+              width={0}
               src={
                 notification.sender.senderAvatarUrl  ||
                 '/images/default-profile.png'
@@ -341,11 +344,9 @@ export function NotificationDropdown({
               notification.type ==='reply-comment-post'
             ) && (
               <div className="bg-muted/50 rounded-md p-2 text-sm italic">
-                "
                 {notification.content.length > 30
                   ? `${notification.content.substring(0, 30)}...`
                   : notification?.content}
-                "
               </div>
             )}
           </div>

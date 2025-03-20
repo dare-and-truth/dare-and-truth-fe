@@ -32,6 +32,7 @@ export const getUserNotifications = async (
       sort: params?.sort || 'createdAt,desc',
     },
     onSuccess: (data) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       handleSuccess && handleSuccess(data);
     },
     onError: (error) => {
@@ -58,6 +59,7 @@ export const markNotificationAsRead = async (
     method: 'put',
     url: `/notifications/${notificationId}/read`,
     onSuccess: () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       handleSuccess && handleSuccess();
     },
     onError: (error) => {
@@ -95,3 +97,10 @@ interface Page<T> {
   numberOfElements: number;
   empty: boolean;
 }
+
+export const updateFcmToken = async (token: string) => {
+  await request({
+    method: 'post',
+    url: `/notifications/update-fcm-token/${token}`,
+  });
+};

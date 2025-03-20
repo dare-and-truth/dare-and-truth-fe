@@ -1,3 +1,4 @@
+'use client';
 import { ChatProvider } from '@/app/contexts/ChatContext';
 import ChatLayout from '@/components/chat/ChatLayout';
 

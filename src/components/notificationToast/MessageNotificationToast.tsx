@@ -1,4 +1,5 @@
 import { MessageSquare } from 'lucide-react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 interface MessageToastProps {
@@ -19,7 +20,9 @@ export const MessageNotificationToast = ({ message }: MessageToastProps) => {
       <div className="flex items-center gap-4">
         <div className="relative">
           <div className="flex-shrink-0">
-            <img
+            <Image
+              height={0}
+              width={0}
               src={message.senderAvatarUrl || '/images/default-profile.png'}
               alt="User Avatar"
               className="h-12 w-12 rounded-full object-cover"

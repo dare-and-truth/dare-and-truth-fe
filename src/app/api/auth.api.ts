@@ -4,9 +4,7 @@ import request from '@/app/utils/Axiosconfig';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { toast } from 'react-toastify';
 
-export const postSignUp = async (
-  data: SignUpPayload,
-) => {
+export const postSignUp = async (data: SignUpPayload) => {
   await request({
     method: 'post',
     url: '/auth/sign-up',

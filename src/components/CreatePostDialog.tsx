@@ -19,6 +19,7 @@ import { supabaseClient } from '@/app/utils/Supabase';
 import { CreatePostPayload } from '@/app/types';
 import { postPost } from '@/app/api/post.api';
 import { X } from 'lucide-react';
+import Image from 'next/image';
 
 const supabase = supabaseClient;
 
@@ -204,7 +205,9 @@ export default function CreatePostDialog(props: any) {
             {filePreview && (
               <div className="relative w-full">
                 {formData.file?.type.startsWith('image/') ? (
-                  <img
+                  <Image
+                    height={0}
+                    width={0}
                     src={filePreview}
                     alt="Preview"
                     className="w-full rounded-md object-contain"

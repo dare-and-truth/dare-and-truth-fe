@@ -10,6 +10,7 @@ import { postChallenge } from '@/app/api/challenge.api';
 import { X } from 'lucide-react';
 import { MAX_FILE_SIZE, VALID_FILE_TYPES } from '@/app/constants';
 import { uploadFileToSupabase } from '@/app/helpers/uploadFileToSupabase';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 // Type definitions
@@ -67,7 +68,7 @@ export default function CreateChallengeForm() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
- const router = useRouter();
+  const router = useRouter();
   // Handle file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -159,7 +160,7 @@ export default function CreateChallengeForm() {
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-   router.push('/home');
+    router.push('/home');
   };
 
   const handleRemoveFile = () => {
@@ -247,7 +248,9 @@ export default function CreateChallengeForm() {
         {filePreview && (
           <div className="relative w-full">
             {formData.file?.type.startsWith('image/') ? (
-              <img
+              <Image
+                height={0}
+                width={0}
                 src={filePreview}
                 alt="Preview"
                 className="w-full rounded-md object-contain"

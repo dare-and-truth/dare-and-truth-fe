@@ -6,6 +6,7 @@ import {
   useRef,
   type KeyboardEvent,
   useLayoutEffect,
+  Suspense,
 } from 'react';
 import Link from 'next/link';
 import TextareaAutosize from 'react-textarea-autosize';
@@ -32,7 +33,7 @@ import { FilePreview } from '@/components/FilePreview';
 import { useUserApp } from '@/app/contexts/UserAppContext';
 import { markConversationAsRead } from '@/app/api/conversation.api';
 
-export function ChatRoom() {
+function ChatContent() {
   const [inputText, setInputText] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -518,5 +519,13 @@ export function ChatRoom() {
         </div>
       </div>
     </div>
+  );
+}
+
+export function ChatRoom() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <ChatContent />
+    </Suspense>
   );
 }

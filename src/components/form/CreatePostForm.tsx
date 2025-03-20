@@ -11,6 +11,7 @@ import { MAX_FILE_SIZE, VALID_FILE_TYPES } from '@/app/constants';
 import { uploadFileToSupabase } from '@/app/helpers/uploadFileToSupabase';
 import { postPost } from '@/app/api/post.api';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 // Type definitions
 type FormData = z.infer<typeof formSchema>;
@@ -171,7 +172,9 @@ export default function CreatePostForm({
           {filePreview && formData.file && (
             <div className="relative w-full">
               {formData.file.type.startsWith('image/') ? (
-                <img
+                <Image
+                  height={0}
+                  width={0}
                   src={filePreview}
                   alt="Preview"
                   className="h-[250px] w-full rounded-md border object-cover"

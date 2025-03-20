@@ -19,7 +19,7 @@ import { useUserApp } from '@/app/contexts/UserAppContext';
 import { MessageNotificationToast } from '@/components/notificationToast/MessageNotificationToast';
 import { usePathname } from 'next/navigation';
 import { ReplyCommentNotificationToast } from '@/components/notificationToast/ReplyCommentNotificationToast';
-const SockJS = require('sockjs-client');
+import SockJS from 'sockjs-client';
 
 interface WebSocketContextType {
   client: Client | null;
@@ -179,7 +179,7 @@ export const WebSocketProvider: React.FC<{
           hideProgressBar: true,
         },
       );
-    }else if (notification.type === 'reply-comment-post') {
+    } else if (notification.type === 'reply-comment-post') {
       // Reply comment trên bài post
       toast(
         <ReplyCommentNotificationToast

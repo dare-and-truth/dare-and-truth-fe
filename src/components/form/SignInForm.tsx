@@ -100,16 +100,16 @@ export default function SignInForm() {
         alt="image"
         width={0}
         height={0}
-        className="h-32 w-32 object-cover animate-pulse"
+        className="h-32 w-32 animate-pulse object-cover"
       />
       <div className="flex">
-        <h2 className="mb-2 mr-2 font-serif md:text-3xl text-xl text-gray-500">
+        <h2 className="mb-2 mr-2 font-serif text-xl text-gray-500 md:text-3xl">
           Welcome Back
         </h2>
-        <h2 className="animate-tilt md:text-3xl text-xl">👋</h2>
+        <h2 className="animate-tilt text-xl md:text-3xl">👋</h2>
       </div>
 
-      <div className="md:w-3/5 w-full">
+      <div className="w-full md:w-3/5">
         <Label htmlFor="email">Email</Label>
         <Input
           id="email"
@@ -122,7 +122,7 @@ export default function SignInForm() {
         {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
       </div>
 
-      <div className="relative md:w-3/5 w-full">
+      <div className="relative w-full md:w-3/5">
         <Label htmlFor="password">Password</Label>
         <div className="relative">
           <Input

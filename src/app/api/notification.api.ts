@@ -95,3 +95,10 @@ interface Page<T> {
   numberOfElements: number;
   empty: boolean;
 }
+
+export const updateFcmToken = async (token: string) => {
+  await request({
+    method: 'post',
+    url: `/notifications/update-fcm-token/${token}`,
+  });
+};

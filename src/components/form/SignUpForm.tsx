@@ -72,13 +72,13 @@ export default function SignUpForm({
       className="auth-form sign-up-form mx-auto flex w-full flex-col items-center space-y-4 px-4 sm:px-6 md:px-8"
     >
       <div className="flex">
-        <h2 className="mb-2 font-serif md:text-3xl text-xl text-gray-500">
+        <h2 className="mb-2 font-serif text-xl text-gray-500 md:text-3xl">
           Sign Up & Elevate Your Life
         </h2>
-        <h2 className="animate-tilt md:text-3xl text-xl">🚀</h2>
+        <h2 className="animate-tilt text-xl md:text-3xl">🚀</h2>
       </div>
 
-      <div className="w-full  md:w-3/5">
+      <div className="w-full md:w-3/5">
         <Label htmlFor="email">Email</Label>
         <Input
           {...register('email')}
@@ -94,7 +94,7 @@ export default function SignUpForm({
         )}
       </div>
 
-      <div className="w-full  md:w-3/5">
+      <div className="w-full md:w-3/5">
         <Label htmlFor="username">User name</Label>
         <Input
           {...register('username')}
@@ -110,7 +110,7 @@ export default function SignUpForm({
         )}
       </div>
 
-      <div className="relative w-full  md:w-3/5">
+      <div className="relative w-full md:w-3/5">
         <Label htmlFor="password">Password</Label>
         <div className="relative">
           <Input
@@ -141,7 +141,7 @@ export default function SignUpForm({
         )}
       </div>
 
-      <div className="relative w-full  md:w-3/5">
+      <div className="relative w-full md:w-3/5">
         <Label htmlFor="confirm-password">Confirm Password</Label>
         <div className="relative">
           <Input

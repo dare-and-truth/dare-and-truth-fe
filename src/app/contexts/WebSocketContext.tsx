@@ -18,6 +18,7 @@ import { Conversation, MessageResponse } from '@/app/types';
 import { useUserApp } from '@/app/contexts/UserAppContext';
 import { MessageNotificationToast } from '@/components/notificationToast/MessageNotificationToast';
 import { usePathname } from 'next/navigation';
+import { ReplyCommentNotificationToast } from '@/components/notificationToast/ReplyCommentNotificationToast';
 import SockJS from 'sockjs-client';
 
 interface WebSocketContextType {
@@ -171,6 +172,42 @@ export const WebSocketProvider: React.FC<{
           avatarUrl={notification.senderAvatarUrl}
           hashtag={notification.hashtag}
           feedId={notification.challengeId}
+        />,
+        {
+          autoClose: 5000,
+          closeOnClick: false,
+          hideProgressBar: true,
+        },
+      );
+    } else if (notification.type === 'reply-comment-post') {
+      // Reply comment trên bài post
+      toast(
+        <ReplyCommentNotificationToast
+          type={notification.type}
+          name={notification.senderName}
+          avatarUrl={notification.senderAvatarUrl}
+          hashtag={notification.hashtag}
+          parentCommentId={notification.parentCommentId}
+          feedId={notification.postId}
+          commentContent={notification.commentContent}
+        />,
+        {
+          autoClose: 5000,
+          closeOnClick: false,
+          hideProgressBar: true,
+        },
+      );
+    } else if (notification.type === 'reply-comment-challenge') {
+      // Reply comment trên challenge
+      toast(
+        <ReplyCommentNotificationToast
+          type={notification.type}
+          name={notification.senderName}
+          avatarUrl={notification.senderAvatarUrl}
+          hashtag={notification.hashtag}
+          parentCommentId={notification.parentCommentId}
+          feedId={notification.challengeId}
+          commentContent={notification.commentContent}
         />,
         {
           autoClose: 5000,

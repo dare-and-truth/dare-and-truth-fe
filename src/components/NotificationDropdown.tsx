@@ -141,6 +141,10 @@ export function NotificationDropdown({
         return MessageSquare;
       case 'comment-challenge':
         return MessageSquare;
+      case 'reply-comment-post':
+        return MessageSquare;
+      case 'reply-comment-challenge':
+        return MessageSquare;
       case 'like-post':
         return Heart;
       case 'like-challenge':
@@ -156,6 +160,10 @@ export function NotificationDropdown({
       case 'comment-post':
         return 'border-green-500 bg-green-500';
       case 'comment-challenge':
+        return 'border-green-500 bg-green-500';
+      case 'reply-comment-post':
+        return 'border-green-500 bg-green-500';
+      case 'reply-comment-post':
         return 'border-green-500 bg-green-500';
       case 'like-post':
         return 'border-red-500 bg-red-500';
@@ -217,12 +225,14 @@ export function NotificationDropdown({
       setIsDropdownOpen(false);
       if (
         notification.type === 'like-post' ||
-        notification.type === 'comment-post'
+        notification.type === 'comment-post'||
+        notification.type === 'reply-comment-post'
       ) {
         router.push(`/feed/post/${notification.relatedEntity.id}`);
       } else if (
         notification.type === 'like-challenge' ||
-        notification.type === 'comment-challenge'
+        notification.type === 'comment-challenge' ||
+        notification.type ==='reply-comment-challenge'
       ) {
         router.push(`/feed/challenge/${notification.relatedEntity.id}`);
       }
@@ -244,12 +254,15 @@ export function NotificationDropdown({
       content = `Commented on your challenge`;
     } else if (notification.type === 'comment-challenge') {
       content = `Commented on your challenge`;
+    }else if (notification.type === 'reply-comment-post') {
+      content = `Replied to your comment on a challenge`;
+    } else if (notification.type ==='reply-comment-challenge') {
+      content = `Replied to your comment on a challenge`;
     } else if (notification.type === 'friend-request') {
       content = `Sent you a friend request`;
     }
 
     const NotificationIcon = getNotificationIcon(notification.type);
-
     return (
       <div
         key={notification.id}
@@ -262,7 +275,7 @@ export function NotificationDropdown({
               height={0}
               width={0}
               src={
-                notification.sender.senderAvatarUrl ||
+                notification.sender.senderAvatarUrl  ||
                 '/images/default-profile.png'
               }
               alt="User Avatar"
@@ -326,7 +339,10 @@ export function NotificationDropdown({
               </div>
             )}
             {(notification.type === 'comment-challenge' ||
-              notification.type === 'comment-post') && (
+              notification.type === 'comment-post'||
+              notification.type ==='reply-comment-challenge' ||
+              notification.type ==='reply-comment-post'
+            ) && (
               <div className="bg-muted/50 rounded-md p-2 text-sm italic">
                 {notification.content.length > 30
                   ? `${notification.content.substring(0, 30)}...`
@@ -334,7 +350,7 @@ export function NotificationDropdown({
               </div>
             )}
           </div>
-          {notification.relatedEntity.hashtag && (
+          {notification.relatedEntity?.hashtag && (
             <div className="inline-flex items-center rounded-full bg-blue-300 px-2 py-0.5 text-xs font-medium text-blue-800">
               #
               {notification.relatedEntity.hashtag.length > 30

@@ -67,7 +67,8 @@ export default function RankingPage() {
 
     fetchRanking();
   }, [currentUserId, challengeId]);
-
+  console.log(topUsers);
+  console.log(nearbyUsers);
   return (
     <div className="h-[calc(100vh-4rem)] overflow-hidden p-2 pb-20 sm:p-4 md:p-7 md:pb-4">
       <div className="mx-auto max-w-2xl p-2 sm:p-4">

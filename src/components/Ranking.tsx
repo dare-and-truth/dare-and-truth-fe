@@ -17,22 +17,28 @@ export default function RankingDisplay({
   currentUserId,
   type,
 }: RankingProps) {
-  const [windowDimesion, setDimesion] = useState({
-    width: typeof window !== 'undefined' ? window.innerWidth : 0,
-    height: typeof window !== 'undefined' ? window.innerHeight : 0,
+  const [windowDimension, setDimension] = useState({
+    width: 0, // Giá trị mặc định cho cả server và client
+    height: 0,
   });
-  const detectSize = () => {
-    setDimesion({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    });
-  };
+
   useEffect(() => {
+    const detectSize = () => {
+      setDimension({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    // Gọi ngay khi mount để lấy kích thước ban đầu
+    detectSize();
+
+    // Thêm listener cho sự kiện resize
     window.addEventListener('resize', detectSize);
     return () => {
       window.removeEventListener('resize', detectSize);
     };
-  }, [windowDimesion]);
+  }, []); // Mảng dependency rỗng vì chỉ cần chạy khi mount
   if (loading) {
     return <Loading />;
   }
@@ -45,8 +51,8 @@ export default function RankingDisplay({
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
         <Confetti
-          width={windowDimesion.width / 1.8}
-          height={windowDimesion.height}
+          width={windowDimension.width / 1.8}
+          height={windowDimension.height}
           recycle={true}
           numberOfPieces={200}
           gravity={0.2}
@@ -104,8 +110,12 @@ export default function RankingDisplay({
                 {topUsers[1]?.username || 'Coming soon'}
               </p>
               <p className="text-xs text-orange-500 sm:text-sm">
-                {formatScores(topUsers[1]?.totalScore || 0)}{' '}
-                {type === 'score' ? 'score' : 'Like'}
+                {formatScores(
+                  type === 'score'
+                    ? topUsers[1]?.totalScore || 0
+                    : topUsers[1]?.totalLikes || 0,
+                )}{' '}
+                {type === 'score' ? ' score' : ' like'}
               </p>
             </Link>
 
@@ -138,8 +148,12 @@ export default function RankingDisplay({
                 {topUsers[0]?.username || 'Coming soon'}
               </p>
               <p className="text-sm text-orange-400 sm:text-base md:text-lg">
-                {formatScores(topUsers[0]?.totalScore || 0)}{' '}
-                {type === 'score' ? 'score' : 'Like'}
+                {formatScores(
+                  type === 'score'
+                    ? topUsers[0]?.totalScore || 0
+                    : topUsers[0]?.totalLikes || 0,
+                )}{' '}
+                {type === 'score' ? ' score' : ' like'}
               </p>
             </Link>
 
@@ -171,8 +185,12 @@ export default function RankingDisplay({
                 {topUsers[2]?.username || 'Coming soon'}
               </p>
               <p className="text-xs text-purple-500 sm:text-sm">
-                {formatScores(topUsers[2]?.totalScore || 0)}{' '}
-                {type === 'score' ? 'score' : 'Like'}
+                {formatScores(
+                  type === 'score'
+                    ? topUsers[2]?.totalScore || 0
+                    : topUsers[2]?.totalLikes || 0,
+                )}{' '}
+                {type === 'score' ? ' score' : ' like'}
               </p>
             </Link>
           </div>
@@ -186,7 +204,7 @@ export default function RankingDisplay({
           </h2>
           <div className="mt-4 max-h-[50vh] overflow-auto rounded-lg sm:max-h-[60vh]">
             <div
-              className={`mt-2 grid gap-2 ${nearbyUsers.length > 1 ? 'mb-32 grid-cols-1 sm:grid-cols-2 md:mb-48' : 'mb-48 space-y-2'}`}
+              className={`mt-2 grid gap-2 ${nearbyUsers.length > 1 ? 'mb-32 grid-cols-1 sm:grid-cols-2 md:mb-52' : 'mb-48 space-y-2'}`}
             >
               {nearbyUsers.map((user) => (
                 <Link href={`/profile/${user.userId}`} key={user.userId}>
@@ -215,7 +233,12 @@ export default function RankingDisplay({
                         {user.username}
                       </p>
                       <p className="text-xs text-gray-200 sm:text-sm">
-                        {user.totalScore} {type === 'score' ? 'score' : 'like'}
+                        {formatScores(
+                          type === 'score'
+                            ? user.totalScore || 0
+                            : user.totalLikes || 0,
+                        )}
+                        {type === 'score' ? ' score' : ' like'}
                       </p>
                     </div>
                     <div className="ml-2 flex items-center rounded-full border border-white">

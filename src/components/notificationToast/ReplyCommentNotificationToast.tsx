@@ -9,10 +9,12 @@ interface ReplyCommentNotificationProps {
   hashtag: string;
   feedId: string;
   commentContent: string;
-  parentCommentId:string;
+  parentCommentId: string;
 }
 
-export const ReplyCommentNotificationToast: React.FC<ReplyCommentNotificationProps> = ({
+export const ReplyCommentNotificationToast: React.FC<
+  ReplyCommentNotificationProps
+> = ({
   type,
   name,
   avatarUrl,
@@ -22,7 +24,10 @@ export const ReplyCommentNotificationToast: React.FC<ReplyCommentNotificationPro
   parentCommentId,
 }) => {
   // Determine the correct link based on the type
-  const linkUrl = type === 'reply-comment-post' ? `/feed/post/${feedId}` : `/feed/challenge/${feedId}`;
+  const linkUrl =
+    type === 'reply-comment-post'
+      ? `/feed/post/${feedId}`
+      : `/feed/challenge/${feedId}`;
   return (
     <Link href={linkUrl}>
       <div className="flex min-w-[300px] flex-col gap-3 p-2">

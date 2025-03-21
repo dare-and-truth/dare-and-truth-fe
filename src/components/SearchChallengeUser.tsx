@@ -26,10 +26,10 @@ export function SearchChallengeUser() {
         </button>
         <input
           type="search"
-          placeholder="  Search"
+          placeholder="Search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full rounded-r-md border border-gray-300 py-2 shadow-sm focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-100"
+          className="w-full rounded-r-md border border-gray-300 py-2 pl-2 shadow-sm focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-100"
         />
       </form>
     </SidebarMenuItem>

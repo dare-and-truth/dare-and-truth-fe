@@ -225,14 +225,14 @@ export function NotificationDropdown({
       setIsDropdownOpen(false);
       if (
         notification.type === 'like-post' ||
-        notification.type === 'comment-post'||
+        notification.type === 'comment-post' ||
         notification.type === 'reply-comment-post'
       ) {
         router.push(`/feed/post/${notification.relatedEntity.id}`);
       } else if (
         notification.type === 'like-challenge' ||
         notification.type === 'comment-challenge' ||
-        notification.type ==='reply-comment-challenge'
+        notification.type === 'reply-comment-challenge'
       ) {
         router.push(`/feed/challenge/${notification.relatedEntity.id}`);
       }
@@ -254,9 +254,9 @@ export function NotificationDropdown({
       content = `Commented on your challenge`;
     } else if (notification.type === 'comment-challenge') {
       content = `Commented on your challenge`;
-    }else if (notification.type === 'reply-comment-post') {
+    } else if (notification.type === 'reply-comment-post') {
       content = `Replied to your comment on a challenge`;
-    } else if (notification.type ==='reply-comment-challenge') {
+    } else if (notification.type === 'reply-comment-challenge') {
       content = `Replied to your comment on a challenge`;
     } else if (notification.type === 'friend-request') {
       content = `Sent you a friend request`;
@@ -275,7 +275,7 @@ export function NotificationDropdown({
               height={0}
               width={0}
               src={
-                notification.sender.senderAvatarUrl  ||
+                notification.sender.senderAvatarUrl ||
                 '/images/default-profile.png'
               }
               alt="User Avatar"
@@ -339,10 +339,9 @@ export function NotificationDropdown({
               </div>
             )}
             {(notification.type === 'comment-challenge' ||
-              notification.type === 'comment-post'||
-              notification.type ==='reply-comment-challenge' ||
-              notification.type ==='reply-comment-post'
-            ) && (
+              notification.type === 'comment-post' ||
+              notification.type === 'reply-comment-challenge' ||
+              notification.type === 'reply-comment-post') && (
               <div className="bg-muted/50 rounded-md p-2 text-sm italic">
                 {notification.content.length > 30
                   ? `${notification.content.substring(0, 30)}...`

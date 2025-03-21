@@ -1,14 +1,21 @@
+'use client';
+
 import { firebaseConfig } from '@/app/constants';
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
-const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
+let messaging: any = null;
+
+if (typeof window !== 'undefined') {
+  const app = initializeApp(firebaseConfig);
+  messaging = getMessaging(app);
+}
 
 export const requestPermission = async () => {
-  try {
-    const permission = await Notification.requestPermission(); // 🔹 Hỏi quyền từ trình duyệt
+  if (typeof window === 'undefined') return null;
 
+  try {
+    const permission = await Notification.requestPermission();
     if (permission !== 'granted') {
       console.warn('Permission denied for notifications');
       return null;
@@ -27,9 +34,13 @@ export const requestPermission = async () => {
 
 export const onMessageListener = () =>
   new Promise((resolve) => {
-    onMessage(messaging, (payload) => {
-      resolve(payload);
-    });
+    if (typeof window !== 'undefined' && messaging) {
+      onMessage(messaging, (payload) => {
+        resolve(payload);
+      });
+    } else {
+      resolve(null);
+    }
   });
 
 export default messaging;

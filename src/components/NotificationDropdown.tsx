@@ -290,7 +290,7 @@ export function NotificationDropdown({
 
           {/* Notification type icon */}
           <div
-            className={`absolute -bottom-2 -right-3 flex h-6 w-6 -translate-x-1/2 items-center justify-center rounded-full border shadow-sm ${getNotificationIconBg(notification.type)}`}
+            className={`absolute -bottom-2 -right-3 flex h-6 w-6 -translate-x-1/2 items-center justify-center rounded-full border border-green-500 bg-green-500 shadow-sm ${getNotificationIconBg(notification.type)}`}
           >
             <NotificationIcon className="h-3.5 w-3.5 text-white" />
           </div>

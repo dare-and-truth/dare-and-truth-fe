@@ -2,7 +2,8 @@ export interface Ranking {
   userId: string;
   username: string;
   avatarURL: string;
-  totalScore: number;
+  totalScore?: number;
+  totalLikes?: number;
   rank: number;
 }
 

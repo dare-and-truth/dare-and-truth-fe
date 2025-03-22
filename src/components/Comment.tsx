@@ -2,12 +2,7 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { getRepliesByCommentId } from '@/app/api/comment.api';
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { FaEdit, FaTrash, FaEllipsisH, FaPaperPlane } from 'react-icons/fa';
 import { CommentType } from '@/app/types';
 import Link from 'next/link';
@@ -111,7 +106,9 @@ export default function CommentComponent({
     setEditedContent(comment.content);
     setIsEditing(false);
   };
-  const handleReplyContentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleReplyContentChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     const value = e.target.value;
     if (value.length > 2000) return; // Nếu vượt quá 30 ký tự thì không cập nhật
     setEditedContent(value);
@@ -157,7 +154,7 @@ export default function CommentComponent({
                 <div className="flex w-full items-center">
                   <textarea
                     value={editedContent}
-                    onChange={() => handleReplyContentChange}
+                    onChange={handleReplyContentChange}
                     className="flex-1 resize-none rounded border p-1"
                     rows={3}
                   />

@@ -1,5 +1,5 @@
 'use client';
-import { use, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FeedType } from '@/app/types';
 import Feed from '@/components/Feed';
 import InfiniteScroll from 'react-infinite-scroll-component';

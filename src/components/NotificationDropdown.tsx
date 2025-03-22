@@ -55,7 +55,8 @@ export function NotificationDropdown({
   const router = useRouter();
   const { setIsLoading } = useLoading();
 
-  const { unreadNotificationsCount } = useUserApp();
+  const { unreadNotificationsCount, setUnreadNotificationsCount } =
+    useUserApp();
   // Remove this line: console.log(unreadNotificationsCount);
 
   // Pagination states
@@ -220,6 +221,7 @@ export function NotificationDropdown({
     try {
       setIsLoading(true);
       if (!notification.isRead) {
+        setUnreadNotificationsCount((pre) => pre - 1);
         await markNotificationAsRead(notification.id);
       }
       setIsDropdownOpen(false);

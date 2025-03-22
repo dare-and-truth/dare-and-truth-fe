@@ -32,19 +32,6 @@ export default function RootLayout({
         <LoadingProvider>
           <main>{children}</main>
         </LoadingProvider>
-        <ToastContainer
-          position="top-right"
-          autoClose={1000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-          transition={Slide}
-        />
       </body>
     </html>
   );

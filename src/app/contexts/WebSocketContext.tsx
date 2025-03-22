@@ -113,7 +113,7 @@ export const WebSocketProvider: React.FC<{
         ),
         {
           autoClose: 5000,
-          closeOnClick: false,
+          closeOnClick: true,
           hideProgressBar: true,
         },
       );
@@ -129,7 +129,7 @@ export const WebSocketProvider: React.FC<{
         />,
         {
           autoClose: 5000,
-          closeOnClick: false,
+          closeOnClick: true,
           hideProgressBar: true,
         },
       );
@@ -145,7 +145,7 @@ export const WebSocketProvider: React.FC<{
         />,
         {
           autoClose: 5000,
-          closeOnClick: false,
+          closeOnClick: true,
           hideProgressBar: true,
         },
       );
@@ -160,7 +160,7 @@ export const WebSocketProvider: React.FC<{
         />,
         {
           autoClose: 5000,
-          closeOnClick: false,
+          closeOnClick: true,
           hideProgressBar: true,
         },
       );
@@ -175,7 +175,7 @@ export const WebSocketProvider: React.FC<{
         />,
         {
           autoClose: 5000,
-          closeOnClick: false,
+          closeOnClick: true,
           hideProgressBar: true,
         },
       );
@@ -193,7 +193,7 @@ export const WebSocketProvider: React.FC<{
         />,
         {
           autoClose: 5000,
-          closeOnClick: false,
+          closeOnClick: true,
           hideProgressBar: true,
         },
       );
@@ -211,7 +211,7 @@ export const WebSocketProvider: React.FC<{
         />,
         {
           autoClose: 5000,
-          closeOnClick: false,
+          closeOnClick: true,
           hideProgressBar: true,
         },
       );

@@ -1,6 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { MessageSquare } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useUserApp } from '@/app/contexts/UserAppContext';
 
 interface ReplyCommentNotificationProps {
   type: string;
@@ -24,12 +26,20 @@ export const ReplyCommentNotificationToast: React.FC<
   parentCommentId,
 }) => {
   // Determine the correct link based on the type
+  const router = useRouter();
+  const { setUnreadNotificationsCount } = useUserApp();
+
   const linkUrl =
     type === 'reply-comment-post'
       ? `/feed/post/${feedId}`
       : `/feed/challenge/${feedId}`;
+
+  const handleClick = () => {
+    router.push(linkUrl);
+    setUnreadNotificationsCount((pre) => pre - 1);
+  };
   return (
-    <Link href={linkUrl}>
+    <div onClick={handleClick}>
       <div className="flex min-w-[300px] flex-col gap-3 p-2">
         <div className="flex items-center gap-4">
           <div className="relative">
@@ -63,6 +73,6 @@ export const ReplyCommentNotificationToast: React.FC<
           "
         </div>
       </div>
-    </Link>
+    </div>
   );
 };

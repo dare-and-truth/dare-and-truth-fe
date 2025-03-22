@@ -6,9 +6,11 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 export default function ProgressMonster({ userId }: { userId: string }) {
   const [score, setScore] = useState<number>(0);
+  const [prevScore, setPrevScore] = useState<number>(0); // Theo dõi score trước đó
   const totalScore = 5000;
   const milestones = [
     {
@@ -51,7 +53,17 @@ export default function ProgressMonster({ userId }: { userId: string }) {
     };
     fetchScore();
   }, [userId]);
-
+  useEffect(() => {
+    const crossedMilestone = milestones.find(
+      (milestone) => prevScore < milestone.value && score >= milestone.value,
+    );
+    if (crossedMilestone) {
+      toast.success(
+        `Congratulations! You have reached ${completedScore} points!`,
+      );
+    }
+    setPrevScore(score); // Cập nhật prevScore sau khi kiểm tra
+  }, [score]);
   const completedScore = score;
   // Tìm milestone tiếp theo
   const nextMilestone =

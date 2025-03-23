@@ -146,6 +146,8 @@ export function NotificationDropdown({
         return MessageSquare;
       case 'reply-comment-challenge':
         return MessageSquare;
+      case 'author-comment-challenge':
+        return MessageSquare;
       case 'like-post':
         return Heart;
       case 'like-challenge':
@@ -166,6 +168,8 @@ export function NotificationDropdown({
         return 'border-green-500 bg-green-500';
       case 'reply-comment-post':
         return 'border-green-500 bg-green-500';
+      case 'author-comment-challenge':
+        return 'border-yellow-500 bg-yellow-500';
       case 'like-post':
         return 'border-red-500 bg-red-500';
       case 'like-challenge':
@@ -234,7 +238,8 @@ export function NotificationDropdown({
       } else if (
         notification.type === 'like-challenge' ||
         notification.type === 'comment-challenge' ||
-        notification.type === 'reply-comment-challenge'
+        notification.type === 'reply-comment-challenge' ||
+        notification.type === 'author-comment-challenge'
       ) {
         router.push(`/feed/challenge/${notification.relatedEntity.id}`);
       }
@@ -260,6 +265,8 @@ export function NotificationDropdown({
       content = `Replied to your comment on a challenge`;
     } else if (notification.type === 'reply-comment-challenge') {
       content = `Replied to your comment on a challenge`;
+    } else if (notification.type === 'author-comment-challenge') {
+      content = `The author comment on a challenge`;
     } else if (notification.type === 'friend-request') {
       content = `Sent you a friend request`;
     }

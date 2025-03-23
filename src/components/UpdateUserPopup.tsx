@@ -155,7 +155,7 @@ export function UpdateUserPopup({
           <Image
             src={avatarUrl ? avatarUrl : '/images/default-profile.png'}
             alt="Avatar"
-            className="h-24 w-24 rounded-full object-cover"
+            className="h-24 w-24 rounded-full border-[3px] border-red-300 object-cover"
             width={96}
             height={96}
           />

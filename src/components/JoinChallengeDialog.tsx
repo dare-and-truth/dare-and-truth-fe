@@ -35,8 +35,8 @@ const FormSchema = z.object({
   reminderContent: z
     .string()
     .min(10, { message: 'Reminder content must be at least 10 characters.' })
-    .max(100, {
-      message: 'Reminder content must not exceed 100 characters.',
+    .max(150, {
+      message: 'Reminder content must not exceed 150 characters.',
     }),
   reminderTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {
     message: 'Please enter a valid time in HH:MM format',

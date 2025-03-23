@@ -276,8 +276,7 @@ export default function FriendRequestCard({
             ) : isCurrentUserReceiver ? (
               <>
                 <Button
-                  variant="default"
-                  className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white"
+                  variant="join"
                   onClick={handleAccept}
                   disabled={loading}
                 >
@@ -294,7 +293,7 @@ export default function FriendRequestCard({
             ) : null
           ) : (
             <Button
-              variant="default"
+              variant="join"
               className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white"
               onClick={handleAddFriend}
               disabled={loading}

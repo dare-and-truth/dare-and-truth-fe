@@ -1,6 +1,5 @@
 import { User } from '@/app/types';
 import request from '@/app/utils/Axiosconfig';
-import { toast } from 'react-toastify';
 
 export const getUser = async () => {
   try {

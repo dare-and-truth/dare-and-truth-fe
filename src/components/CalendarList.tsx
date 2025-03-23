@@ -2,7 +2,7 @@
 
 import { format } from 'date-fns';
 import { Card } from '@/components/ui/card';
-import { Activity, Calendar, Mountain, Trophy } from 'lucide-react';
+import { Calendar, Trophy } from 'lucide-react';
 import { EventListProps } from '@/app/types/reminder.type';
 import { DialogConfirm } from '@/components/DiaLogConfirmDelete';
 import { Button } from '@/components/ui/button';

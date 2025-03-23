@@ -3,38 +3,24 @@ import { MessageSquare } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useUserApp } from '@/app/contexts/UserAppContext';
 
-interface ReplyCommentNotificationProps {
+interface AuthorCommentNotificationProps {
   type: string;
   name: string;
   avatarUrl: string;
   hashtag: string;
   feedId: string;
   commentContent: string;
-  parentCommentId: string;
 }
 
-export const ReplyCommentNotificationToast: React.FC<
-  ReplyCommentNotificationProps
-> = ({
-  type,
-  name,
-  avatarUrl,
-  hashtag,
-  feedId,
-  commentContent,
-  parentCommentId,
-}) => {
+export const AuthorCommentNotificationToast: React.FC<
+  AuthorCommentNotificationProps
+> = ({ type, name, avatarUrl, hashtag, feedId, commentContent }) => {
   // Determine the correct link based on the type
   const router = useRouter();
   const { setUnreadNotificationsCount } = useUserApp();
 
-  const linkUrl =
-    type === 'reply-comment-post'
-      ? `/feed/post/${feedId}`
-      : `/feed/challenge/${feedId}`;
-
   const handleClick = () => {
-    router.push(linkUrl);
+    router.push(`/feed/challenge/${feedId}`);
     setUnreadNotificationsCount((pre) => pre - 1);
   };
   return (
@@ -49,7 +35,7 @@ export const ReplyCommentNotificationToast: React.FC<
                 className="h-12 w-12 rounded-full object-cover"
               />
             </div>
-            <div className="absolute -bottom-1 -right-1 rounded-full border-2 border-green-500 bg-green-500 p-0.5">
+            <div className="absolute -bottom-1 -right-1 rounded-full border-2 border-yellow-500 bg-yellow-500 p-0.5">
               <MessageSquare className="h-3 w-3 text-white" />
             </div>
           </div>
@@ -57,9 +43,7 @@ export const ReplyCommentNotificationToast: React.FC<
           <div className="flex-1">
             <p className="font-medium">{name}</p>
             <p className="text-muted-foreground text-xs">
-              {type === 'comment-post'
-                ? `Reply your comment on "#${hashtag}" post`
-                : `Reply your comment on "#${hashtag}" challenge`}
+              {`The author comment on "#${hashtag}" challenge`}
             </p>
           </div>
         </div>

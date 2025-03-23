@@ -202,9 +202,9 @@ export default function CreateChallengeDialog(props: any) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default">Create Chalenge</Button>
+        <Button variant="join">Create Chalenge</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create a New Challenge</DialogTitle>
         </DialogHeader>
@@ -318,7 +318,7 @@ export default function CreateChallengeDialog(props: any) {
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit" disabled={isUploading}>
+            <Button type="submit" variant="join" disabled={isUploading}>
               {isUploading ? 'Uploading...' : 'Submit'}
             </Button>
           </DialogFooter>

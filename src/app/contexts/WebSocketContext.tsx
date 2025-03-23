@@ -19,6 +19,7 @@ import { useUserApp } from '@/app/contexts/UserAppContext';
 import { MessageNotificationToast } from '@/components/notificationToast/MessageNotificationToast';
 import { usePathname } from 'next/navigation';
 import { ReplyCommentNotificationToast } from '@/components/notificationToast/ReplyCommentNotificationToast';
+import { AuthorCommentNotificationToast } from '@/components/notificationToast/AuthorCommentNotificationToast';
 import SockJS from 'sockjs-client';
 
 interface WebSocketContextType {
@@ -206,6 +207,22 @@ export const WebSocketProvider: React.FC<{
           avatarUrl={notification.senderAvatarUrl}
           hashtag={notification.hashtag}
           parentCommentId={notification.parentCommentId}
+          feedId={notification.challengeId}
+          commentContent={notification.commentContent}
+        />,
+        {
+          autoClose: 5000,
+          closeOnClick: true,
+          hideProgressBar: true,
+        },
+      );
+    } else if (notification.type === 'author-comment-challenge') {
+      toast(
+        <AuthorCommentNotificationToast
+          type={notification.type}
+          name={notification.senderName}
+          avatarUrl={notification.senderAvatarUrl}
+          hashtag={notification.hashtag}
           feedId={notification.challengeId}
           commentContent={notification.commentContent}
         />,

@@ -1,4 +1,4 @@
-import { Badge, CreateBadge } from '@/app/types';
+import { CreateBadge } from '@/app/types';
 import request from '@/app/utils/Axiosconfig';
 import { toast } from 'react-toastify';
 export const getBadge = async () => {

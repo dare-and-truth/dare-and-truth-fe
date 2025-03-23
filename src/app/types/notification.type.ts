@@ -9,7 +9,8 @@ export interface NotificationItem {
     | 'reply-comment-post'
     | 'reply-comment-challenge'
     | 'like-post'
-    | 'like-challenge';
+    | 'like-challenge'
+    | 'author-comment-challenge';
   content: string;
   sender: {
     username: string;

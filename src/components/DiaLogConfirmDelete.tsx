@@ -43,6 +43,7 @@ export function DialogConfirm({
           <Button
             type="button"
             className="flex items-center"
+            variant="join"
             onClick={handleConfirm}
           >
             Confirm

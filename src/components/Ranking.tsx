@@ -125,7 +125,7 @@ export default function RankingDisplay({
               className="relative flex min-h-[220px] w-28 flex-col items-center rounded-t-[2.2rem] bg-[#454545] px-3 py-14 shadow-lg transition-all duration-200 hover:brightness-110 sm:w-36 sm:px-6 sm:py-16 md:w-48 md:px-8"
             >
               <div className="absolute -top-8 flex w-full justify-center md:-top-12">
-                <Avatar className="h-16 w-16 rounded-full border-4 border-yellow-500 sm:h-24 sm:w-24 md:h-20 md:w-20">
+                <Avatar className="h-16 w-16 rounded-full border-4 border-red-300 sm:h-24 sm:w-24 md:h-20 md:w-20">
                   <AvatarImage
                     src={
                       topUsers[0]?.avatarURL?.trim()
@@ -139,7 +139,7 @@ export default function RankingDisplay({
                     {topUsers[0]?.username?.[0] || '?'}
                   </AvatarFallback>
                 </Avatar>
-                <Crown className="absolute -top-6 left-1/2 h-8 w-8 -translate-x-1/2 text-yellow-400 sm:-top-8 sm:h-10 sm:w-10" />
+                <Crown className="absolute -top-6 left-1/2 h-8 w-8 -translate-x-1/2 text-yellow-400 sm:-top-9 sm:h-10 sm:w-10" />
               </div>
               <span className="mt-3 text-3xl text-yellow-400 sm:text-4xl">
                 🥇

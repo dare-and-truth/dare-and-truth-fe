@@ -258,12 +258,12 @@ export function CreateCalendarDialog({
                 placeholder=" Reminder content"
                 value={reminderContent}
                 onChange={(e) => {
-                  if (e.target.value.length <= 100) {
+                  if (e.target.value.length <= 150) {
                     setReminderContent(e.target.value);
                   }
                 }}
                 rows={4}
-                maxLength={100}
+                maxLength={150}
               />
             </div>
           )}

@@ -6,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useRouter } from 'next/navigation';
 import { postSignUp } from '@/app/api/auth.api';
 import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
@@ -42,8 +41,6 @@ export default function SignUpForm({
   const [showPassword, setShowPassword] = useState<string>('password');
   const [confirmShowpassword, setShowConfirmPassword] =
     useState<string>('password');
-
-  const router = useRouter();
   const {
     register,
     handleSubmit,

@@ -1,10 +1,10 @@
 'use client';
 
 import { format } from 'date-fns';
-import { Calendar } from '@/components/ui/calendar';
+import { Calendar as CalendarUI } from '@/components/ui/calendar';
 import { Card } from '@/components/ui/card';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, Trophy, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { Event } from '@/app/types/reminder.type';
@@ -68,14 +68,10 @@ export default function CalendarComponent() {
     }
   };
 
-  const filteredEvents = events.sort(
-    (a, b) => Number.parseInt(b.id) - Number.parseInt(a.id),
-  );
-
   return (
     <>
       <Card className="rounded-xl border border-zinc-200 bg-white text-zinc-950 shadow dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50">
-        <Calendar
+        <CalendarUI
           mode="single"
           selected={date}
           onSelect={handleDateSelect}
@@ -107,6 +103,16 @@ export default function CalendarComponent() {
           <h3 className="text-xl font-semibold">
             Schedule for {date ? format(date, 'MMM dd') : 'Today'}
           </h3>
+          <div className="flex items-center gap-4">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-400">
+              <Trophy className="h-4 w-4 self-center rounded-full" />
+            </div>
+            <span>Challenges </span>
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-orange-300">
+              <Calendar className="h-4 w-4 self-center rounded-full" />
+            </div>
+            <span> Schedule</span>
+          </div>
           <Button
             variant="outline"
             size="icon"
@@ -117,12 +123,12 @@ export default function CalendarComponent() {
         </div>
 
         <div className="space-y-3">
-          {filteredEvents.length === 0 ? (
+          {events.length === 0 ? (
             <p className="text-center text-gray-500">
               There are no events for this day
             </p>
           ) : (
-            filteredEvents.map((event) => (
+            events.map((event) => (
               <CalendarList
                 event={event}
                 setIsRefreshingCalendarList={setIsRefreshingCalendarList}

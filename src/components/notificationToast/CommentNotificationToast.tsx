@@ -1,5 +1,7 @@
+import { useUserApp } from '@/app/contexts/UserAppContext';
 import { MessageSquare } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 interface CommentToastProps {
   name: string;
@@ -18,8 +20,24 @@ export const CommentNotificationToast = ({
   feedId,
   commentContent,
 }: CommentToastProps) => {
+  const router = useRouter();
+  const { setUnreadNotificationsCount } = useUserApp();
+
+  const linkUrl =
+    type === 'comment-post'
+      ? `/feed/post/${feedId}`
+      : `/feed/challenge/${feedId}`;
+
+  const handleClick = () => {
+    router.push(linkUrl);
+    console.log(linkUrl);
+    setUnreadNotificationsCount((pre) => pre - 1);
+  };
   return (
-    <div className="flex min-w-[300px] flex-col gap-3 p-2">
+    <div
+      className="flex min-w-[300px] flex-col gap-3 p-2"
+      onClick={handleClick}
+    >
       <div className="flex items-center gap-4">
         <div className="relative">
           <div className="flex-shrink-0">

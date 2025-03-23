@@ -96,7 +96,7 @@ export default function SignInForm() {
       className="auth-form sign-in-form mx-auto flex w-full flex-col items-center space-y-4 px-4 sm:px-6 md:px-8"
     >
       <Image
-        src="/images/logo.png"
+        src="/images/old-logo.png"
         alt="image"
         width={0}
         height={0}

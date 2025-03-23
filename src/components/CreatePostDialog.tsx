@@ -184,13 +184,42 @@ export default function CreatePostDialog(props: any) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default">Create Post</Button>
+        <Button variant="join">Create Post</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create a New Post</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Hashtag */}
+          <div className="space-y-2">
+            <div className="font-bold">Hashtag</div>
+            <Input
+              name="hashtag"
+              placeholder="#Hashtag"
+              value={formData.hashtag || ''}
+              onChange={handleChange}
+              disabled={isUploading}
+            />
+            {errors.hashtag && (
+              <p className="text-sm text-red-500">{errors.hashtag}</p>
+            )}
+          </div>
+
+          {/* Content */}
+          <div className="space-y-2">
+            <div className="font-bold">Content</div>
+            <Textarea
+              name="content"
+              placeholder="Write something..."
+              value={formData.content || ''}
+              onChange={handleChange}
+              disabled={isUploading}
+            />
+            {errors.content && (
+              <p className="text-sm text-red-500">{errors.content}</p>
+            )}
+          </div>
           {/* File Input */}
           <div className="space-y-2">
             <Input
@@ -230,44 +259,13 @@ export default function CreatePostDialog(props: any) {
               </div>
             )}
           </div>
-
-          {/* Hashtag */}
-          <div className="space-y-2">
-            <div className="font-bold">Hashtag</div>
-            <Input
-              name="hashtag"
-              placeholder="#Hashtag"
-              value={formData.hashtag || ''}
-              onChange={handleChange}
-              disabled={isUploading}
-            />
-            {errors.hashtag && (
-              <p className="text-sm text-red-500">{errors.hashtag}</p>
-            )}
-          </div>
-
-          {/* Content */}
-          <div className="space-y-2">
-            <div className="font-bold">Content</div>
-            <Textarea
-              name="content"
-              placeholder="Write something..."
-              value={formData.content || ''}
-              onChange={handleChange}
-              disabled={isUploading}
-            />
-            {errors.content && (
-              <p className="text-sm text-red-500">{errors.content}</p>
-            )}
-          </div>
-
           <DialogFooter>
             <DialogClose asChild>
               <Button variant="secondary" disabled={isUploading}>
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit" disabled={isUploading}>
+            <Button type="submit" variant="join" disabled={isUploading}>
               {isUploading ? 'Uploading...' : 'Submit'}
             </Button>
           </DialogFooter>

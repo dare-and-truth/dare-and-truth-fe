@@ -33,13 +33,13 @@ export default function SideBar({ navItems }: { navItems: NavItemType[] }) {
 
   return (
     <div className="fixed h-full w-64 flex-col bg-white shadow-sm sm:hidden md:flex">
-      <div className="mb-4">
+      <div className="">
         <Image
-          src="/images/logo.png"
+          src="/images/old-logo.png"
           alt="Logo"
-          width={100}
-          height={40}
-          className="w-28"
+          width={0}
+          height={0}
+          className="h-20 w-20"
         />
       </div>
 
@@ -87,7 +87,7 @@ function NavItem({ icon, text, href, active = false, onClick }: NavItemType) {
         href={href}
         className={`flex w-full items-center space-x-3 rounded-lg px-4 py-2 transition-colors ${
           active
-            ? 'bg-blue-50 text-blue-600'
+            ? 'bg-blue-50 text-blue-500'
             : 'text-gray-700 hover:bg-gray-100'
         }`}
         onClick={onClick} // Thêm onClick cho NavItem
@@ -108,7 +108,7 @@ function SubMenu({ subMenu }: { subMenu: NavItemType[] }) {
             href={item.href}
             className={`flex items-center space-x-2 rounded-lg p-2 transition-colors ${
               item.active
-                ? 'bg-blue-50 text-blue-600'
+                ? 'bg-blue-50 text-blue-500'
                 : 'text-gray-700 hover:bg-gray-100'
             }`}
           >

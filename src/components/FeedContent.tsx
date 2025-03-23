@@ -1,16 +1,9 @@
 'use client';
 import Image from 'next/image';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { formatTimeAgo } from '@/app/helpers/formatTimeAgo';
 import { Button } from '@/components/ui/button';
 import { FeedType } from '@/app/types';
 import { JoinChallengeDialog } from '@/components/JoinChallengeDialog';
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getPostByHashtag } from '@/app/api/post.api';

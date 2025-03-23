@@ -161,7 +161,7 @@ export default function ProfileHeader({ userId }: { userId: string }) {
     <header className="flex flex-col items-center">
       <Image
         alt="profile"
-        className="h-16 w-16 rounded-full object-cover sm:h-28 sm:w-28"
+        className="h-16 w-16 rounded-full border-2 border-red-300 object-cover sm:h-28 sm:w-28"
         src={
           user?.avatarUrl
             ? user.avatarUrl.trim()

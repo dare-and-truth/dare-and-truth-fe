@@ -27,7 +27,7 @@ export default function Pagination({
           disabled={currentPage === 1}
         >
           <svg
-            className="h-2.5 w-2.5 rtl:rotate-180"
+            className="h-2.5 w-2.5 text-blue-500 rtl:rotate-180"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -46,7 +46,7 @@ export default function Pagination({
         {pageNumbers.map((page) => (
           <Button
             key={page}
-            variant={currentPage === page ? 'default' : 'outline'}
+            variant={currentPage === page ? 'join' : 'outline'}
             size="sm"
             onClick={() => setCurrentPage(page)}
           >
@@ -63,7 +63,7 @@ export default function Pagination({
           disabled={currentPage === totalPages}
         >
           <svg
-            className="h-3 w-3 rtl:rotate-180"
+            className="h-3 w-3 text-blue-500 rtl:rotate-180"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

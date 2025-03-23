@@ -1,7 +1,7 @@
 'use client';
 import { Bolt, Grid, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { act, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FeedType } from '@/app/types';
 import Feed from '@/components/Feed';
 import InfiniteScroll from 'react-infinite-scroll-component';

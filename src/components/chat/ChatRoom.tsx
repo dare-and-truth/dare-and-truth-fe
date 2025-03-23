@@ -10,7 +10,7 @@ import {
 } from 'react';
 import Link from 'next/link';
 import TextareaAutosize from 'react-textarea-autosize';
-import { Image as ImageIcon, Send, Smile, X } from 'lucide-react';
+import { Image as ImageIcon, Send, Smile } from 'lucide-react';
 import { EmojiPicker } from '@/components/chat/EmojiPicker';
 import {
   Conversation,
@@ -165,10 +165,10 @@ function ChatContent() {
       const oldScrollHeight = container.scrollHeight;
       const oldScrollTop = container.scrollTop;
 
-      // Get the first message element as a reference point
-      const firstMessageElement = container.querySelector('.message-bubble');
-      const firstMessageOffsetTop =
-        firstMessageElement?.getBoundingClientRect().top;
+      // // Get the first message element as a reference point
+      // const firstMessageElement = container.querySelector('.message-bubble');
+      // const firstMessageOffsetTop =
+      //   firstMessageElement?.getBoundingClientRect().top;
 
       const data = await getChat({
         currentChatUserId: currentChatUser?.id as string,
@@ -247,7 +247,8 @@ function ChatContent() {
         mediaUrl: mediaUrl || null,
       };
 
-      sendMessage(newMessage);
+      const newConversationId = await sendMessage(newMessage);
+      setConversationId(newConversationId);
 
       setMessages((prevMessages) => [
         ...prevMessages,
@@ -262,7 +263,7 @@ function ChatContent() {
       // Update conversations list
       setConversations((prevConversations) => {
         const existingIndex = prevConversations.findIndex(
-          (conversation) => conversation.id === conversationId,
+          (conversation) => conversation.id === newConversationId,
         );
 
         if (existingIndex !== -1) {
@@ -295,7 +296,7 @@ function ChatContent() {
         } else {
           // Create new conversation if not found
           const newConversation: Conversation = {
-            id: conversationId,
+            id: newConversationId,
             participants: [
               {
                 id: currentChatUser?.id as string,

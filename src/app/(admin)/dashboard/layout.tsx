@@ -6,7 +6,7 @@ import { jwtDecode } from 'jwt-decode';
 import { FileText, Users } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { Slide, toast, ToastContainer } from 'react-toastify';
 
 export default function AdminLayout({
   children,
@@ -86,6 +86,19 @@ export default function AdminLayout({
       <div className="flex-1 md:ml-64">
         <NavBar />
         {children}
+        <ToastContainer
+          position="top-right"
+          autoClose={1000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Slide}
+        />
       </div>
     </div>
   );

@@ -77,7 +77,7 @@ export function ExpandedModal({
           <img
             src={previewUrl || '/placeholder.svg'}
             alt="Preview"
-            className="max-h-[85vh] max-w-[85vw] rounded object-contain"
+            className="max-h-[85vh] min-w-[300px] max-w-[85vw] rounded object-contain"
           />
         )}
 

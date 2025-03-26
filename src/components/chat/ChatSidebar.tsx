@@ -5,7 +5,7 @@ import { ChatRoomPreview } from './ChatRoomPreview';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Conversation } from '@/app/types';
 import { ChevronLeft } from 'lucide-react';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { useIsMobile } from '@/app/hooks/use-mobile';
 import { useChat } from '@/app/contexts/ChatContext';
 import { getConversations } from '@/app/api/conversation.api';
 import { useUserId } from '@/app/hooks';

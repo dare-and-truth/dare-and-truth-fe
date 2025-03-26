@@ -3,7 +3,7 @@
 import { ChatRoom } from '@/components/chat/ChatRoom';
 import { ChatSidebar } from '@/components/chat/ChatSidebar';
 import { ChevronLeft } from 'lucide-react';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { useIsMobile } from '@/app/hooks/use-mobile';
 import { useChat } from '@/app/contexts/ChatContext';
 
 export default function ChatLayout() {

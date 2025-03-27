@@ -4,6 +4,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export default function PostHashTag({ posts }: { posts: FeedType[] }) {
+  const isVideo = (url: string) =>
+    url.endsWith('.mp4') || url.endsWith('.webm');
+
   return (
     <>
       <h2 className="my-4 text-xl font-bold">Do Challenge</h2>
@@ -17,13 +20,21 @@ export default function PostHashTag({ posts }: { posts: FeedType[] }) {
               href={`/feed/${item.type}/${item.id}`}
               className="block h-full w-full"
             >
-              <Image
-                src={item.mediaUrl}
-                alt="Feed Image"
-                width={0}
-                height={0}
-                className="h-full w-full object-cover"
-              />
+              {item.mediaUrl && isVideo(item.mediaUrl) ? (
+                <video
+                  src={item.mediaUrl}
+                  controls
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <Image
+                  src={item.mediaUrl}
+                  alt="Challenge media"
+                  width={0}
+                  height={0}
+                  className="h-full w-full object-cover"
+                />
+              )}
             </Link>
           </div>
         ))}

@@ -7,44 +7,23 @@ import {
   differenceInSeconds,
 } from 'date-fns';
 
+import moment from 'moment-timezone';
+
 export function formatTimeAgo(createdAt: string): string {
-  const date = new Date(createdAt);
-  const now = new Date();
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  // Convert UTC time to Vietnam timezone
+  const date = moment.utc(createdAt).tz('Asia/Ho_Chi_Minh');
+  const now = moment().tz('Asia/Ho_Chi_Minh');
+  const diffInSeconds = now.diff(date, 'seconds');
 
-  if (diffInSeconds === 1) {
-    return '1 second ago';
-  }
-  if (diffInSeconds < 60) {
-    return `${diffInSeconds} seconds ago`;
-  }
+  if (diffInSeconds < 60) return `${diffInSeconds} seconds ago`;
+  const diffInMinutes = now.diff(date, 'minutes');
+  if (diffInMinutes < 60) return `${diffInMinutes} minutes ago`;
+  const diffInHours = now.diff(date, 'hours');
+  if (diffInHours < 24) return `${diffInHours} hours ago`;
+  const diffInDays = now.diff(date, 'days');
+  if (diffInDays < 7) return `${diffInDays} days ago`;
 
-  const diffInMinutes = Math.floor(diffInSeconds / 60);
-  if (diffInMinutes === 1) {
-    return '1 minute ago';
-  } else if (diffInMinutes < 60) {
-    return `${diffInMinutes} minutes ago`;
-  }
-
-  const diffInHours = Math.floor(diffInMinutes / 60);
-  if (diffInHours === 1) {
-    return '1 hour ago';
-  } else if (diffInHours < 24) {
-    return `${diffInHours} hours ago`;
-  }
-
-  const diffInDays = Math.floor(diffInHours / 24);
-  if (diffInDays === 1) {
-    return 'yesterday';
-  } else if (diffInDays < 7) {
-    return `${diffInDays} days ago`;
-  }
-
-  return date.toLocaleDateString('vi-VN', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  return date.format('DD MMMM YYYY, HH:mm');
 }
 
 export const formatMessageTime = (dateString: string) => {
